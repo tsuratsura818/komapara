@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { FollowButton } from "@/components/auth/FollowButton";
 
+export const revalidate = 1800;
+
 type Props = { params: { id: string } };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -82,7 +82,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/20 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/20 md:hidden" aria-label="メインナビゲーション">
       <div className="flex items-center justify-around h-14">
         {NAV_ITEMS.map((item) => {
           const prefix = (item as { matchPrefix?: string }).matchPrefix;
@@ -97,6 +97,8 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              aria-label={item.label}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
                 "relative flex flex-col items-center gap-0.5 px-2 py-1 transition-all duration-200 active:scale-95",
                 isActive

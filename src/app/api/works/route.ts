@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
   try {
@@ -86,6 +87,17 @@ export async function POST(request: NextRequest) {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    const { success } = rateLimit(`works:post:${session.user.id}`, {
+      limit: 10,
+      windowMs: 60 * 60 * 1000,
+    });
+    if (!success) {
+      return NextResponse.json(
+        { error: "投稿制限に達しました。しばらくしてからお試しください" },
+        { status: 429 }
+      );
     }
 
     const body = await request.json();

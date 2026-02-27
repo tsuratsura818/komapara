@@ -5,12 +5,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 type Props = { params: { slug: string } };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const genre = GENRES.find((g) => g.slug === params.slug);
   if (!genre) return { title: "ジャンルが見つかりません" };
   return { title: `${genre.emoji} ${genre.name}の4コマ` };
+}
+
+export function generateStaticParams() {
+  return GENRES.map((g) => ({ slug: g.slug }));
 }
 
 export default async function GenrePage({ params }: Props) {

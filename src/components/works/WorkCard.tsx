@@ -30,6 +30,7 @@ export function WorkCard({
               <img
                 src={panels[0]}
                 alt={`${title} - 1コマ目`}
+                loading="lazy"
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               {/* Gradient overlay on hover */}
@@ -71,7 +72,7 @@ export function WorkCard({
               {author.image ? (
                 <img
                   src={author.image}
-                  alt={author.name || ""}
+                  alt={author.name || "作家アイコン"}
                   className="w-5 h-5 rounded-full flex-shrink-0 ring-1 ring-purple-200/50"
                 />
               ) : (

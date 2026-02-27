@@ -3,6 +3,8 @@ import { getWeekStart } from "@/lib/ranking";
 import Link from "next/link";
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "週間ランキング",
 };

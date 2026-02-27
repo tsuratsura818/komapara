@@ -1,8 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    const { success } = rateLimit(`search:${ip}`, {
+      limit: 60,
+      windowMs: 60 * 1000,
+    });
+    if (!success) {
+      return NextResponse.json(
+        { error: "検索制限に達しました。しばらくしてからお試しください" },
+        { status: 429 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const q = searchParams.get("q")?.trim();
     const type = searchParams.get("type") || "works";

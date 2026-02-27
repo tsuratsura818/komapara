@@ -24,7 +24,7 @@ export function WorkFeed() {
   const { data: session } = useSession();
   const [tab, setTab] = useState<Tab>("new");
   const [works, setWorks] = useState<Work[]>([]);
-  const [page, setPage] = useState(1);
+  const [, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
   const observerRef = useRef<HTMLDivElement>(null);
