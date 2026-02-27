@@ -40,8 +40,8 @@ export default async function AdminUsersPage({
         createdAt: true,
         _count: { select: { works: true, comments: true } },
       },
-    }),
-    prisma.user.count({ where }),
+    }).catch(() => []),
+    prisma.user.count({ where }).catch(() => 0),
   ]);
 
   const totalPages = Math.ceil(totalCount / limit);

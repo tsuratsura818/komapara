@@ -16,16 +16,16 @@ const STAT_STYLES = [
 export default async function AdminDashboardPage() {
   const [userCount, workCount, commentCount, likeCount, viewStats, recentWorks, recentComments] =
     await Promise.all([
-      prisma.user.count(),
-      prisma.work.count(),
-      prisma.comment.count(),
-      prisma.like.count(),
-      prisma.work.aggregate({ _sum: { viewCount: true } }),
+      prisma.user.count().catch(() => 0),
+      prisma.work.count().catch(() => 0),
+      prisma.comment.count().catch(() => 0),
+      prisma.like.count().catch(() => 0),
+      prisma.work.aggregate({ _sum: { viewCount: true } }).catch(() => ({ _sum: { viewCount: 0 } })),
       prisma.work.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
         include: { author: { select: { id: true, name: true, image: true } } },
-      }),
+      }).catch(() => []),
       prisma.comment.findMany({
         orderBy: { createdAt: "desc" },
         take: 10,
@@ -33,7 +33,7 @@ export default async function AdminDashboardPage() {
           user: { select: { id: true, name: true, image: true } },
           work: { select: { id: true, title: true } },
         },
-      }),
+      }).catch(() => []),
     ]);
 
   const totalPV = viewStats._sum.viewCount || 0;

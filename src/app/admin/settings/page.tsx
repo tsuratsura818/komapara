@@ -12,11 +12,11 @@ const DEFAULT_SETTINGS: Record<string, string> = {
 
 export default async function AdminSettingsPage() {
   const [dbSettings, tags] = await Promise.all([
-    prisma.siteSetting.findMany(),
+    prisma.siteSetting.findMany().catch(() => []),
     prisma.tag.findMany({
       orderBy: { name: "asc" },
       include: { _count: { select: { works: true } } },
-    }),
+    }).catch(() => []),
   ]);
 
   const settings: Record<string, string> = { ...DEFAULT_SETTINGS };

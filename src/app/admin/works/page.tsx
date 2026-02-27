@@ -30,8 +30,8 @@ export default async function AdminWorksPage({
         author: { select: { id: true, name: true, image: true } },
         _count: { select: { comments: true } },
       },
-    }),
-    prisma.work.count({ where }),
+    }).catch(() => []),
+    prisma.work.count({ where }).catch(() => 0),
   ]);
 
   const totalPages = Math.ceil(totalCount / limit);

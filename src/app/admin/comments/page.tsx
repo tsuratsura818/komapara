@@ -24,8 +24,8 @@ export default async function AdminCommentsPage({
         user: { select: { id: true, name: true, image: true } },
         work: { select: { id: true, title: true } },
       },
-    }),
-    prisma.comment.count(),
+    }).catch(() => []),
+    prisma.comment.count().catch(() => 0),
   ]);
 
   const totalPages = Math.ceil(totalCount / limit);

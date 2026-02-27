@@ -37,13 +37,14 @@ export function WorkFeed() {
           `/api/works?sort=${tab}&page=${pageNum}&limit=20`
         );
         const data = await res.json();
+        const newWorks = data.works ?? [];
 
         if (reset) {
-          setWorks(data.works);
+          setWorks(newWorks);
         } else {
-          setWorks((prev) => [...prev, ...data.works]);
+          setWorks((prev) => [...prev, ...newWorks]);
         }
-        setHasMore(pageNum < data.totalPages);
+        setHasMore(pageNum < (data.totalPages ?? 1));
       } catch (error) {
         console.error("Failed to fetch works:", error);
       } finally {
