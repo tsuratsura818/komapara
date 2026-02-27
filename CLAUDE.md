@@ -454,3 +454,4 @@ AdSense の実装は `<AdsenseUnit>` コンポーネントに集約：
 | 2026-02-27 | アクセシビリティ（スキップナビ・aria-label/aria-current・画像alt属性） | 完了 |
 | 2026-02-27 | PWA対応（manifest.json・Service Worker・アイコン生成） | 完了 |
 | 2026-02-27 | シードデータ拡充（5作家30作品） | 完了 |
+| 2026-02-27 | X投稿URLインポート（fxtwitter API・画像自動取得・投稿フォーム統合） | 完了 |
