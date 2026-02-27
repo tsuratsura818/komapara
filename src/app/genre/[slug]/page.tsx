@@ -31,55 +31,60 @@ export default async function GenrePage({ params }: Props) {
   });
 
   return (
-    <div className="px-4 py-6">
+    <div>
       {/* ジャンルヘッダー */}
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-komapara-text">
+      <div className="bg-gradient-main px-4 py-5 text-white rounded-b-2xl">
+        <h1 className="text-xl font-bold">
           {genre.emoji} {genre.name}
         </h1>
-        <p className="text-sm text-komapara-muted mt-1">
-          {works.length}件の作品
-        </p>
+        <p className="text-white/80 text-sm mt-1">{works.length}件の作品</p>
       </div>
 
-      {/* ジャンルタブ */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 -mx-4 px-4 scrollbar-hide">
-        {GENRES.map((g) => (
-          <Link
-            key={g.slug}
-            href={`/genre/${g.slug}`}
-            className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-full transition-colors ${
-              g.slug === params.slug
-                ? "bg-primary-500 text-white"
-                : "bg-komapara-tag text-komapara-tag-text hover:bg-primary-100"
-            }`}
-          >
-            {g.emoji} {g.name}
-          </Link>
-        ))}
-      </div>
-
-      {/* 作品グリッド */}
-      {works.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {works.map((work) => (
-            <WorkCard
-              key={work.id}
-              id={work.id}
-              title={work.title}
-              panels={work.panels}
-              author={work.author}
-              genres={work.tags}
-              likeCount={work.likeCount}
-              createdAt={work.createdAt.toISOString()}
-            />
+      <div className="px-4 py-4">
+        {/* ジャンルタブ */}
+        <div className="flex gap-2 overflow-x-auto pb-3 mb-4 -mx-4 px-4 scrollbar-hide">
+          {GENRES.map((g) => (
+            <Link
+              key={g.slug}
+              href={`/genre/${g.slug}`}
+              className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-full transition-all duration-200 ${
+                g.slug === params.slug
+                  ? "bg-gradient-main text-white shadow-sm"
+                  : "glass text-komapara-muted hover:text-komapara-text"
+              }`}
+            >
+              {g.emoji} {g.name}
+            </Link>
           ))}
         </div>
-      ) : (
-        <div className="text-center py-20 text-komapara-muted">
-          <p>このジャンルにはまだ作品がありません</p>
-        </div>
-      )}
+
+        {/* 作品グリッド */}
+        {works.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {works.map((work, index) => (
+              <div
+                key={work.id}
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
+              >
+                <WorkCard
+                  id={work.id}
+                  title={work.title}
+                  panels={work.panels}
+                  author={work.author}
+                  genres={work.tags}
+                  likeCount={work.likeCount}
+                  createdAt={work.createdAt.toISOString()}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 text-komapara-muted">
+            <p>このジャンルにはまだ作品がありません</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -2,11 +2,19 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { WorkCard } from "@/components/works/WorkCard";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "ダッシュボード",
 };
+
+const STAT_STYLES = [
+  { gradient: "from-purple-500 to-blue-500" },
+  { gradient: "from-blue-500 to-cyan-500" },
+  { gradient: "from-pink-500 to-red-500" },
+  { gradient: "from-orange-500 to-yellow-500" },
+];
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -32,34 +40,41 @@ export default async function DashboardPage() {
   const totalViews = user.works.reduce((sum, w) => sum + w.viewCount, 0);
   const totalLikes = user.works.reduce((sum, w) => sum + w.likeCount, 0);
 
+  const stats = [
+    { label: "作品数", value: user.works.length },
+    { label: "総閲覧数", value: totalViews },
+    { label: "総いいね", value: totalLikes },
+    { label: "フォロワー", value: user._count.followers },
+  ];
+
   return (
     <div className="px-4 py-6">
-      <h1 className="text-xl font-bold text-komapara-text mb-6">
-        ダッシュボード
-      </h1>
+      <h1 className="text-xl font-bold gradient-text mb-6">ダッシュボード</h1>
 
       {/* 統計 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        {[
-          { label: "作品数", value: user.works.length },
-          { label: "総閲覧数", value: totalViews },
-          { label: "総いいね", value: totalLikes },
-          { label: "フォロワー", value: user._count.followers },
-        ].map((stat) => (
+        {stats.map((stat, i) => (
           <div
             key={stat.label}
-            className="bg-white rounded-xl border border-komapara-border p-4 text-center"
+            className="glass rounded-xl p-4 text-center relative overflow-hidden"
           >
-            <p className="text-2xl font-bold text-primary-500">{stat.value}</p>
-            <p className="text-xs text-komapara-muted mt-1">{stat.label}</p>
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${STAT_STYLES[i].gradient} opacity-5`}
+            />
+            <p
+              className={`text-2xl font-bold relative bg-gradient-to-r ${STAT_STYLES[i].gradient} bg-clip-text text-transparent`}
+            >
+              {stat.value.toLocaleString()}
+            </p>
+            <p className="text-xs text-komapara-muted mt-1 relative">
+              {stat.label}
+            </p>
           </div>
         ))}
       </div>
 
       {/* 自分の作品 */}
-      <h2 className="text-sm font-semibold text-komapara-text mb-3">
-        あなたの作品
-      </h2>
+      <h2 className="text-sm font-semibold gradient-text mb-3">あなたの作品</h2>
       {user.works.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {user.works.map((work) => (
@@ -80,14 +95,14 @@ export default async function DashboardPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-10 text-komapara-muted">
+        <div className="text-center py-10 text-komapara-muted glass rounded-xl">
           <p>まだ作品がありません</p>
-          <a
+          <Link
             href="/upload"
-            className="inline-block mt-2 text-primary-500 hover:underline"
+            className="inline-block mt-3 px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all"
           >
             最初の4コマを投稿する
-          </a>
+          </Link>
         </div>
       )}
     </div>

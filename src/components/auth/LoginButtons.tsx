@@ -7,7 +7,8 @@ export function LoginButtons() {
     <div className="flex flex-col gap-3 w-full max-w-sm">
       <button
         onClick={() => signIn("google", { callbackUrl: "/" })}
-        className="flex items-center justify-center gap-3 w-full px-4 py-3 bg-white border border-komapara-border rounded-xl text-komapara-text font-medium hover:bg-gray-50 transition-colors"
+        className="flex items-center justify-center gap-3 w-full px-4 py-3 glass rounded-xl text-komapara-text font-medium hover:shadow-md transition-all duration-200 animate-fade-in"
+        style={{ opacity: 0 }}
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
           <path
@@ -32,7 +33,8 @@ export function LoginButtons() {
 
       <button
         onClick={() => signIn("twitter", { callbackUrl: "/" })}
-        className="flex items-center justify-center gap-3 w-full px-4 py-3 bg-black text-white rounded-xl font-medium hover:bg-gray-900 transition-colors"
+        className="flex items-center justify-center gap-3 w-full px-4 py-3 bg-black text-white rounded-xl font-medium hover:bg-gray-900 hover:shadow-md transition-all duration-200 animate-fade-in"
+        style={{ animationDelay: "100ms", opacity: 0 }}
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />

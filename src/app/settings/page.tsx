@@ -12,20 +12,18 @@ export default async function SettingsPage() {
 
   return (
     <div className="px-4 py-6">
-      <h1 className="text-xl font-bold text-komapara-text mb-6">
-        アカウント設定
-      </h1>
+      <h1 className="text-xl font-bold gradient-text mb-6">アカウント設定</h1>
 
-      <div className="bg-white rounded-xl border border-komapara-border p-6">
+      <div className="glass rounded-xl p-6">
         <div className="flex items-center gap-4 mb-6">
           {session.user.image ? (
             <img
               src={session.user.image}
               alt={session.user.name || ""}
-              className="w-16 h-16 rounded-full"
+              className="w-16 h-16 rounded-full ring-2 ring-purple-200/50"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-xl font-bold">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 text-xl font-bold">
               {session.user.name?.[0] || "?"}
             </div>
           )}

@@ -22,15 +22,19 @@ export function WorkCard({
 }: WorkCardProps) {
   return (
     <Link href={`/work/${id}`} className="block group">
-      <div className="bg-komapara-card rounded-xl shadow-sm border border-komapara-border overflow-hidden transition-shadow group-hover:shadow-md">
+      <div className="bg-komapara-card rounded-xl shadow-sm border border-komapara-border overflow-hidden transition-all duration-300 group-hover:shadow-lg group-hover:shadow-purple-500/10 group-hover:-translate-y-1">
         {/* サムネイル（1コマ目） */}
-        <div className="aspect-square relative bg-gray-100">
+        <div className="aspect-square relative bg-gray-100 overflow-hidden">
           {panels[0] ? (
-            <img
-              src={panels[0]}
-              alt={`${title} - 1コマ目`}
-              className="w-full h-full object-cover"
-            />
+            <>
+              <img
+                src={panels[0]}
+                alt={`${title} - 1コマ目`}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              {/* Gradient overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </>
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-300">
               <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
@@ -48,7 +52,7 @@ export function WorkCard({
               {genres.slice(0, 2).map((genre) => (
                 <span
                   key={genre.slug}
-                  className="text-xs px-2 py-0.5 rounded-full bg-komapara-tag text-komapara-tag-text"
+                  className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-50 to-blue-50 text-purple-600 border border-purple-100/50"
                 >
                   {genre.emoji} {genre.name}
                 </span>
@@ -68,16 +72,16 @@ export function WorkCard({
                 <img
                   src={author.image}
                   alt={author.name || ""}
-                  className="w-5 h-5 rounded-full flex-shrink-0"
+                  className="w-5 h-5 rounded-full flex-shrink-0 ring-1 ring-purple-200/50"
                 />
               ) : (
-                <div className="w-5 h-5 rounded-full bg-primary-100 flex-shrink-0" />
+                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 flex-shrink-0" />
               )}
               <span className="text-sm text-komapara-muted truncate">
                 {author.name}
               </span>
             </div>
-            <div className="flex items-center gap-1 text-komapara-muted flex-shrink-0">
+            <div className="flex items-center gap-1 text-pink-500 flex-shrink-0">
               <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>

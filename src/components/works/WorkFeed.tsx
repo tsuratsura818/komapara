@@ -89,7 +89,7 @@ export function WorkFeed() {
   return (
     <div>
       {/* タブ */}
-      <div className="flex border-b border-komapara-border bg-white sticky top-14 z-40">
+      <div className="flex glass border-b border-white/20 sticky top-14 z-40">
         {tabs.map((t) => {
           if (t.requireAuth && !session) return null;
           return (
@@ -99,13 +99,13 @@ export function WorkFeed() {
               className={cn(
                 "flex-1 py-3 text-sm font-medium transition-colors relative",
                 tab === t.value
-                  ? "text-primary-500"
+                  ? "gradient-text"
                   : "text-komapara-muted hover:text-komapara-text"
               )}
             >
               {t.label}
               {tab === t.value && (
-                <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 bg-primary-500 rounded-full" />
+                <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 bg-gradient-main rounded-full" />
               )}
             </button>
           );
@@ -115,7 +115,11 @@ export function WorkFeed() {
       {/* 作品グリッド */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
         {works.map((work, index) => (
-          <div key={work.id}>
+          <div
+            key={work.id}
+            className="animate-fade-in"
+            style={{ animationDelay: `${(index % 20) * 50}ms`, opacity: 0 }}
+          >
             <WorkCard
               id={work.id}
               title={work.title}
@@ -141,13 +145,13 @@ export function WorkFeed() {
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="bg-komapara-card rounded-xl border border-komapara-border overflow-hidden"
+              className="rounded-xl overflow-hidden glass"
             >
-              <div className="aspect-square bg-gray-200 animate-pulse" />
+              <div className="aspect-square skeleton-shimmer" />
               <div className="p-3 space-y-2">
-                <div className="h-3 bg-gray-200 rounded animate-pulse w-1/3" />
-                <div className="h-4 bg-gray-200 rounded animate-pulse" />
-                <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3" />
+                <div className="h-3 skeleton-shimmer rounded w-1/3" />
+                <div className="h-4 skeleton-shimmer rounded" />
+                <div className="h-3 skeleton-shimmer rounded w-2/3" />
               </div>
             </div>
           ))}

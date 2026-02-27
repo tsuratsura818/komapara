@@ -54,72 +54,75 @@ export default async function CreatorPage({ params }: Props) {
   }
 
   return (
-    <div className="px-4 py-6">
-      {/* プロフィール */}
-      <div className="flex items-start gap-4 mb-6">
-        {user.image ? (
-          <img
-            src={user.image}
-            alt={user.name || ""}
-            className="w-16 h-16 rounded-full"
-          />
-        ) : (
-          <div className="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-xl font-bold">
-            {user.name?.[0] || "?"}
-          </div>
-        )}
+    <div>
+      {/* Profile gradient banner */}
+      <div className="h-24 bg-gradient-main rounded-b-2xl" />
 
-        <div className="flex-1">
-          <h1 className="text-lg font-bold text-komapara-text">{user.name}</h1>
-          {user.xHandle && (
-            <p className="text-sm text-komapara-muted">@{user.xHandle}</p>
+      <div className="px-4 -mt-10">
+        {/* プロフィール */}
+        <div className="flex items-end gap-4 mb-4">
+          {user.image ? (
+            <img
+              src={user.image}
+              alt={user.name || ""}
+              className="w-20 h-20 rounded-full ring-4 ring-white shadow-lg"
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-full ring-4 ring-white shadow-lg bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 text-2xl font-bold">
+              {user.name?.[0] || "?"}
+            </div>
           )}
-          {user.bio && (
-            <p className="text-sm text-komapara-text mt-1">{user.bio}</p>
-          )}
-
-          <div className="flex gap-4 mt-2 text-sm text-komapara-muted">
-            <span>
-              <strong className="text-komapara-text">
-                {user._count.works}
-              </strong>{" "}
-              作品
-            </span>
-            <span>
-              <strong className="text-komapara-text">
-                {user._count.followers}
-              </strong>{" "}
-              フォロワー
-            </span>
-          </div>
 
           {session?.user?.id !== user.id && session && (
-            <div className="mt-3">
+            <div className="mb-1">
               <FollowButton userId={user.id} initialFollowing={isFollowing} />
             </div>
           )}
         </div>
+
+        <h1 className="text-lg font-bold text-komapara-text">{user.name}</h1>
+        {user.xHandle && (
+          <p className="text-sm text-komapara-muted">@{user.xHandle}</p>
+        )}
+        {user.bio && (
+          <p className="text-sm text-komapara-text mt-1">{user.bio}</p>
+        )}
+
+        <div className="flex gap-4 mt-2 text-sm text-komapara-muted">
+          <span>
+            <strong className="gradient-text">{user._count.works}</strong> 作品
+          </span>
+          <span>
+            <strong className="gradient-text">{user._count.followers}</strong>{" "}
+            フォロワー
+          </span>
+        </div>
       </div>
 
       {/* 作品一覧 */}
-      <div className="border-t border-komapara-border pt-4">
-        <h2 className="text-sm font-semibold text-komapara-text mb-3">
+      <div className="px-4 mt-6 border-t border-komapara-border/50 pt-4">
+        <h2 className="text-sm font-semibold gradient-text mb-3">
           作品 ({user._count.works})
         </h2>
 
         {user.works.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {user.works.map((work) => (
-              <WorkCard
+            {user.works.map((work, index) => (
+              <div
                 key={work.id}
-                id={work.id}
-                title={work.title}
-                panels={work.panels}
-                author={{ id: user.id, name: user.name, image: user.image }}
-                genres={work.tags}
-                likeCount={work.likeCount}
-                createdAt={work.createdAt.toISOString()}
-              />
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
+              >
+                <WorkCard
+                  id={work.id}
+                  title={work.title}
+                  panels={work.panels}
+                  author={{ id: user.id, name: user.name, image: user.image }}
+                  genres={work.tags}
+                  likeCount={work.likeCount}
+                  createdAt={work.createdAt.toISOString()}
+                />
+              </div>
             ))}
           </div>
         ) : (

@@ -62,11 +62,11 @@ export default function SearchPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="キーワードで検索..."
-            className="flex-1 px-4 py-2.5 border border-komapara-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="flex-1 px-4 py-2.5 glass rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50"
           />
           <button
             type="submit"
-            className="px-4 py-2.5 bg-primary-500 text-white rounded-xl text-sm font-medium hover:bg-primary-600 transition-colors"
+            className="px-4 py-2.5 bg-gradient-main text-white rounded-full text-sm font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
           >
             検索
           </button>
@@ -76,10 +76,10 @@ export default function SearchPage() {
           <button
             type="button"
             onClick={() => setType("works")}
-            className={`text-sm px-3 py-1 rounded-full ${
+            className={`text-sm px-3 py-1 rounded-full transition-all duration-200 ${
               type === "works"
-                ? "bg-primary-500 text-white"
-                : "bg-gray-100 text-komapara-muted"
+                ? "bg-gradient-main text-white shadow-sm"
+                : "glass text-komapara-muted"
             }`}
           >
             作品
@@ -87,10 +87,10 @@ export default function SearchPage() {
           <button
             type="button"
             onClick={() => setType("creators")}
-            className={`text-sm px-3 py-1 rounded-full ${
+            className={`text-sm px-3 py-1 rounded-full transition-all duration-200 ${
               type === "creators"
-                ? "bg-primary-500 text-white"
-                : "bg-gray-100 text-komapara-muted"
+                ? "bg-gradient-main text-white shadow-sm"
+                : "glass text-komapara-muted"
             }`}
           >
             作家
@@ -106,17 +106,22 @@ export default function SearchPage() {
         <>
           {works.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {works.map((work) => (
-                <WorkCard
+              {works.map((work, index) => (
+                <div
                   key={work.id}
-                  id={work.id}
-                  title={work.title}
-                  panels={work.panels}
-                  author={work.author}
-                  genres={work.tags}
-                  likeCount={work.likeCount}
-                  createdAt={work.createdAt}
-                />
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
+                >
+                  <WorkCard
+                    id={work.id}
+                    title={work.title}
+                    panels={work.panels}
+                    author={work.author}
+                    genres={work.tags}
+                    likeCount={work.likeCount}
+                    createdAt={work.createdAt}
+                  />
+                </div>
               ))}
             </div>
           ) : (
@@ -131,20 +136,21 @@ export default function SearchPage() {
         <>
           {creators.length > 0 ? (
             <div className="space-y-3">
-              {creators.map((creator) => (
+              {creators.map((creator, index) => (
                 <Link
                   key={creator.id}
                   href={`/creator/${creator.id}`}
-                  className="flex items-center gap-3 bg-white rounded-xl border border-komapara-border p-3 hover:shadow-sm transition-shadow"
+                  className="flex items-center gap-3 glass rounded-xl p-3 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-200 animate-fade-in"
+                  style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
                 >
                   {creator.image ? (
                     <img
                       src={creator.image}
                       alt={creator.name || ""}
-                      className="w-12 h-12 rounded-full"
+                      className="w-12 h-12 rounded-full ring-2 ring-purple-200/50"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-primary-100" />
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-blue-100" />
                   )}
                   <div>
                     <p className="font-medium text-komapara-text">

@@ -67,7 +67,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-komapara-border md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/20 md:hidden">
       <div className="flex items-center justify-around h-14">
         {NAV_ITEMS.map((item) => {
           const isActive =
@@ -80,14 +80,17 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center gap-0.5 px-3 py-1 transition-colors",
+                "relative flex flex-col items-center gap-0.5 px-3 py-1 transition-all duration-200 active:scale-95",
                 isActive
-                  ? "text-primary-500"
+                  ? "gradient-text"
                   : "text-komapara-muted hover:text-komapara-text"
               )}
             >
               {item.icon}
               <span className="text-[10px] font-medium">{item.label}</span>
+              {isActive && (
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-gradient-main rounded-full" />
+              )}
             </Link>
           );
         })}

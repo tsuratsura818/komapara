@@ -8,16 +8,16 @@ export function Header() {
   const { data: session } = useSession();
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-komapara-border">
+    <header className="sticky top-0 z-50 glass border-b border-white/20">
       <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold text-primary-500">
+        <Link href="/" className="text-xl font-bold gradient-text">
           コマパラ
         </Link>
 
         <div className="flex items-center gap-3">
           <Link
             href="/search"
-            className="p-2 text-komapara-muted hover:text-komapara-text transition-colors"
+            className="p-2 text-komapara-muted hover:text-gradient-purple transition-colors"
             aria-label="検索"
           >
             <svg
@@ -38,7 +38,7 @@ export function Header() {
           {session?.user && (
             <Link
               href="/upload"
-              className="px-3 py-1.5 text-sm font-medium text-white bg-primary-500 rounded-lg hover:bg-primary-600 transition-colors"
+              className="px-3 py-1.5 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
             >
               + 投稿
             </Link>

@@ -29,10 +29,10 @@ export function FollowButton({
     <button
       onClick={handleToggle}
       disabled={loading}
-      className={`px-4 py-1.5 text-sm rounded-lg font-medium transition-colors ${
+      className={`px-4 py-1.5 text-sm rounded-full font-medium transition-all duration-200 ${
         following
-          ? "bg-gray-100 text-komapara-muted hover:bg-gray-200"
-          : "bg-primary-500 text-white hover:bg-primary-600"
+          ? "glass text-komapara-muted hover:bg-gray-100"
+          : "bg-gradient-main text-white shadow-lg shadow-purple-500/25 hover:shadow-xl"
       }`}
     >
       {following ? "フォロー中" : "フォロー"}
