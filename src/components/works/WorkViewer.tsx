@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { formatRelativeTime } from "@/lib/utils";
 import { AdsenseUnit } from "@/components/ui/AdsenseUnit";
+import { TipButton } from "./TipButton";
 
 type Comment = {
   id: string;
@@ -210,6 +211,12 @@ export function WorkViewer({ work }: { work: WorkDetail }) {
             </svg>
             いいね {likeCount}
           </button>
+
+          <TipButton
+            workId={work.id}
+            authorId={work.author.id}
+            authorName={work.author.name}
+          />
 
           <button
             onClick={handleShareToX}

@@ -42,6 +42,12 @@ export default async function CreatorPage({ params }: Props) {
 
   if (!user) notFound();
 
+  const tipStats = await prisma.tip.aggregate({
+    where: { receiverId: params.id, paymentStatus: "completed" },
+    _sum: { amount: true },
+    _count: true,
+  }).catch(() => ({ _sum: { amount: 0 }, _count: 0 }));
+
   let isFollowing = false;
   if (session?.user?.id && session.user.id !== user.id) {
     const follow = await prisma.follow.findUnique({
@@ -98,6 +104,14 @@ export default async function CreatorPage({ params }: Props) {
             <strong className="gradient-text">{user._count.followers}</strong>{" "}
             フォロワー
           </span>
+          {(tipStats._sum.amount || 0) > 0 && (
+            <span>
+              <strong className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                {(tipStats._sum.amount || 0).toLocaleString()}円
+              </strong>{" "}
+              投げ銭
+            </span>
+          )}
         </div>
       </div>
 

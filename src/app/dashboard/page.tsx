@@ -14,6 +14,7 @@ const STAT_STYLES = [
   { gradient: "from-blue-500 to-cyan-500" },
   { gradient: "from-pink-500 to-red-500" },
   { gradient: "from-orange-500 to-yellow-500" },
+  { gradient: "from-yellow-400 to-orange-500" },
 ];
 
 export default async function DashboardPage() {
@@ -37,6 +38,12 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
+  const tipStats = await prisma.tip.aggregate({
+    where: { receiverId: session.user.id, paymentStatus: "completed" },
+    _sum: { netAmount: true },
+    _count: true,
+  }).catch(() => ({ _sum: { netAmount: 0 }, _count: 0 }));
+
   const totalViews = user.works.reduce((sum, w) => sum + w.viewCount, 0);
   const totalLikes = user.works.reduce((sum, w) => sum + w.likeCount, 0);
 
@@ -45,6 +52,7 @@ export default async function DashboardPage() {
     { label: "総閲覧数", value: totalViews },
     { label: "総いいね", value: totalLikes },
     { label: "フォロワー", value: user._count.followers },
+    { label: "投げ銭収益", value: `${(tipStats._sum.netAmount || 0).toLocaleString()}円` },
   ];
 
   return (
@@ -52,7 +60,7 @@ export default async function DashboardPage() {
       <h1 className="text-xl font-bold gradient-text mb-6">ダッシュボード</h1>
 
       {/* 統計 */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
         {stats.map((stat, i) => (
           <div
             key={stat.label}

@@ -57,13 +57,15 @@ model User {
   isCreator     Boolean   @default(false)
   isBanned      Boolean   @default(false)
 
-  accounts  Account[]
-  sessions  Session[]
-  works     Work[]
-  likes     Like[]
-  comments  Comment[]
-  followers Follow[]  @relation("following")
-  following Follow[]  @relation("follower")
+  accounts     Account[]
+  sessions     Session[]
+  works        Work[]
+  likes        Like[]
+  comments     Comment[]
+  followers    Follow[]  @relation("following")
+  following    Follow[]  @relation("follower")
+  tipsSent     Tip[]     @relation("tipsSent")
+  tipsReceived Tip[]     @relation("tipsReceived")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -81,9 +83,11 @@ model Work {
   likes       Like[]
   comments    Comment[]
   rankings    WeeklyRanking[]
+  tips        Tip[]
 
   viewCount   Int     @default(0)
   likeCount   Int     @default(0)
+  tipTotal    Int     @default(0)
   isPublished Boolean @default(true)
   xPostUrl    String?
 
@@ -151,6 +155,31 @@ model WeeklyRanking {
 
   @@unique([workId, weekStart])
   @@index([weekStart, rank])
+}
+
+model Tip {
+  id          String   @id @default(cuid())
+  amount      Int      // 金額（円）
+  platformFee Int      // プラットフォーム手数料（円）
+  netAmount   Int      // クリエイター受取額（円）
+  message     String?  // 応援メッセージ（任意）
+
+  senderId    String
+  receiverId  String
+  workId      String
+  sender      User     @relation("tipsSent", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver    User     @relation("tipsReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+  work        Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  paymentStatus         String  @default("completed")
+  stripePaymentIntentId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([workId])
+  @@index([createdAt])
 }
 
 model SiteSetting {

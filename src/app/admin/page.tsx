@@ -11,16 +11,23 @@ const STAT_STYLES = [
   { gradient: "from-green-500 to-emerald-500" },
   { gradient: "from-pink-500 to-red-500" },
   { gradient: "from-orange-500 to-yellow-500" },
+  { gradient: "from-yellow-400 to-orange-500" },
+  { gradient: "from-emerald-400 to-green-500" },
 ];
 
 export default async function AdminDashboardPage() {
-  const [userCount, workCount, commentCount, likeCount, viewStats, recentWorks, recentComments] =
+  const [userCount, workCount, commentCount, likeCount, viewStats, tipStats, recentWorks, recentComments] =
     await Promise.all([
       prisma.user.count().catch(() => 0),
       prisma.work.count().catch(() => 0),
       prisma.comment.count().catch(() => 0),
       prisma.like.count().catch(() => 0),
       prisma.work.aggregate({ _sum: { viewCount: true } }).catch(() => ({ _sum: { viewCount: 0 } })),
+      prisma.tip.aggregate({
+        where: { paymentStatus: "completed" },
+        _sum: { amount: true, platformFee: true },
+        _count: true,
+      }).catch(() => ({ _sum: { amount: 0, platformFee: 0 }, _count: 0 })),
       prisma.work.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
@@ -38,12 +45,17 @@ export default async function AdminDashboardPage() {
 
   const totalPV = viewStats._sum.viewCount || 0;
 
+  const tipAmount = (tipStats as { _sum: { amount: number | null; platformFee: number | null }; _count: number })._sum.amount || 0;
+  const tipFee = (tipStats as { _sum: { amount: number | null; platformFee: number | null }; _count: number })._sum.platformFee || 0;
+
   const stats = [
     { label: "ユーザー数", value: userCount },
     { label: "作品数", value: workCount },
     { label: "総PV", value: totalPV },
     { label: "総いいね", value: likeCount },
     { label: "コメント数", value: commentCount },
+    { label: "投げ銭総額", value: `${tipAmount.toLocaleString()}円` },
+    { label: "手数料収入", value: `${tipFee.toLocaleString()}円` },
   ];
 
   return (
