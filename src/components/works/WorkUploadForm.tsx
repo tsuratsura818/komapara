@@ -26,6 +26,8 @@ export function WorkUploadForm() {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [xPostUrl, setXPostUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importUrl, setImportUrl] = useState("");
   const [error, setError] = useState("");
   const [completedWork, setCompletedWork] = useState<{
     id: string;
@@ -77,6 +79,54 @@ export function WorkUploadForm() {
     },
     [panels]
   );
+
+  const handleImportFromX = async () => {
+    if (!importUrl.trim()) {
+      setError("X投稿のURLを入力してください");
+      return;
+    }
+    setError("");
+    setImporting(true);
+    try {
+      const res = await fetch("/api/import-from-x", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: importUrl.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "インポートに失敗しました");
+        return;
+      }
+
+      // 画像をパネルにセット（最大4枚）
+      const newPanels = [...panels];
+      for (let i = 0; i < Math.min(data.images.length, 4); i++) {
+        newPanels[i] = {
+          file: null,
+          preview: data.images[i],
+          uploading: false,
+          url: data.images[i],
+        };
+      }
+      setPanels(newPanels);
+
+      // X投稿URLと説明を自動入力
+      setXPostUrl(data.xPostUrl || importUrl.trim());
+      if (!description && data.text) {
+        // ハッシュタグやURLを除いたテキスト
+        const cleanText = data.text
+          .replace(/https?:\/\/\S+/g, "")
+          .replace(/#\S+/g, "")
+          .trim();
+        if (cleanText) setDescription(cleanText.slice(0, 200));
+      }
+    } catch {
+      setError("インポートに失敗しました");
+    } finally {
+      setImporting(false);
+    }
+  };
 
   const toggleGenre = (slug: string) => {
     setSelectedGenres((prev) =>
@@ -224,6 +274,37 @@ export function WorkUploadForm() {
           {error}
         </div>
       )}
+
+      {/* Xからインポート */}
+      <div className="mb-6 p-4 glass rounded-xl border border-white/20">
+        <h2 className="text-sm font-semibold text-komapara-text mb-2 flex items-center gap-2">
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+          Xからインポート
+        </h2>
+        <p className="text-xs text-komapara-muted mb-3">
+          X投稿のURLを貼り付けると、画像を自動取得します
+        </p>
+        <div className="flex gap-2">
+          <input
+            type="url"
+            value={importUrl}
+            onChange={(e) => setImportUrl(e.target.value)}
+            placeholder="https://x.com/user/status/..."
+            className="flex-1 px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            disabled={importing}
+          />
+          <button
+            type="button"
+            onClick={handleImportFromX}
+            disabled={importing || !importUrl.trim()}
+            className="px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+          >
+            {importing ? "取得中..." : "取得"}
+          </button>
+        </div>
+      </div>
 
       {/* STEP 1: 画像アップロード */}
       <div className="mb-6">
