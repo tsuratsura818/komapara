@@ -44,8 +44,6 @@ export default async function LibraryPage() {
             {likedWorks.map((like, index) => (
               <div
                 key={like.id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
               >
                 <WorkCard
                   id={like.work.id}

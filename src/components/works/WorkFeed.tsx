@@ -117,8 +117,6 @@ export function WorkFeed() {
         {works.map((work, index) => (
           <div
             key={work.id}
-            className="animate-fade-in"
-            style={{ animationDelay: `${(index % 20) * 50}ms`, opacity: 0 }}
           >
             <WorkCard
               id={work.id}

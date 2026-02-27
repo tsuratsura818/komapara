@@ -70,8 +70,6 @@ export default async function GenrePage({ params }: Props) {
             {works.map((work, index) => (
               <div
                 key={work.id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
               >
                 <WorkCard
                   id={work.id}

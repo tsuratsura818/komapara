@@ -109,8 +109,6 @@ export default function SearchPage() {
               {works.map((work, index) => (
                 <div
                   key={work.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
                 >
                   <WorkCard
                     id={work.id}
@@ -140,8 +138,7 @@ export default function SearchPage() {
                 <Link
                   key={creator.id}
                   href={`/creator/${creator.id}`}
-                  className="flex items-center gap-3 glass rounded-xl p-3 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-200 animate-fade-in"
-                  style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
+                  className="flex items-center gap-3 glass rounded-xl p-3 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-200"
                 >
                   {creator.image ? (
                     <img

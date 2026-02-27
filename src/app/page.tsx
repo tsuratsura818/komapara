@@ -22,16 +22,10 @@ export default function HomePage() {
             コマパラについて
           </Link>
         </div>
-        {/* Decorative floating elements */}
-        <div className="absolute top-2 right-4 w-16 h-16 bg-white/10 rounded-lg rotate-12 animate-float" />
-        <div
-          className="absolute bottom-2 right-16 w-12 h-12 bg-white/10 rounded-lg -rotate-6 animate-float"
-          style={{ animationDelay: "1s" }}
-        />
-        <div
-          className="absolute top-4 right-36 w-8 h-8 bg-white/5 rounded-lg rotate-45 animate-float"
-          style={{ animationDelay: "2s" }}
-        />
+        {/* Decorative elements (static, no animation) */}
+        <div className="absolute top-2 right-4 w-16 h-16 bg-white/10 rounded-lg rotate-12" />
+        <div className="absolute bottom-2 right-16 w-12 h-12 bg-white/10 rounded-lg -rotate-6" />
+        <div className="absolute top-4 right-36 w-8 h-8 bg-white/5 rounded-lg rotate-45" />
       </section>
       <WorkFeed />
     </>

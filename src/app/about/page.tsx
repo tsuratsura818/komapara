@@ -52,11 +52,9 @@ export default function AboutPage() {
         <div className="absolute top-4 right-8 w-20 h-20 bg-white/10 rounded-lg rotate-12 animate-float" />
         <div
           className="absolute bottom-8 right-20 w-14 h-14 bg-white/10 rounded-lg -rotate-6 animate-float"
-          style={{ animationDelay: "1s" }}
         />
         <div
           className="absolute top-12 left-8 w-10 h-10 bg-white/5 rounded-lg rotate-45 animate-float"
-          style={{ animationDelay: "2s" }}
         />
       </section>
 
@@ -69,8 +67,7 @@ export default function AboutPage() {
           {FEATURES.map((feature, index) => (
             <div
               key={feature.title}
-              className="glass rounded-xl p-5 text-center relative overflow-hidden animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms`, opacity: 0 }}
+              className="glass rounded-xl p-5 text-center relative overflow-hidden"
             >
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-5`}

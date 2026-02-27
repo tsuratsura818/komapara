@@ -287,8 +287,7 @@ export function WorkViewer({ work }: { work: WorkDetail }) {
           {comments.map((comment, index) => (
             <div
               key={comment.id}
-              className="flex gap-3 animate-fade-in"
-              style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
+              className="flex gap-3"
             >
               {comment.user.image ? (
                 <img

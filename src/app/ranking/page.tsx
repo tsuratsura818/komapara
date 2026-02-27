@@ -139,11 +139,7 @@ export default async function RankingPage() {
               <Link
                 key={entry.id}
                 href={`/work/${entry.work.id}`}
-                className="flex items-center gap-3 glass rounded-xl p-3 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-200 animate-fade-in"
-                style={{
-                  animationDelay: `${index * 50}ms`,
-                  opacity: 0,
-                }}
+                className="flex items-center gap-3 glass rounded-xl p-3 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-200"
               >
                 {/* 順位 */}
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center font-bold text-sm text-komapara-muted">
