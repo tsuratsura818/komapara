@@ -21,12 +21,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${work.title} - コマパラ`,
       description: `${work.author.name}の4コマ漫画`,
-      images: work.panels[0] ? [{ url: work.panels[0] }] : [],
+      images: [
+        {
+          url: `/api/og/work/${params.id}`,
+          width: 1200,
+          height: 630,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: `${work.title} - コマパラ`,
       description: `${work.author.name}の4コマ漫画`,
+      images: [`/api/og/work/${params.id}`],
     },
   };
 }
