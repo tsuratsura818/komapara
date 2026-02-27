@@ -55,6 +55,7 @@ model User {
   bio           String?
   xHandle       String?
   isCreator     Boolean   @default(false)
+  isBanned      Boolean   @default(false)
 
   accounts  Account[]
   sessions  Session[]
@@ -150,4 +151,10 @@ model WeeklyRanking {
 
   @@unique([workId, weekStart])
   @@index([weekStart, rank])
+}
+
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
 }

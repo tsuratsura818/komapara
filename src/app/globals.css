@@ -25,7 +25,7 @@ html {
 @layer utilities {
   /* Glassmorphism (lightweight - no backdrop-filter for scroll perf) */
   .glass {
-    background: rgba(255, 255, 255, 0.92);
+    background-color: rgba(255, 255, 255, 0.92);
     border: 1px solid rgba(229, 231, 235, 0.5);
   }
 

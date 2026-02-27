@@ -41,7 +41,7 @@ export default async function LibraryPage() {
       <div className="px-4 py-4">
         {likedWorks.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-            {likedWorks.map((like, index) => (
+            {likedWorks.map((like) => (
               <div
                 key={like.id}
               >

@@ -109,7 +109,7 @@ export default async function CreatorPage({ params }: Props) {
 
         {user.works.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-            {user.works.map((work, index) => (
+            {user.works.map((work) => (
               <div
                 key={work.id}
               >

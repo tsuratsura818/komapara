@@ -64,7 +64,7 @@ export default function AboutPage() {
           コマパラでできること
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {FEATURES.map((feature, index) => (
+          {FEATURES.map((feature) => (
             <div
               key={feature.title}
               className="glass rounded-xl p-5 text-center relative overflow-hidden"

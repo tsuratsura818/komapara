@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { UserMenu } from "@/components/auth/UserMenu";
-import { useSession } from "next-auth/react";
 
 export function Header() {
-  const { data: session } = useSession();
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-white/20">
@@ -13,6 +15,19 @@ export function Header() {
         <Link href="/" className="text-xl font-bold gradient-text" aria-label="コマパラ ホーム">
           コマパラ
         </Link>
+
+        {/* Desktop navigation */}
+        <nav className="hidden md:flex items-center gap-6" aria-label="メインナビゲーション">
+          <Link href="/ranking" className="text-sm text-komapara-muted hover:text-komapara-text transition-colors">
+            ランキング
+          </Link>
+          <Link href="/genre/nichijou" className="text-sm text-komapara-muted hover:text-komapara-text transition-colors">
+            ジャンル
+          </Link>
+          <Link href="/about" className="text-sm text-komapara-muted hover:text-komapara-text transition-colors">
+            About
+          </Link>
+        </nav>
 
         <div className="flex items-center gap-3">
           <Link
@@ -35,14 +50,12 @@ export function Header() {
             </svg>
           </Link>
 
-          {session?.user && (
-            <Link
-              href="/upload"
-              className="px-3 py-1.5 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
-            >
-              + 投稿
-            </Link>
-          )}
+          <Link
+            href="/upload"
+            className="px-3 py-1.5 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
+          >
+            + 投稿
+          </Link>
 
           <UserMenu />
         </div>

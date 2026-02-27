@@ -106,7 +106,7 @@ export default function SearchPage() {
         <>
           {works.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {works.map((work, index) => (
+              {works.map((work) => (
                 <div
                   key={work.id}
                 >
@@ -134,7 +134,7 @@ export default function SearchPage() {
         <>
           {creators.length > 0 ? (
             <div className="space-y-3">
-              {creators.map((creator, index) => (
+              {creators.map((creator) => (
                 <Link
                   key={creator.id}
                   href={`/creator/${creator.id}`}

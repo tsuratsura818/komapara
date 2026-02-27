@@ -135,7 +135,7 @@ export default async function RankingPage() {
 
           {/* Rank 4+ */}
           <div className="px-4 pb-6 space-y-3">
-            {rest.map((entry, index) => (
+            {rest.map((entry) => (
               <Link
                 key={entry.id}
                 href={`/work/${entry.work.id}`}

@@ -284,7 +284,7 @@ export function WorkViewer({ work }: { work: WorkDetail }) {
 
         {/* コメント一覧 */}
         <div className="space-y-3">
-          {comments.map((comment, index) => (
+          {comments.map((comment) => (
             <div
               key={comment.id}
               className="flex gap-3"
