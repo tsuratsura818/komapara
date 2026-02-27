@@ -135,7 +135,7 @@ export default async function WorkDetailPage({ params }: Props) {
           <h2 className="text-sm font-semibold text-komapara-text mb-3">
             関連作品
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
             {relatedWorks.map((rw) => (
               <WorkCard
                 key={rw.id}

@@ -9,7 +9,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-white/20">
-      <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold gradient-text">
           コマパラ
         </Link>

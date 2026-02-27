@@ -38,7 +38,7 @@ export default function RootLayout({
         </div>
         <Providers>
           <Header />
-          <main className="max-w-3xl mx-auto pb-16 md:pb-0">{children}</main>
+          <main className="max-w-7xl mx-auto pb-16 md:pb-0">{children}</main>
           <BottomNav />
         </Providers>
       </body>
