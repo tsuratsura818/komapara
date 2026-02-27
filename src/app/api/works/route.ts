@@ -1,0 +1,139 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const sort = searchParams.get("sort") || "new";
+    const genre = searchParams.get("genre");
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 50);
+    const skip = (page - 1) * limit;
+
+    const session = await auth();
+
+    const where: Record<string, unknown> = { isPublished: true };
+
+    if (genre) {
+      where.tags = { some: { slug: genre } };
+    }
+
+    if (sort === "following" && session?.user?.id) {
+      const following = await prisma.follow.findMany({
+        where: { followerId: session.user.id },
+        select: { followingId: true },
+      });
+      where.authorId = { in: following.map((f) => f.followingId) };
+    }
+
+    const orderBy =
+      sort === "popular"
+        ? { likeCount: "desc" as const }
+        : { createdAt: "desc" as const };
+
+    const [works, totalCount] = await Promise.all([
+      prisma.work.findMany({
+        where,
+        orderBy,
+        skip,
+        take: limit,
+        include: {
+          author: { select: { id: true, name: true, image: true } },
+          tags: { select: { name: true, slug: true, emoji: true } },
+          ...(session?.user?.id
+            ? {
+                likes: {
+                  where: { userId: session.user.id },
+                  select: { id: true },
+                },
+              }
+            : {}),
+        },
+      }),
+      prisma.work.count({ where }),
+    ]);
+
+    const result = works.map((work) => ({
+      id: work.id,
+      title: work.title,
+      panels: work.panels,
+      author: work.author,
+      genres: work.tags,
+      likeCount: work.likeCount,
+      viewCount: work.viewCount,
+      createdAt: work.createdAt,
+      isLiked: "likes" in work ? (work.likes as unknown[]).length > 0 : false,
+    }));
+
+    return NextResponse.json({
+      works: result,
+      totalCount,
+      page,
+      totalPages: Math.ceil(totalCount / limit),
+    });
+  } catch (error) {
+    console.error("GET /api/works error:", error);
+    return NextResponse.json(
+      { error: "作品一覧の取得に失敗しました" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { title, description, panels, genreSlugs, xPostUrl } = body;
+
+    if (!title || !panels || panels.length !== 4) {
+      return NextResponse.json(
+        { error: "タイトルと4枚の画像が必要です" },
+        { status: 400 }
+      );
+    }
+
+    if (title.length > 50) {
+      return NextResponse.json(
+        { error: "タイトルは50文字以内にしてください" },
+        { status: 400 }
+      );
+    }
+
+    // クリエイターフラグを立てる
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { isCreator: true },
+    });
+
+    const work = await prisma.work.create({
+      data: {
+        title,
+        description: description || null,
+        panels,
+        authorId: session.user.id,
+        xPostUrl: xPostUrl || null,
+        ...(genreSlugs?.length
+          ? { tags: { connect: genreSlugs.map((slug: string) => ({ slug })) } }
+          : {}),
+      },
+      include: {
+        author: { select: { id: true, name: true, image: true } },
+        tags: { select: { name: true, slug: true, emoji: true } },
+      },
+    });
+
+    return NextResponse.json(work, { status: 201 });
+  } catch (error) {
+    console.error("POST /api/works error:", error);
+    return NextResponse.json(
+      { error: "作品の投稿に失敗しました" },
+      { status: 500 }
+    );
+  }
+}

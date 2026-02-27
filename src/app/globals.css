@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #fafafa;
+  --foreground: #1f2937;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* スクロールバーの調整（モバイル向け） */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
