@@ -37,7 +37,7 @@ type WorkDetail = {
   comments: Comment[];
 };
 
-export function WorkViewer({ work }: { work: WorkDetail }) {
+export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tipsEnabled?: boolean }) {
   const { data: session } = useSession();
   const [liked, setLiked] = useState(work.isLiked);
   const [likeCount, setLikeCount] = useState(work.likeCount);
@@ -216,6 +216,7 @@ export function WorkViewer({ work }: { work: WorkDetail }) {
             workId={work.id}
             authorId={work.author.id}
             authorName={work.author.name}
+            tipsEnabled={tipsEnabled}
           />
 
           <button

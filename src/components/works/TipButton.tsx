@@ -8,15 +8,19 @@ export function TipButton({
   workId,
   authorId,
   authorName,
+  tipsEnabled = true,
   onSuccess,
 }: {
   workId: string;
   authorId: string;
   authorName: string | null;
+  tipsEnabled?: boolean;
   onSuccess?: () => void;
 }) {
   const { data: session } = useSession();
   const [showModal, setShowModal] = useState(false);
+
+  if (!tipsEnabled) return null;
 
   const isOwnWork = session?.user?.id === authorId;
 

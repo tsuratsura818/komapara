@@ -96,6 +96,10 @@ export default async function WorkDetailPage({ params }: Props) {
     isFollowingAuthor = !!follow;
   }
 
+  // 投げ銭機能の有効/無効
+  const tipSetting = await prisma.siteSetting.findUnique({ where: { key: "tips_enabled" } }).catch(() => null);
+  const tipsEnabled = tipSetting?.value !== "false";
+
   // 関連作品（同ジャンル）
   const tagSlugs = work.tags.map((t) => t.slug);
   const relatedWorks = tagSlugs.length
@@ -136,7 +140,7 @@ export default async function WorkDetailPage({ params }: Props) {
 
   return (
     <div>
-      <WorkViewer work={workData} />
+      <WorkViewer work={workData} tipsEnabled={tipsEnabled} />
 
       {/* 関連作品 */}
       {relatedWorks.length > 0 && (

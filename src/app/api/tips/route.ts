@@ -25,6 +25,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const tipSetting = await prisma.siteSetting.findUnique({ where: { key: "tips_enabled" } });
+    if (tipSetting?.value === "false") {
+      return NextResponse.json({ error: "投げ銭機能は現在無効です" }, { status: 403 });
+    }
+
     const { workId, amount, message } = await request.json();
 
     if (!workId || typeof workId !== "string") {

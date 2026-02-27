@@ -8,6 +8,7 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   registration_enabled: "true",
   comments_enabled: "true",
   x_auto_post_enabled: "true",
+  tips_enabled: "true",
 };
 
 export default async function AdminSettingsPage() {
