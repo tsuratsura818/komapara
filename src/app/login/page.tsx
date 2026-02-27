@@ -32,14 +32,20 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <p className="mt-4 text-center">
+        <div className="mt-4 flex flex-col items-center gap-2">
           <Link
             href="/"
             className="text-sm text-white/70 hover:text-white transition-colors"
           >
             ログインせずに閲覧する
           </Link>
-        </p>
+          <Link
+            href="/about"
+            className="text-sm text-white/50 hover:text-white/80 transition-colors"
+          >
+            コマパラについて
+          </Link>
+        </div>
       </div>
     </div>
   );

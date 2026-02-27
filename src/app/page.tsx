@@ -1,4 +1,5 @@
 import { WorkFeed } from "@/components/works/WorkFeed";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,12 @@ export default function HomePage() {
           <p className="text-white/80 text-sm mt-2">
             お気に入りの4コマ漫画を見つけて、作家をフォローしよう
           </p>
+          <Link
+            href="/about"
+            className="inline-block mt-3 px-4 py-1.5 text-sm font-medium bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+          >
+            コマパラについて
+          </Link>
         </div>
         {/* Decorative floating elements */}
         <div className="absolute top-2 right-4 w-16 h-16 bg-white/10 rounded-lg rotate-12 animate-float" />
