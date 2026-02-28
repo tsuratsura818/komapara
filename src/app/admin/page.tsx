@@ -16,7 +16,7 @@ const STAT_STYLES = [
 ];
 
 export default async function AdminDashboardPage() {
-  const [userCount, workCount, commentCount, likeCount, viewStats, tipStats, subStats, activeSubCount, recentWorks, recentComments, recentTips, recentSubs, tipSetting, subSetting] =
+  const [userCount, workCount, commentCount, likeCount, viewStats, tipStats, subStats, activeSubCount, premiumStats, activePremiumCount, recentWorks, recentComments, recentTips, recentSubs, recentPremium, tipSetting, subSetting, premiumSetting] =
     await Promise.all([
       prisma.user.count().catch(() => 0),
       prisma.work.count().catch(() => 0),
@@ -34,6 +34,12 @@ export default async function AdminDashboardPage() {
         _count: true,
       }).catch(() => ({ _sum: { amount: 0, platformFee: 0 }, _count: 0 })),
       prisma.subscription.count({ where: { status: "active" } }).catch(() => 0),
+      prisma.premiumSubscription.aggregate({
+        where: { paymentStatus: "completed" },
+        _sum: { amount: true },
+        _count: true,
+      }).catch(() => ({ _sum: { amount: 0 }, _count: 0 })),
+      prisma.premiumSubscription.count({ where: { status: "active" } }).catch(() => 0),
       prisma.work.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
@@ -66,8 +72,16 @@ export default async function AdminDashboardPage() {
           plan: { select: { name: true, price: true } },
         },
       }).catch(() => []),
+      prisma.premiumSubscription.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: {
+          user: { select: { id: true, name: true, image: true } },
+        },
+      }).catch(() => []),
       prisma.siteSetting.findUnique({ where: { key: "tips_enabled" } }).catch(() => null),
       prisma.siteSetting.findUnique({ where: { key: "subscriptions_enabled" } }).catch(() => null),
+      prisma.siteSetting.findUnique({ where: { key: "premium_enabled" } }).catch(() => null),
     ]);
 
   const totalPV = viewStats._sum.viewCount || 0;
@@ -76,8 +90,10 @@ export default async function AdminDashboardPage() {
   const tipFee = (tipStats as { _sum: { amount: number | null; platformFee: number | null }; _count: number })._sum.platformFee || 0;
   const tipsEnabled = tipSetting?.value !== "false";
   const subsEnabled = subSetting?.value !== "false";
+  const premiumEnabled = premiumSetting?.value !== "false";
   const subAmount = (subStats as { _sum: { amount: number | null; platformFee: number | null }; _count: number })._sum.amount || 0;
   const subFee = (subStats as { _sum: { amount: number | null; platformFee: number | null }; _count: number })._sum.platformFee || 0;
+  const premiumAmount = (premiumStats as { _sum: { amount: number | null }; _count: number })._sum.amount || 0;
 
   const stats = [
     { label: "ユーザー数", value: userCount },
@@ -231,6 +247,60 @@ export default async function AdminDashboardPage() {
           ))}
           {recentSubs.length === 0 && (
             <p className="text-sm text-komapara-muted text-center py-4">サブスクリプションはまだありません</p>
+          )}
+        </div>
+      </div>
+
+      {/* プレミアム会員セクション */}
+      <div className="glass rounded-xl p-4 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-semibold gradient-text">プレミアム会員</h2>
+          <span className={`text-xs px-2 py-0.5 rounded-full ${premiumEnabled ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+            {premiumEnabled ? "有効" : "無効"}
+          </span>
+        </div>
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-yellow-50 to-orange-50">
+            <p className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+              {premiumAmount.toLocaleString()}円
+            </p>
+            <p className="text-xs text-komapara-muted mt-0.5">総収入</p>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-purple-50 to-blue-50">
+            <p className="text-lg font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+              {activePremiumCount}
+            </p>
+            <p className="text-xs text-komapara-muted mt-0.5">アクティブ会員</p>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-pink-50 to-red-50">
+            <p className="text-lg font-bold bg-gradient-to-r from-pink-400 to-red-500 bg-clip-text text-transparent">
+              300円
+            </p>
+            <p className="text-xs text-komapara-muted mt-0.5">月額</p>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {recentPremium.map((ps) => (
+            <div key={ps.id} className="flex items-center gap-3 py-1.5 border-b border-komapara-border/30 last:border-b-0">
+              {ps.user.image && (
+                <img src={ps.user.image} alt="" className="w-6 h-6 rounded-full object-cover shrink-0" />
+              )}
+              <div className="min-w-0 flex-1 text-xs">
+                <span className="font-medium">{ps.user.name}</span>
+              </div>
+              <span className={`text-xs px-1.5 py-0.5 rounded-full ${ps.status === "active" ? "bg-green-100 text-green-700" : ps.status === "cancelled" ? "bg-yellow-100 text-yellow-700" : "bg-gray-100 text-gray-500"}`}>
+                {ps.status === "active" ? "有効" : ps.status === "cancelled" ? "解約済" : "期限切れ"}
+              </span>
+              <span className="text-xs font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent shrink-0">
+                {ps.amount.toLocaleString()}円
+              </span>
+              <span className="text-xs text-komapara-muted shrink-0">
+                {formatRelativeTime(ps.createdAt)}
+              </span>
+            </div>
+          ))}
+          {recentPremium.length === 0 && (
+            <p className="text-sm text-komapara-muted text-center py-4">プレミアム会員はまだいません</p>
           )}
         </div>
       </div>

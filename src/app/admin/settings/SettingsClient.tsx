@@ -17,6 +17,7 @@ const FEATURE_FLAGS = [
   { key: "x_auto_post_enabled", label: "X自動投稿", description: "作品投稿時のX自動シェア" },
   { key: "tips_enabled", label: "投げ銭機能", description: "ユーザーによる投げ銭を許可（手数料10%）" },
   { key: "subscriptions_enabled", label: "サブスク機能", description: "クリエイターへの月額サブスクリプションを許可（手数料15%）" },
+  { key: "premium_enabled", label: "プレミアム", description: "月額300円の広告非表示プランを有効化" },
 ];
 
 export function SettingsClient({

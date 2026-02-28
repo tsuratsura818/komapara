@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 import { formatRelativeTime } from "@/lib/utils";
 import { AdsenseUnit } from "@/components/ui/AdsenseUnit";
 import { TipButton } from "./TipButton";
@@ -37,7 +38,7 @@ type WorkDetail = {
   comments: Comment[];
 };
 
-export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tipsEnabled?: boolean }) {
+export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { work: WorkDetail; tipsEnabled?: boolean; isPremium?: boolean }) {
   const { data: session } = useSession();
   const [liked, setLiked] = useState(work.isLiked);
   const [likeCount, setLikeCount] = useState(work.likeCount);
@@ -111,10 +112,14 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
       <div className="bg-gray-900">
         {work.panels.map((panel, index) => (
           <div key={index} className="relative">
-            <img
+            <Image
               src={panel}
               alt={`${work.title} - ${index + 1}コマ目`}
-              className="w-full"
+              width={0}
+              height={0}
+              sizes="100vw"
+              style={{ width: '100%', height: 'auto' }}
+              priority={index === 0}
             />
             {index < work.panels.length - 1 && (
               <div className="h-0.5 bg-gradient-main opacity-30" />
@@ -253,7 +258,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
 
       {/* 広告 */}
       <div className="px-4 py-3">
-        <AdsenseUnit slot="work-detail-1" />
+        <AdsenseUnit slot="work-detail-1" isPremium={isPremium} />
       </div>
 
       {/* コメントセクション */}
@@ -332,7 +337,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
 
       {/* 広告 */}
       <div className="px-4 py-3">
-        <AdsenseUnit slot="work-detail-2" />
+        <AdsenseUnit slot="work-detail-2" isPremium={isPremium} />
       </div>
     </div>
   );

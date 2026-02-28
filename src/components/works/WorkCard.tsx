@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { formatRelativeTime } from "@/lib/utils";
 
 type WorkCardProps = {
@@ -27,10 +28,12 @@ export function WorkCard({
         <div className="aspect-square relative bg-gray-100 overflow-hidden">
           {panels[0] ? (
             <>
-              <img
+              <Image
                 src={panels[0]}
                 alt={`${title} - 1コマ目`}
-                loading="lazy"
+                width={400}
+                height={400}
+                sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 16vw"
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               {/* Gradient overlay on hover */}

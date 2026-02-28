@@ -27,8 +27,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers,
   callbacks: {
-    session({ session, user }) {
+    async session({ session, user }) {
       session.user.id = user.id;
+      // プレミアム状態を取得（期限チェック付き）
+      const dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { isPremium: true, premiumExpiry: true },
+      });
+      session.user.isPremium =
+        (dbUser?.isPremium && dbUser?.premiumExpiry && new Date(dbUser.premiumExpiry) > new Date()) ?? false;
       return session;
     },
   },

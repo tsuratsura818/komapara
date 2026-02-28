@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import { processImageToWebP, generateThumbnail } from "@/lib/image";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
@@ -38,18 +39,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const ext = file.name.split(".").pop() || "jpg";
-    const filename = `${randomUUID()}.${ext}`;
     const uploadDir = path.join(process.cwd(), "public", "uploads");
-
     await mkdir(uploadDir, { recursive: true });
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(path.join(uploadDir, filename), buffer);
+    const uuid = randomUUID();
 
-    const url = `/uploads/${filename}`;
-    return NextResponse.json({ url }, { status: 201 });
+    // WebP変換 + サムネイル生成
+    const [processed, thumbnail] = await Promise.all([
+      processImageToWebP(buffer, uuid),
+      generateThumbnail(buffer, uuid),
+    ]);
+
+    await Promise.all([
+      writeFile(path.join(uploadDir, processed.filename), processed.buffer),
+      writeFile(path.join(uploadDir, thumbnail.filename), thumbnail.buffer),
+    ]);
+
+    const url = `/uploads/${processed.filename}`;
+    const thumbUrl = `/uploads/${thumbnail.filename}`;
+
+    return NextResponse.json(
+      { url, thumbUrl, width: processed.width, height: processed.height },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("POST /api/upload error:", error);
     return NextResponse.json(

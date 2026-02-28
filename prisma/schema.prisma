@@ -56,6 +56,8 @@ model User {
   xHandle       String?
   isCreator     Boolean   @default(false)
   isBanned      Boolean   @default(false)
+  isPremium     Boolean   @default(false)
+  premiumExpiry DateTime?
 
   accounts     Account[]
   sessions     Session[]
@@ -69,6 +71,7 @@ model User {
   subscriptionPlans SubscriptionPlan[] @relation("creatorPlans")
   subscriptions     Subscription[]     @relation("subscriptions")
   subscribers       Subscription[]     @relation("subscribers")
+  premiumSubscriptions PremiumSubscription[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -226,6 +229,26 @@ model Subscription {
   @@unique([subscriberId, creatorId])
   @@index([creatorId])
   @@index([subscriberId])
+  @@index([status])
+  @@index([currentPeriodEnd])
+}
+
+model PremiumSubscription {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status           String   @default("active") // active | cancelled | expired
+  amount           Int      @default(300)       // 300円/月
+  currentPeriodEnd DateTime
+
+  paymentStatus    String   @default("completed")
+  stripeSubscriptionId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
   @@index([status])
   @@index([currentPeriodEnd])
 }

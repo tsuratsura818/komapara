@@ -131,7 +131,7 @@ export function WorkFeed() {
             {/* 5件ごとに広告挿入 */}
             {(index + 1) % 5 === 0 && (
               <div className="mt-4">
-                <AdsenseUnit slot={`feed-${index}`} />
+                <AdsenseUnit slot={`feed-${index}`} isPremium={session?.user?.isPremium ?? false} />
               </div>
             )}
           </div>

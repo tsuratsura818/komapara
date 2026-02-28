@@ -100,6 +100,16 @@ export default async function WorkDetailPage({ params }: Props) {
   const tipSetting = await prisma.siteSetting.findUnique({ where: { key: "tips_enabled" } }).catch(() => null);
   const tipsEnabled = tipSetting?.value !== "false";
 
+  // プレミアム状態
+  let isPremium = false;
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { isPremium: true, premiumExpiry: true },
+    });
+    isPremium = !!(user?.isPremium && user?.premiumExpiry && new Date(user.premiumExpiry) > new Date());
+  }
+
   // 関連作品（同ジャンル）
   const tagSlugs = work.tags.map((t) => t.slug);
   const relatedWorks = tagSlugs.length
@@ -140,7 +150,7 @@ export default async function WorkDetailPage({ params }: Props) {
 
   return (
     <div>
-      <WorkViewer work={workData} tipsEnabled={tipsEnabled} />
+      <WorkViewer work={workData} tipsEnabled={tipsEnabled} isPremium={isPremium} />
 
       {/* 関連作品 */}
       {relatedWorks.length > 0 && (

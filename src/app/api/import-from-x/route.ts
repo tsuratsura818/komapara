@@ -4,6 +4,7 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
+import { processImageToWebP } from "@/lib/image";
 
 function extractTweetId(url: string): string | null {
   // https://x.com/user/status/123456 or https://twitter.com/user/status/123456
@@ -82,7 +83,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 画像をダウンロードしてローカルに保存
+    // 画像をダウンロードしてWebP変換して保存
     const uploadDir = path.join(process.cwd(), "public", "uploads");
     await mkdir(uploadDir, { recursive: true });
 
@@ -95,10 +96,10 @@ export async function POST(request: NextRequest) {
       if (!imgRes.ok) continue;
 
       const buffer = Buffer.from(await imgRes.arrayBuffer());
-      const ext = imageUrl.includes(".png") ? "png" : "jpg";
-      const filename = `${randomUUID()}.${ext}`;
-      await writeFile(path.join(uploadDir, filename), buffer);
-      savedUrls.push(`/uploads/${filename}`);
+      const uuid = randomUUID();
+      const processed = await processImageToWebP(buffer, uuid);
+      await writeFile(path.join(uploadDir, processed.filename), processed.buffer);
+      savedUrls.push(`/uploads/${processed.filename}`);
     }
 
     if (savedUrls.length === 0) {

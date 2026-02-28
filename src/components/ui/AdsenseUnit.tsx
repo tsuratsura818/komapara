@@ -1,4 +1,13 @@
-export function AdsenseUnit({ slot }: { slot: string }) {
+export function AdsenseUnit({
+  slot,
+  isPremium = false,
+}: {
+  slot: string;
+  isPremium?: boolean;
+}) {
+  // プレミアム会員は広告非表示
+  if (isPremium) return null;
+
   if (!process.env.NEXT_PUBLIC_ADSENSE_ID) {
     return (
       <div
