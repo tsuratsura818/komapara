@@ -1,6 +1,18 @@
 import webPush from "web-push";
 import { prisma } from "./prisma";
 
+const REACTION_LABELS: Record<string, string> = {
+  like: "いいね",
+  laugh: "笑った",
+  cry: "泣いた",
+  empathy: "共感",
+  amazing: "すごい",
+};
+
+export function reactionLabel(type: string): string {
+  return REACTION_LABELS[type] || "いいね";
+}
+
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY!;
 

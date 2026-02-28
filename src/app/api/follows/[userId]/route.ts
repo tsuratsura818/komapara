@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { sendNotification } from "@/lib/notifications";
 
 export async function POST(
   request: NextRequest,
@@ -32,6 +33,15 @@ export async function POST(
         followingId: params.userId,
       },
     });
+
+    // 通知
+    sendNotification({
+      userId: params.userId,
+      type: "follow",
+      title: "新しいフォロワー",
+      body: `${session.user.name || "ユーザー"}さんにフォローされました`,
+      link: `/creator/${session.user.id}`,
+    }).catch(() => {});
 
     return new NextResponse(null, { status: 201 });
   } catch (error) {

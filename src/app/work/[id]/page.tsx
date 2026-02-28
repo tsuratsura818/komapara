@@ -30,7 +30,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           width: 1200,
           height: 630,
         },
+        {
+          url: `/api/og/work/${params.id}?format=square`,
+          width: 1080,
+          height: 1080,
+        },
       ],
+    },
+    other: {
+      "og:image:alt": `${work.title} - ${work.author.name}の4コマ漫画`,
     },
     twitter: {
       card: "summary_large_image",
@@ -71,8 +79,8 @@ export default async function WorkDetailPage({ params }: Props) {
 
   if (!work) notFound();
 
-  // いいね状態
-  let isLiked = false;
+  // いいね状態 + リアクション情報
+  let userReaction: string | null = null;
   let isFollowingAuthor = false;
 
   if (session?.user?.id) {
@@ -81,6 +89,7 @@ export default async function WorkDetailPage({ params }: Props) {
         where: {
           userId_workId: { userId: session.user.id, workId: work.id },
         },
+        select: { reaction: true },
       }),
       session.user.id !== work.authorId
         ? prisma.follow.findUnique({
@@ -93,8 +102,28 @@ export default async function WorkDetailPage({ params }: Props) {
           })
         : null,
     ]);
-    isLiked = !!like;
+    userReaction = like?.reaction || null;
     isFollowingAuthor = !!follow;
+
+    // 閲覧履歴を記録
+    prisma.readHistory.upsert({
+      where: {
+        userId_workId: { userId: session.user.id, workId: work.id },
+      },
+      update: { readAt: new Date() },
+      create: { userId: session.user.id, workId: work.id },
+    }).catch(() => {});
+  }
+
+  // リアクション内訳
+  const reactionGroups = await prisma.like.groupBy({
+    by: ["reaction"],
+    where: { workId: work.id },
+    _count: true,
+  });
+  const reactionCounts: Record<string, number> = {};
+  for (const g of reactionGroups) {
+    reactionCounts[g.reaction] = g._count;
   }
 
   // 投げ銭機能の有効/無効
@@ -173,7 +202,8 @@ export default async function WorkDetailPage({ params }: Props) {
     commentCount: work._count.comments,
     xPostUrl: work.xPostUrl,
     createdAt: work.createdAt.toISOString(),
-    isLiked,
+    userReaction,
+    reactionCounts,
     isFollowingAuthor,
     comments: work.comments.map((c) => ({
       ...c,

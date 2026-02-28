@@ -75,6 +75,7 @@ model User {
   pushSubscriptions    PushSubscription[]
   notifications        Notification[]
   series               Series[]
+  readHistory          ReadHistory[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -93,6 +94,7 @@ model Work {
   comments    Comment[]
   rankings    WeeklyRanking[]
   tips        Tip[]
+  readHistory ReadHistory[]
 
   seriesId    String?
   seriesOrder Int?
@@ -125,12 +127,14 @@ model Like {
   id        String   @id @default(cuid())
   userId    String
   workId    String
+  reaction  String   @default("like") // like, laugh, cry, empathy, amazing
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   work      Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([userId, workId])
   @@index([workId])
+  @@index([workId, reaction])
 }
 
 model Comment {
@@ -276,6 +280,18 @@ model Series {
 
   @@index([authorId])
   @@index([createdAt])
+}
+
+model ReadHistory {
+  id     String   @id @default(cuid())
+  userId String
+  workId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work   Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
+  readAt DateTime @default(now())
+
+  @@unique([userId, workId])
+  @@index([userId, readAt])
 }
 
 model SiteSetting {

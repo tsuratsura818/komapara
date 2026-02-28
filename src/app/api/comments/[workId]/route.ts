@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
+import { sendNotification } from "@/lib/notifications";
 
 export async function GET(
   request: NextRequest,
@@ -76,6 +77,21 @@ export async function POST(
         user: { select: { id: true, name: true, image: true } },
       },
     });
+
+    // 通知（自分の作品でなければ）
+    const work = await prisma.work.findUnique({
+      where: { id: params.workId },
+      select: { authorId: true, title: true },
+    });
+    if (work && work.authorId !== session.user.id) {
+      sendNotification({
+        userId: work.authorId,
+        type: "comment",
+        title: "コメントが届きました",
+        body: `${session.user.name || "ユーザー"}さんが「${work.title}」にコメントしました: ${body.slice(0, 50)}`,
+        link: `/work/${params.workId}`,
+      }).catch(() => {});
+    }
 
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {
