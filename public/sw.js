@@ -1,4 +1,4 @@
-const CACHE_NAME = "komapara-v1";
+const CACHE_NAME = "komapara-v2";
 const STATIC_ASSETS = ["/", "/favicon.ico", "/manifest.json"];
 
 self.addEventListener("install", (event) => {
@@ -35,6 +35,58 @@ self.addEventListener("fetch", (event) => {
         return response;
       });
       return cached || fetched;
+    })
+  );
+});
+
+// ─── Push Notification ───
+
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+
+  let data;
+  try {
+    data = event.data.json();
+  } catch {
+    data = { title: "コマパラ", body: event.data.text() };
+  }
+
+  const options = {
+    body: data.body || "",
+    icon: data.icon || "/icons/icon-192.png",
+    badge: data.badge || "/icons/icon-192.png",
+    image: data.image || undefined,
+    data: { url: data.url || "/" },
+    vibrate: [100, 50, 100],
+    actions: [
+      { action: "open", title: "見る" },
+      { action: "close", title: "閉じる" },
+    ],
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || "コマパラ", options)
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  if (event.action === "close") return;
+
+  const url = event.notification.data?.url || "/";
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      // 既に開いているタブがあればフォーカス
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && "focus" in client) {
+          client.navigate(url);
+          return client.focus();
+        }
+      }
+      // なければ新しいウィンドウを開く
+      return self.clients.openWindow(url);
     })
   );
 });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
+import { notifyFollowers } from "@/lib/notifications";
 
 export async function GET(request: NextRequest) {
   try {
@@ -139,6 +140,15 @@ export async function POST(request: NextRequest) {
         tags: { select: { name: true, slug: true, emoji: true } },
       },
     });
+
+    // フォロワーに通知（バックグラウンドで実行、投稿レスポンスをブロックしない）
+    notifyFollowers(
+      session.user.id,
+      work.author.name || "クリエイター",
+      work.id,
+      work.title,
+      work.panels[0]
+    ).catch((err) => console.error("Follower notification error:", err));
 
     return NextResponse.json(work, { status: 201 });
   } catch (error) {

@@ -5,6 +5,7 @@ import { Providers } from "@/components/auth/Providers";
 import { Header } from "@/components/layout/Header";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { PushPermission } from "@/components/notifications/PushPermission";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -54,6 +55,7 @@ export default function RootLayout({
             メインコンテンツへスキップ
           </a>
           <Header />
+          <PushPermission />
           <main id="main-content" className="max-w-7xl mx-auto pb-16 md:pb-0">{children}</main>
           <BottomNav />
           <ServiceWorkerRegister />

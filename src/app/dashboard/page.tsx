@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { WorkCard } from "@/components/works/WorkCard";
 import { PlanManager } from "@/components/subscriptions/PlanManager";
+import { XSyncPanel } from "@/components/works/XSyncPanel";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -108,6 +109,11 @@ export default async function DashboardPage() {
           <PlanManager initialPlans={subPlans} />
         </div>
       )}
+
+      {/* X同期 */}
+      <div className="mb-6">
+        <XSyncPanel />
+      </div>
 
       {/* 自分の作品 */}
       <h2 className="text-sm font-semibold gradient-text mb-3">あなたの作品</h2>

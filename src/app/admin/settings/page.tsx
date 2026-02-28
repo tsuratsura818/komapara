@@ -11,6 +11,7 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   tips_enabled: "true",
   subscriptions_enabled: "true",
   premium_enabled: "false",
+  push_notifications_enabled: "true",
 };
 
 export default async function AdminSettingsPage() {

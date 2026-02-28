@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserMenu } from "@/components/auth/UserMenu";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 export function Header() {
   const pathname = usePathname();
@@ -30,6 +31,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <NotificationBell />
           <Link
             href="/search"
             className="p-2 text-komapara-muted hover:text-gradient-purple transition-colors"
