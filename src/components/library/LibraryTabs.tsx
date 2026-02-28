@@ -6,11 +6,11 @@ import Link from "next/link";
 import { formatRelativeTime } from "@/lib/utils";
 
 const REACTION_EMOJI: Record<string, string> = {
-  like: "\u2764\uFE0F",
-  laugh: "\uD83D\uDE02",
-  cry: "\uD83D\uDE22",
-  empathy: "\uD83E\uDD1D",
-  amazing: "\u2728",
+  like: "❤️",
+  laugh: "😂",
+  cry: "😢",
+  empathy: "🤝",
+  amazing: "✨",
 };
 
 type WorkData = {
@@ -40,7 +40,7 @@ export function LibraryTabs({
       {/* Header */}
       <div className="bg-gradient-main px-4 py-5 text-white rounded-b-2xl">
         <h1 className="text-xl font-bold flex items-center gap-2">
-          <span className="text-2xl">{"\uD83D\uDCDA"}</span> マイライブラリ
+          <span className="text-2xl">📚</span> マイライブラリ
         </h1>
         <p className="text-white/80 text-sm mt-1">
           リアクション {likedWorks.length} ・ 閲覧履歴 {readWorks.length}
@@ -57,7 +57,7 @@ export function LibraryTabs({
               : "text-komapara-muted hover:text-komapara-text"
           }`}
         >
-          {"\u2764\uFE0F"} リアクション ({likedWorks.length})
+          ❤️ リアクション ({likedWorks.length})
         </button>
         <button
           onClick={() => setTab("history")}
@@ -67,7 +67,7 @@ export function LibraryTabs({
               : "text-komapara-muted hover:text-komapara-text"
           }`}
         >
-          {"\uD83D\uDCD6"} 読んだ履歴 ({readWorks.length})
+          📖 読んだ履歴 ({readWorks.length})
         </button>
       </div>
 
@@ -78,10 +78,9 @@ export function LibraryTabs({
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                 {likedWorks.map((work) => (
                   <div key={work.id} className="relative">
-                    {/* リアクションバッジ */}
                     {work.reaction !== "like" && (
                       <div className="absolute top-2 right-2 z-10 text-lg bg-white/80 rounded-full w-7 h-7 flex items-center justify-center shadow-sm">
-                        {REACTION_EMOJI[work.reaction] || "\u2764\uFE0F"}
+                        {REACTION_EMOJI[work.reaction] || "❤️"}
                       </div>
                     )}
                     <WorkCard
@@ -111,7 +110,6 @@ export function LibraryTabs({
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                 {readWorks.map((work) => (
                   <div key={`${work.id}-${work.readAt}`} className="relative">
-                    {/* 閲覧日時バッジ */}
                     <div className="absolute top-2 left-2 z-10 text-[10px] bg-black/60 text-white px-1.5 py-0.5 rounded-full">
                       {formatRelativeTime(work.readAt)}
                     </div>

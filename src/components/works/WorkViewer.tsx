@@ -9,11 +9,11 @@ import { AdsenseUnit } from "@/components/ui/AdsenseUnit";
 import { TipButton } from "./TipButton";
 
 const REACTIONS = [
-  { type: "like", emoji: "\u2764\uFE0F", label: "\u3044\u3044\u306D" },
-  { type: "laugh", emoji: "\uD83D\uDE02", label: "\u7B11\u3063\u305F" },
-  { type: "cry", emoji: "\uD83D\uDE22", label: "\u6CE3\u3044\u305F" },
-  { type: "empathy", emoji: "\uD83E\uDD1D", label: "\u5171\u611F" },
-  { type: "amazing", emoji: "\u2728", label: "\u3059\u3054\u3044" },
+  { type: "like", emoji: "❤️", label: "いいね" },
+  { type: "laugh", emoji: "😂", label: "笑った" },
+  { type: "cry", emoji: "😢", label: "泣いた" },
+  { type: "empathy", emoji: "🤝", label: "共感" },
+  { type: "amazing", emoji: "✨", label: "すごい" },
 ] as const;
 
 type Comment = {
@@ -119,18 +119,18 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
 
   const handleShare = async () => {
     const url = `${window.location.origin}/work/${work.id}`;
-    const text = `${work.title} - \u30B3\u30DE\u30D1\u30E9`;
+    const text = `${work.title} - コマパラ`;
     if (navigator.share) {
       await navigator.share({ title: text, url });
     } else {
       await navigator.clipboard.writeText(url);
-      alert("URL\u3092\u30B3\u30D4\u30FC\u3057\u307E\u3057\u305F");
+      alert("URLをコピーしました");
     }
   };
 
   const handleShareToX = () => {
     const url = `${window.location.origin}/work/${work.id}`;
-    const text = `${work.title}\n\n\u30B3\u30DE\u30D1\u30E9\u3067\u8AAD\u3080`;
+    const text = `${work.title}\n\nコマパラで読む`;
     const intentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(intentUrl, "_blank", "noopener,noreferrer");
   };
@@ -140,13 +140,13 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
 
   return (
     <div>
-      {/* 4\u30B3\u30DE\u30D3\u30E5\u30FC\u30EF\u30FC */}
+      {/* 4コマビューワー（没入感のあるダーク背景） */}
       <div className="bg-gray-900">
         {work.panels.map((panel, index) => (
           <div key={index} className="relative">
             <Image
               src={panel}
-              alt={`${work.title} - ${index + 1}\u30B3\u30DE\u76EE`}
+              alt={`${work.title} - ${index + 1}コマ目`}
               width={0}
               height={0}
               sizes="100vw"
@@ -160,11 +160,11 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
         ))}
       </div>
 
-      {/* \u4F5C\u54C1\u60C5\u5831 */}
+      {/* 作品情報 */}
       <div className="px-4 py-4">
         <h1 className="text-xl font-bold text-komapara-text">{work.title}</h1>
 
-        {/* \u30B8\u30E3\u30F3\u30EB\u30BF\u30B0 */}
+        {/* ジャンルタグ */}
         {work.genres.length > 0 && (
           <div className="flex gap-1.5 mt-2">
             {work.genres.map((genre) => (
@@ -181,7 +181,7 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
 
         <div className="border-t border-komapara-border/50 my-3" />
 
-        {/* \u4F5C\u5BB6\u60C5\u5831 */}
+        {/* 作家情報 */}
         <div className="flex items-center justify-between">
           <Link
             href={`/creator/${work.author.id}`}
@@ -217,53 +217,45 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
                   : "bg-gradient-main text-white shadow-lg shadow-purple-500/25 hover:shadow-xl"
               }`}
             >
-              {following ? "\u30D5\u30A9\u30ED\u30FC\u4E2D" : "\u30D5\u30A9\u30ED\u30FC"}
+              {following ? "フォロー中" : "フォロー"}
             </button>
           )}
         </div>
 
-        {/* \u30EA\u30A2\u30AF\u30B7\u30E7\u30F3\u30B9\u30BF\u30F3\u30D7 */}
-        <div className="mt-4">
-          {/* \u30EA\u30A2\u30AF\u30B7\u30E7\u30F3\u5185\u8A33\u8868\u793A */}
-          {totalReactions > 0 && (
-            <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-              {REACTIONS.map((r) => {
-                const count = reactionCounts[r.type] || 0;
-                if (count === 0) return null;
-                return (
-                  <button
-                    key={r.type}
-                    onClick={() => handleReaction(r.type)}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs transition-all ${
-                      userReaction === r.type
-                        ? "bg-purple-100 text-purple-700 ring-1 ring-purple-300"
-                        : "glass text-komapara-muted hover:bg-gray-100"
-                    }`}
-                    disabled={!session}
-                  >
-                    <span className="text-sm">{r.emoji}</span>
-                    <span className="font-medium">{count}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+        {/* リアクション内訳 */}
+        {totalReactions > 0 && (
+          <div className="flex items-center gap-1.5 mt-4 flex-wrap">
+            {REACTIONS.map((r) => {
+              const count = reactionCounts[r.type] || 0;
+              if (count === 0) return null;
+              return (
+                <button
+                  key={r.type}
+                  onClick={() => handleReaction(r.type)}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs transition-all ${
+                    userReaction === r.type
+                      ? "bg-purple-100 text-purple-700 ring-1 ring-purple-300"
+                      : "glass text-komapara-muted hover:bg-gray-100"
+                  }`}
+                  disabled={!session}
+                >
+                  <span className="text-sm">{r.emoji}</span>
+                  <span className="font-medium">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-          {/* \u30A2\u30AF\u30B7\u30E7\u30F3\u30DC\u30BF\u30F3 */}
-          <div className="flex gap-2 flex-wrap">
-            {/* \u30EA\u30A2\u30AF\u30B7\u30E7\u30F3\u30DC\u30BF\u30F3 + \u30D4\u30C3\u30AB\u30FC */}
+        {/* アクションボタン: 上段（リアクション + 投げ銭） + 下段（シェア） */}
+        <div className="mt-3 space-y-2">
+          {/* 上段: リアクション + 投げ銭 */}
+          <div className="flex gap-3">
             <div className="relative" ref={pickerRef}>
               <button
                 onClick={() => {
                   if (!session) return;
-                  if (userReaction && !showPicker) {
-                    // \u65E2\u306B\u30EA\u30A2\u30AF\u30B7\u30E7\u30F3\u6E08\u307F\u306A\u3089\u30D4\u30C3\u30AB\u30FC\u3092\u958B\u304F
-                    setShowPicker(true);
-                  } else if (!userReaction && !showPicker) {
-                    setShowPicker(true);
-                  } else {
-                    setShowPicker(false);
-                  }
+                  setShowPicker(!showPicker);
                 }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   userReaction
@@ -273,14 +265,14 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
                 disabled={!session}
               >
                 <span className={`text-base ${userReaction ? "animate-heart-pop" : ""}`}>
-                  {currentReaction?.emoji || "\u2764\uFE0F"}
+                  {currentReaction?.emoji || "❤️"}
                 </span>
-                {currentReaction?.label || "\u30EA\u30A2\u30AF\u30B7\u30E7\u30F3"} {likeCount > 0 && likeCount}
+                {currentReaction?.label || "リアクション"}{likeCount > 0 ? ` ${likeCount}` : ""}
               </button>
 
-              {/* \u30EA\u30A2\u30AF\u30B7\u30E7\u30F3\u30D4\u30C3\u30AB\u30FC */}
+              {/* リアクションピッカー */}
               {showPicker && (
-                <div className="absolute bottom-full left-0 mb-2 flex gap-1 p-2 rounded-2xl glass shadow-xl border border-komapara-border/50 animate-fade-in z-50">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 flex gap-1 p-2 rounded-2xl bg-white shadow-xl border border-komapara-border/50 animate-fade-in z-50">
                   {REACTIONS.map((r) => (
                     <button
                       key={r.type}
@@ -306,7 +298,10 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
               authorName={work.author.name}
               tipsEnabled={tipsEnabled}
             />
+          </div>
 
+          {/* 下段: シェアボタン */}
+          <div className="flex gap-3">
             <button
               onClick={handleShareToX}
               className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium glass text-komapara-muted hover:text-black transition-colors"
@@ -314,7 +309,7 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
-              X\u3067\u30B7\u30A7\u30A2
+              Xでシェア
             </button>
 
             <button
@@ -334,31 +329,31 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
                   d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
                 />
               </svg>
-              \u30B7\u30A7\u30A2
+              シェア
             </button>
           </div>
         </div>
       </div>
 
-      {/* \u5E83\u544A */}
+      {/* 広告 */}
       <div className="px-4 py-3">
         <AdsenseUnit slot="work-detail-1" isPremium={isPremium} />
       </div>
 
-      {/* \u30B3\u30E1\u30F3\u30C8\u30BB\u30AF\u30B7\u30E7\u30F3 */}
+      {/* コメントセクション */}
       <div className="px-4 py-4 border-t border-komapara-border/50">
         <h2 className="text-sm font-semibold gradient-text mb-3">
-          \u30B3\u30E1\u30F3\u30C8 ({work.commentCount})
+          コメント ({work.commentCount})
         </h2>
 
-        {/* \u30B3\u30E1\u30F3\u30C8\u5165\u529B */}
+        {/* コメント入力 */}
         {session ? (
           <form onSubmit={handleComment} className="flex gap-2 mb-4">
             <input
               type="text"
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
-              placeholder="\u30B3\u30E1\u30F3\u30C8\u3092\u5165\u529B..."
+              placeholder="コメントを入力..."
               maxLength={500}
               className="flex-1 px-3 py-2 text-sm glass rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500/50"
             />
@@ -367,19 +362,19 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
               disabled={!commentText.trim() || submitting}
               className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 transition-all duration-200"
             >
-              \u9001\u4FE1
+              送信
             </button>
           </form>
         ) : (
           <p className="text-sm text-komapara-muted mb-4">
             <Link href="/login" className="gradient-text font-medium hover:underline">
-              \u30ED\u30B0\u30A4\u30F3
+              ログイン
             </Link>
-            \u3057\u3066\u30B3\u30E1\u30F3\u30C8\u3059\u308B
+            してコメントする
           </p>
         )}
 
-        {/* \u30B3\u30E1\u30F3\u30C8\u4E00\u89A7 */}
+        {/* コメント一覧 */}
         <div className="space-y-3">
           {comments.map((comment) => (
             <div
@@ -413,13 +408,13 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
 
           {comments.length === 0 && (
             <p className="text-sm text-komapara-muted text-center py-4">
-              \u307E\u3060\u30B3\u30E1\u30F3\u30C8\u306F\u3042\u308A\u307E\u305B\u3093
+              まだコメントはありません
             </p>
           )}
         </div>
       </div>
 
-      {/* \u5E83\u544A */}
+      {/* 広告 */}
       <div className="px-4 py-3">
         <AdsenseUnit slot="work-detail-2" isPremium={isPremium} />
       </div>
