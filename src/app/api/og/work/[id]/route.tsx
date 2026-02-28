@@ -27,7 +27,7 @@ export async function GET(
     }
 
     const fontData = await fetch(
-      "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap",
+      "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap",
       { signal: AbortSignal.timeout(10000) }
     ).then((res) => res.text())
       .then((css) => {
@@ -134,10 +134,10 @@ export async function GET(
                   gap: 8,
                 }}
               >
-                <span>✏️</span> {work.author.name || "名無し"}
+                <span style={{ color: "#C084FC" }}>by</span> {work.author.name || "名無し"}
                 {work.likeCount > 0 && (
-                  <span style={{ marginLeft: 16, display: "flex", alignItems: "center", gap: 4 }}>
-                    ❤️ {work.likeCount}
+                  <span style={{ marginLeft: 16, display: "flex", alignItems: "center", gap: 4, color: "#F472B6" }}>
+                    ♥ {work.likeCount}
                   </span>
                 )}
               </div>
@@ -208,7 +208,7 @@ export async function GET(
                 {work.title}
               </div>
               <div style={{ fontSize: 20, opacity: 0.9, display: "flex", alignItems: "center", gap: 8 }}>
-                ✏️ {work.author.name || "名無し"}
+                <span style={{ color: "#C084FC" }}>by</span> {work.author.name || "名無し"}
                 <span style={{ marginLeft: 16, fontSize: 24, fontWeight: 700 }}>コマパラ</span>
               </div>
             </div>
@@ -268,10 +268,11 @@ export async function GET(
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 80,
+                  fontSize: 60,
+                  color: "rgba(255,255,255,0.5)",
                 }}
               >
-                🖼️
+                4コマ
               </div>
             )}
           </div>
@@ -311,7 +312,7 @@ export async function GET(
                 marginBottom: 16,
               }}
             >
-              <span style={{ marginRight: 8 }}>✏️</span>
+              <span style={{ marginRight: 8, color: "#C084FC" }}>by</span>
               {work.author.name || "名無し"}
             </div>
 
@@ -322,9 +323,10 @@ export async function GET(
                   alignItems: "center",
                   fontSize: 20,
                   opacity: 0.8,
+                  color: "#F472B6",
                 }}
               >
-                <span style={{ marginRight: 8 }}>❤️</span>
+                <span style={{ marginRight: 6 }}>♥</span>
                 {work.likeCount}
               </div>
             )}
