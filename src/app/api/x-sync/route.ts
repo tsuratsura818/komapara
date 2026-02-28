@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
         try {
           const apiRes = await fetch(
             `https://api.fxtwitter.com/status/${tweetId}`,
-            { headers: { "User-Agent": "Komapara/1.0" } }
+            { headers: { "User-Agent": "Komapara/1.0" }, signal: AbortSignal.timeout(10000) }
           );
 
           if (!apiRes.ok) {
@@ -205,7 +205,7 @@ async function handleImport(
       // 画像をダウンロードしてWebP変換
       const savedUrls: string[] = [];
       for (const imageUrl of post.images) {
-        const imgRes = await fetch(imageUrl);
+        const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(15000) });
         if (!imgRes.ok) throw new Error("画像ダウンロード失敗");
 
         const buffer = Buffer.from(await imgRes.arrayBuffer());

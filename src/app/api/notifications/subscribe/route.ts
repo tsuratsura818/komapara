@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 // プッシュ通知サブスクリプション登録
 export async function POST(request: NextRequest) {
@@ -8,6 +9,11 @@ export async function POST(request: NextRequest) {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    const { success } = rateLimit(`push-sub:${session.user.id}`, { limit: 10, windowMs: 60 * 60 * 1000 });
+    if (!success) {
+      return NextResponse.json({ error: "登録制限に達しました" }, { status: 429 });
     }
 
     const { endpoint, keys } = await request.json();
@@ -60,8 +66,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     await prisma.pushSubscription
-      .delete({ where: { endpoint } })
-      .catch(() => {});
+      .deleteMany({ where: { endpoint, userId: session.user.id } });
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {

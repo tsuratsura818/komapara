@@ -27,12 +27,13 @@ export async function GET(
     }
 
     const fontData = await fetch(
-      "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap"
+      "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap",
+      { signal: AbortSignal.timeout(10000) }
     ).then((res) => res.text())
       .then((css) => {
         const match = css.match(/src: url\((.+?)\) format/);
         if (!match) throw new Error("Font URL not found");
-        return fetch(match[1]).then((res) => res.arrayBuffer());
+        return fetch(match[1], { signal: AbortSignal.timeout(10000) }).then((res) => res.arrayBuffer());
       });
 
     const fonts = [

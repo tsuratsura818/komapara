@@ -22,7 +22,7 @@ export async function GET() {
     DATABASE_URL: process.env.DATABASE_URL ? "set" : "missing",
     AUTH_GOOGLE_ID: !!process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET: !!process.env.AUTH_GOOGLE_SECRET,
-    ADMIN_USER_IDS: process.env.ADMIN_USER_IDS || "missing",
+    ADMIN_USER_IDS: process.env.ADMIN_USER_IDS ? "set" : "missing",
   };
 
   // auth テスト

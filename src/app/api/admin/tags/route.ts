@@ -36,8 +36,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (name.length > 50 || slug.length > 50 || (emoji && emoji.length > 10)) {
+      return NextResponse.json(
+        { error: "name/slugは50文字以内、emojiは10文字以内で入力してください" },
+        { status: 400 }
+      );
+    }
+
+    if (!/^[a-z0-9-]+$/.test(slug)) {
+      return NextResponse.json(
+        { error: "slugは半角英数字とハイフンのみ使用できます" },
+        { status: 400 }
+      );
+    }
+
     const tag = await prisma.tag.create({
-      data: { name, slug, emoji: emoji || "" },
+      data: { name: name.slice(0, 50), slug: slug.slice(0, 50), emoji: (emoji || "").slice(0, 10) },
     });
     return NextResponse.json(tag, { status: 201 });
   } catch (err) {

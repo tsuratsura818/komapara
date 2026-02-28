@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     // fxtwitter API で投稿データを取得（無料・認証不要）
     const apiRes = await fetch(
       `https://api.fxtwitter.com/status/${tweetId}`,
-      { headers: { "User-Agent": "Komapara/1.0" } }
+      { headers: { "User-Agent": "Komapara/1.0" }, signal: AbortSignal.timeout(10000) }
     );
 
     if (!apiRes.ok) {
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       const imageUrl = photo.url;
       if (!imageUrl) continue;
 
-      const imgRes = await fetch(imageUrl);
+      const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(15000) });
       if (!imgRes.ok) continue;
 
       const buffer = Buffer.from(await imgRes.arrayBuffer());

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { rateLimit } from "@/lib/rate-limit";
 import { sendNotification } from "@/lib/notifications";
 
 export async function POST(
@@ -11,6 +12,11 @@ export async function POST(
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    const { success } = rateLimit(`follows:${session.user.id}`, { limit: 60, windowMs: 60 * 60 * 1000 });
+    if (!success) {
+      return NextResponse.json({ error: "フォロー制限に達しました" }, { status: 429 });
     }
 
     if (session.user.id === params.userId) {
