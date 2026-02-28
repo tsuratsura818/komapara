@@ -16,7 +16,7 @@ const STAT_STYLES = [
 ];
 
 export default async function AdminDashboardPage() {
-  const [userCount, workCount, commentCount, likeCount, viewStats, tipStats, recentWorks, recentComments, recentTips, tipSetting] =
+  const [userCount, workCount, commentCount, likeCount, viewStats, tipStats, subStats, activeSubCount, recentWorks, recentComments, recentTips, recentSubs, tipSetting, subSetting] =
     await Promise.all([
       prisma.user.count().catch(() => 0),
       prisma.work.count().catch(() => 0),
@@ -28,6 +28,12 @@ export default async function AdminDashboardPage() {
         _sum: { amount: true, platformFee: true },
         _count: true,
       }).catch(() => ({ _sum: { amount: 0, platformFee: 0 }, _count: 0 })),
+      prisma.subscription.aggregate({
+        where: { paymentStatus: "completed" },
+        _sum: { amount: true, platformFee: true },
+        _count: true,
+      }).catch(() => ({ _sum: { amount: 0, platformFee: 0 }, _count: 0 })),
+      prisma.subscription.count({ where: { status: "active" } }).catch(() => 0),
       prisma.work.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
@@ -51,7 +57,17 @@ export default async function AdminDashboardPage() {
           work: { select: { id: true, title: true } },
         },
       }).catch(() => []),
+      prisma.subscription.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: {
+          subscriber: { select: { id: true, name: true, image: true } },
+          creator: { select: { id: true, name: true } },
+          plan: { select: { name: true, price: true } },
+        },
+      }).catch(() => []),
       prisma.siteSetting.findUnique({ where: { key: "tips_enabled" } }).catch(() => null),
+      prisma.siteSetting.findUnique({ where: { key: "subscriptions_enabled" } }).catch(() => null),
     ]);
 
   const totalPV = viewStats._sum.viewCount || 0;
@@ -59,6 +75,9 @@ export default async function AdminDashboardPage() {
   const tipAmount = (tipStats as { _sum: { amount: number | null; platformFee: number | null }; _count: number })._sum.amount || 0;
   const tipFee = (tipStats as { _sum: { amount: number | null; platformFee: number | null }; _count: number })._sum.platformFee || 0;
   const tipsEnabled = tipSetting?.value !== "false";
+  const subsEnabled = subSetting?.value !== "false";
+  const subAmount = (subStats as { _sum: { amount: number | null; platformFee: number | null }; _count: number })._sum.amount || 0;
+  const subFee = (subStats as { _sum: { amount: number | null; platformFee: number | null }; _count: number })._sum.platformFee || 0;
 
   const stats = [
     { label: "ユーザー数", value: userCount },
@@ -149,6 +168,69 @@ export default async function AdminDashboardPage() {
           ))}
           {recentTips.length === 0 && (
             <p className="text-sm text-komapara-muted text-center py-4">投げ銭はまだありません</p>
+          )}
+        </div>
+      </div>
+
+      {/* サブスクリプションセクション */}
+      <div className="glass rounded-xl p-4 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-semibold gradient-text">サブスクリプション</h2>
+          <span className={`text-xs px-2 py-0.5 rounded-full ${subsEnabled ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+            {subsEnabled ? "有効" : "無効"}
+          </span>
+        </div>
+        <div className="grid grid-cols-4 gap-3 mb-4">
+          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-purple-50 to-blue-50">
+            <p className="text-lg font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+              {subAmount.toLocaleString()}円
+            </p>
+            <p className="text-xs text-komapara-muted mt-0.5">総額</p>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-emerald-50 to-green-50">
+            <p className="text-lg font-bold bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
+              {subFee.toLocaleString()}円
+            </p>
+            <p className="text-xs text-komapara-muted mt-0.5">手数料(15%)</p>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-blue-50 to-cyan-50">
+            <p className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+              {(subAmount - subFee).toLocaleString()}円
+            </p>
+            <p className="text-xs text-komapara-muted mt-0.5">クリエイター還元</p>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-indigo-50 to-purple-50">
+            <p className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+              {activeSubCount}
+            </p>
+            <p className="text-xs text-komapara-muted mt-0.5">アクティブ購読</p>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {recentSubs.map((sub) => (
+            <div key={sub.id} className="flex items-center gap-3 py-1.5 border-b border-komapara-border/30 last:border-b-0">
+              {sub.subscriber.image && (
+                <img src={sub.subscriber.image} alt="" className="w-6 h-6 rounded-full object-cover shrink-0" />
+              )}
+              <div className="min-w-0 flex-1 text-xs">
+                <span className="font-medium">{sub.subscriber.name}</span>
+                <span className="text-komapara-muted"> → </span>
+                <span className="font-medium">{sub.creator.name}</span>
+                <span className="text-komapara-muted"> · {sub.plan.name}</span>
+              </div>
+              <span className={`text-xs px-1.5 py-0.5 rounded-full ${sub.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                {sub.status === "active" ? "有効" : sub.status === "cancelled" ? "解約済" : "期限切れ"}
+              </span>
+              <span className="text-xs font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent shrink-0">
+                {sub.plan.price.toLocaleString()}円/月
+              </span>
+              <span className="text-xs text-komapara-muted shrink-0">
+                {formatRelativeTime(sub.createdAt)}
+              </span>
+            </div>
+          ))}
+          {recentSubs.length === 0 && (
+            <p className="text-sm text-komapara-muted text-center py-4">サブスクリプションはまだありません</p>
           )}
         </div>
       </div>

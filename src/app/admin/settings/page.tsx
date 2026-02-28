@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   comments_enabled: "true",
   x_auto_post_enabled: "true",
   tips_enabled: "true",
+  subscriptions_enabled: "true",
 };
 
 export default async function AdminSettingsPage() {

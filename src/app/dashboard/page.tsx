@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { WorkCard } from "@/components/works/WorkCard";
+import { PlanManager } from "@/components/subscriptions/PlanManager";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -15,6 +16,8 @@ const STAT_STYLES = [
   { gradient: "from-pink-500 to-red-500" },
   { gradient: "from-orange-500 to-yellow-500" },
   { gradient: "from-yellow-400 to-orange-500" },
+  { gradient: "from-purple-400 to-indigo-500" },
+  { gradient: "from-indigo-400 to-blue-500" },
 ];
 
 export default async function DashboardPage() {
@@ -38,11 +41,25 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  const tipStats = await prisma.tip.aggregate({
-    where: { receiverId: session.user.id, paymentStatus: "completed" },
-    _sum: { netAmount: true },
-    _count: true,
-  }).catch(() => ({ _sum: { netAmount: 0 }, _count: 0 }));
+  const [tipStats, subStats, subPlans, subSetting] = await Promise.all([
+    prisma.tip.aggregate({
+      where: { receiverId: session.user.id, paymentStatus: "completed" },
+      _sum: { netAmount: true },
+      _count: true,
+    }).catch(() => ({ _sum: { netAmount: 0 }, _count: 0 })),
+    prisma.subscription.aggregate({
+      where: { creatorId: session.user.id, paymentStatus: "completed" },
+      _sum: { netAmount: true },
+      _count: true,
+    }).catch(() => ({ _sum: { netAmount: 0 }, _count: 0 })),
+    prisma.subscriptionPlan.findMany({
+      where: { creatorId: session.user.id },
+      orderBy: { price: "asc" },
+      include: { _count: { select: { subscriptions: { where: { status: "active" } } } } },
+    }).catch(() => []),
+    prisma.siteSetting.findUnique({ where: { key: "subscriptions_enabled" } }).catch(() => null),
+  ]);
+  const subscriptionsEnabled = subSetting?.value !== "false";
 
   const totalViews = user.works.reduce((sum, w) => sum + w.viewCount, 0);
   const totalLikes = user.works.reduce((sum, w) => sum + w.likeCount, 0);
@@ -53,6 +70,10 @@ export default async function DashboardPage() {
     { label: "総いいね", value: totalLikes },
     { label: "フォロワー", value: user._count.followers },
     { label: "投げ銭収益", value: `${(tipStats._sum.netAmount || 0).toLocaleString()}円` },
+    ...(subscriptionsEnabled ? [
+      { label: "サブスク収益", value: `${(subStats._sum.netAmount || 0).toLocaleString()}円` },
+      { label: "購読者数", value: subStats._count },
+    ] : []),
   ];
 
   return (
@@ -60,7 +81,7 @@ export default async function DashboardPage() {
       <h1 className="text-xl font-bold gradient-text mb-6">ダッシュボード</h1>
 
       {/* 統計 */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+      <div className={`grid grid-cols-2 md:grid-cols-${Math.min(stats.length, 7)} gap-3 mb-6`}>
         {stats.map((stat, i) => (
           <div
             key={stat.label}
@@ -80,6 +101,13 @@ export default async function DashboardPage() {
           </div>
         ))}
       </div>
+
+      {/* サブスクリプションプラン管理 */}
+      {subscriptionsEnabled && (
+        <div className="mb-6">
+          <PlanManager initialPlans={subPlans} />
+        </div>
+      )}
 
       {/* 自分の作品 */}
       <h2 className="text-sm font-semibold gradient-text mb-3">あなたの作品</h2>

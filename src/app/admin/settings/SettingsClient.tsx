@@ -16,6 +16,7 @@ const FEATURE_FLAGS = [
   { key: "comments_enabled", label: "コメント機能", description: "作品へのコメント投稿を許可" },
   { key: "x_auto_post_enabled", label: "X自動投稿", description: "作品投稿時のX自動シェア" },
   { key: "tips_enabled", label: "投げ銭機能", description: "ユーザーによる投げ銭を許可（手数料10%）" },
+  { key: "subscriptions_enabled", label: "サブスク機能", description: "クリエイターへの月額サブスクリプションを許可（手数料15%）" },
 ];
 
 export function SettingsClient({

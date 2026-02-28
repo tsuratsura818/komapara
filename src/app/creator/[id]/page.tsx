@@ -4,6 +4,7 @@ import { WorkCard } from "@/components/works/WorkCard";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { FollowButton } from "@/components/auth/FollowButton";
+import { SubscribeButton } from "@/components/subscriptions/SubscribeButton";
 
 export const revalidate = 1800;
 
@@ -42,23 +43,49 @@ export default async function CreatorPage({ params }: Props) {
 
   if (!user) notFound();
 
-  const tipStats = await prisma.tip.aggregate({
-    where: { receiverId: params.id, paymentStatus: "completed" },
-    _sum: { amount: true },
-    _count: true,
-  }).catch(() => ({ _sum: { amount: 0 }, _count: 0 }));
+  const [tipStats, subPlans, subscriberCount, subSetting] = await Promise.all([
+    prisma.tip.aggregate({
+      where: { receiverId: params.id, paymentStatus: "completed" },
+      _sum: { amount: true },
+      _count: true,
+    }).catch(() => ({ _sum: { amount: 0 }, _count: 0 })),
+    prisma.subscriptionPlan.findMany({
+      where: { creatorId: params.id, isActive: true },
+      orderBy: { price: "asc" },
+    }).catch(() => []),
+    prisma.subscription.count({
+      where: { creatorId: params.id, status: "active" },
+    }).catch(() => 0),
+    prisma.siteSetting.findUnique({ where: { key: "subscriptions_enabled" } }).catch(() => null),
+  ]);
+  const subscriptionsEnabled = subSetting?.value !== "false";
 
   let isFollowing = false;
+  let currentSubscription = null as { id: string; status: string; plan: { name: string; price: number } } | null;
   if (session?.user?.id && session.user.id !== user.id) {
-    const follow = await prisma.follow.findUnique({
-      where: {
-        followerId_followingId: {
-          followerId: session.user.id,
-          followingId: user.id,
+    const [follow, sub] = await Promise.all([
+      prisma.follow.findUnique({
+        where: {
+          followerId_followingId: {
+            followerId: session.user.id,
+            followingId: user.id,
+          },
         },
-      },
-    });
+      }),
+      prisma.subscription.findUnique({
+        where: {
+          subscriberId_creatorId: {
+            subscriberId: session.user.id,
+            creatorId: user.id,
+          },
+        },
+        include: { plan: { select: { name: true, price: true } } },
+      }).catch(() => null),
+    ]);
     isFollowing = !!follow;
+    if (sub && sub.status === "active") {
+      currentSubscription = { id: sub.id, status: sub.status, plan: sub.plan };
+    }
   }
 
   return (
@@ -112,7 +139,41 @@ export default async function CreatorPage({ params }: Props) {
               投げ銭
             </span>
           )}
+          {subscriberCount > 0 && (
+            <span>
+              <strong className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+                {subscriberCount}
+              </strong>{" "}
+              購読者
+            </span>
+          )}
         </div>
+
+        {/* サブスクリプションプラン */}
+        {subscriptionsEnabled && subPlans.length > 0 && (
+          <div className="mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mb-3">
+              {subPlans.map((plan) => (
+                <div key={plan.id} className="glass rounded-xl p-3">
+                  <p className="text-sm font-medium text-komapara-text">{plan.name}</p>
+                  <p className="text-lg font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+                    {plan.price.toLocaleString()}円/月
+                  </p>
+                  {plan.description && (
+                    <p className="text-xs text-komapara-muted mt-1">{plan.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+            <SubscribeButton
+              creatorId={user.id}
+              creatorName={user.name}
+              plans={subPlans}
+              currentSubscription={currentSubscription}
+              subscriptionsEnabled={subscriptionsEnabled}
+            />
+          </div>
+        )}
       </div>
 
       {/* 作品一覧 */}
