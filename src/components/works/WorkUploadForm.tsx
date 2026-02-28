@@ -11,7 +11,9 @@ type PanelState = {
   url: string | null;
 };
 
-export function WorkUploadForm() {
+type SeriesOption = { id: string; title: string };
+
+export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[] }) {
   const router = useRouter();
   const [panels, setPanels] = useState<PanelState[]>(
     Array.from({ length: 4 }, () => ({
@@ -24,6 +26,7 @@ export function WorkUploadForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedSeriesId, setSelectedSeriesId] = useState<string>("");
   const [xPostUrl, setXPostUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [importing, setImporting] = useState(false);
@@ -192,6 +195,7 @@ export function WorkUploadForm() {
           description: description.trim() || undefined,
           panels: urls,
           genreSlugs: selectedGenres.length ? selectedGenres : undefined,
+          seriesId: selectedSeriesId || undefined,
           xPostUrl: xPostUrl.trim() || undefined,
         }),
       });
@@ -425,6 +429,26 @@ export function WorkUploadForm() {
             ))}
           </div>
         </div>
+
+        {userSeries.length > 0 && (
+          <div>
+            <label className="block text-sm font-semibold text-komapara-text mb-1">
+              シリーズ（任意）
+            </label>
+            <select
+              value={selectedSeriesId}
+              onChange={(e) => setSelectedSeriesId(e.target.value)}
+              className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+            >
+              <option value="">シリーズなし（単発）</option>
+              {userSeries.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.title}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-semibold text-komapara-text mb-1">

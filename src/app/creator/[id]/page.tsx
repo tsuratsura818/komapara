@@ -43,7 +43,7 @@ export default async function CreatorPage({ params }: Props) {
 
   if (!user) notFound();
 
-  const [tipStats, subPlans, subscriberCount, subSetting] = await Promise.all([
+  const [tipStats, subPlans, subscriberCount, subSetting, creatorSeries] = await Promise.all([
     prisma.tip.aggregate({
       where: { receiverId: params.id, paymentStatus: "completed" },
       _sum: { amount: true },
@@ -57,6 +57,18 @@ export default async function CreatorPage({ params }: Props) {
       where: { creatorId: params.id, status: "active" },
     }).catch(() => 0),
     prisma.siteSetting.findUnique({ where: { key: "subscriptions_enabled" } }).catch(() => null),
+    prisma.series.findMany({
+      where: { authorId: params.id },
+      orderBy: { updatedAt: "desc" },
+      include: {
+        works: {
+          where: { isPublished: true },
+          orderBy: { seriesOrder: "asc" },
+          select: { id: true, panels: true, likeCount: true },
+        },
+        _count: { select: { works: { where: { isPublished: true } } } },
+      },
+    }).catch(() => []),
   ]);
   const subscriptionsEnabled = subSetting?.value !== "false";
 
@@ -175,6 +187,54 @@ export default async function CreatorPage({ params }: Props) {
           </div>
         )}
       </div>
+
+      {/* シリーズ一覧 */}
+      {creatorSeries.length > 0 && (
+        <div className="px-4 mt-6 border-t border-komapara-border/50 pt-4">
+          <h2 className="text-sm font-semibold gradient-text mb-3">
+            シリーズ
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {creatorSeries.map((series) => {
+              const cover = series.works[0]?.panels[0];
+              const totalLikes = series.works.reduce((sum: number, w: { likeCount: number }) => sum + w.likeCount, 0);
+              return (
+                <a
+                  key={series.id}
+                  href={`/series/${series.id}`}
+                  className="flex gap-3 p-3 glass rounded-xl hover:bg-white/10 transition-colors"
+                >
+                  {cover ? (
+                    <img
+                      src={cover}
+                      alt={series.title}
+                      className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-purple-100 to-blue-100 flex-shrink-0 flex items-center justify-center text-purple-400">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-komapara-text truncate">
+                      {series.title}
+                    </p>
+                    <div className="flex gap-2 mt-1 text-[10px] text-komapara-muted">
+                      <span>{series._count.works}話</span>
+                      <span>{totalLikes} いいね</span>
+                      {series.isCompleted && (
+                        <span className="text-green-600">完結</span>
+                      )}
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* 作品一覧 */}
       <div className="px-4 mt-6 border-t border-komapara-border/50 pt-4">

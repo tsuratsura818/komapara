@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, description, panels, genreSlugs, xPostUrl } = body;
+    const { title, description, panels, genreSlugs, seriesId, xPostUrl } = body;
 
     if (!title || !panels || panels.length !== 4) {
       return NextResponse.json(
@@ -131,6 +131,7 @@ export async function POST(request: NextRequest) {
         panels,
         authorId: session.user.id,
         xPostUrl: xPostUrl || null,
+        ...(seriesId ? { seriesId, seriesOrder: await getNextSeriesOrder(seriesId) } : {}),
         ...(genreSlugs?.length
           ? { tags: { connect: genreSlugs.map((slug: string) => ({ slug })) } }
           : {}),
@@ -158,4 +159,12 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+async function getNextSeriesOrder(seriesId: string): Promise<number> {
+  const max = await prisma.work.aggregate({
+    where: { seriesId },
+    _max: { seriesOrder: true },
+  });
+  return (max._max.seriesOrder || 0) + 1;
 }

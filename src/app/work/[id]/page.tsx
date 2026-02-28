@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { WorkViewer } from "@/components/works/WorkViewer";
 import { WorkCard } from "@/components/works/WorkCard";
+import { SeriesNav } from "@/components/series/SeriesNav";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -110,6 +111,38 @@ export default async function WorkDetailPage({ params }: Props) {
     isPremium = !!(user?.isPremium && user?.premiumExpiry && new Date(user.premiumExpiry) > new Date());
   }
 
+  // シリーズ前後ナビ
+  let seriesNav = null as {
+    series: { id: string; title: string };
+    prev: { id: string; title: string } | null;
+    next: { id: string; title: string } | null;
+    currentEpisode: number;
+    totalEpisodes: number;
+  } | null;
+  if (work.seriesId) {
+    const [series, seriesWorks] = await Promise.all([
+      prisma.series.findUnique({
+        where: { id: work.seriesId },
+        select: { id: true, title: true },
+      }),
+      prisma.work.findMany({
+        where: { seriesId: work.seriesId, isPublished: true },
+        orderBy: { seriesOrder: "asc" },
+        select: { id: true, title: true, seriesOrder: true },
+      }),
+    ]);
+    if (series) {
+      const currentIdx = seriesWorks.findIndex((w) => w.id === work.id);
+      seriesNav = {
+        series,
+        prev: currentIdx > 0 ? seriesWorks[currentIdx - 1] : null,
+        next: currentIdx < seriesWorks.length - 1 ? seriesWorks[currentIdx + 1] : null,
+        currentEpisode: currentIdx + 1,
+        totalEpisodes: seriesWorks.length,
+      };
+    }
+  }
+
   // 関連作品（同ジャンル）
   const tagSlugs = work.tags.map((t) => t.slug);
   const relatedWorks = tagSlugs.length
@@ -151,6 +184,9 @@ export default async function WorkDetailPage({ params }: Props) {
   return (
     <div>
       <WorkViewer work={workData} tipsEnabled={tipsEnabled} isPremium={isPremium} />
+
+      {/* シリーズナビ */}
+      {seriesNav && <SeriesNav nav={seriesNav} />}
 
       {/* 関連作品 */}
       {relatedWorks.length > 0 && (

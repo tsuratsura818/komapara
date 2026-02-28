@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { WorkCard } from "@/components/works/WorkCard";
 import { PlanManager } from "@/components/subscriptions/PlanManager";
 import { XSyncPanel } from "@/components/works/XSyncPanel";
+import { SeriesManager } from "@/components/series/SeriesManager";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -42,7 +43,7 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  const [tipStats, subStats, subPlans, subSetting] = await Promise.all([
+  const [tipStats, subStats, subPlans, subSetting, userSeries] = await Promise.all([
     prisma.tip.aggregate({
       where: { receiverId: session.user.id, paymentStatus: "completed" },
       _sum: { netAmount: true },
@@ -59,6 +60,16 @@ export default async function DashboardPage() {
       include: { _count: { select: { subscriptions: { where: { status: "active" } } } } },
     }).catch(() => []),
     prisma.siteSetting.findUnique({ where: { key: "subscriptions_enabled" } }).catch(() => null),
+    prisma.series.findMany({
+      where: { authorId: session.user.id },
+      orderBy: { updatedAt: "desc" },
+      include: {
+        works: {
+          orderBy: { seriesOrder: "asc" },
+          select: { id: true, title: true, panels: true, seriesOrder: true },
+        },
+      },
+    }).catch(() => []),
   ]);
   const subscriptionsEnabled = subSetting?.value !== "false";
 
@@ -109,6 +120,19 @@ export default async function DashboardPage() {
           <PlanManager initialPlans={subPlans} />
         </div>
       )}
+
+      {/* シリーズ管理 */}
+      <div className="mb-6">
+        <SeriesManager
+          initialSeries={userSeries}
+          userWorks={user.works.map((w) => ({
+            id: w.id,
+            title: w.title,
+            panels: w.panels,
+            seriesId: w.seriesId,
+          }))}
+        />
+      </div>
 
       {/* X同期 */}
       <div className="mb-6">

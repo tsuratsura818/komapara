@@ -74,6 +74,7 @@ model User {
   premiumSubscriptions PremiumSubscription[]
   pushSubscriptions    PushSubscription[]
   notifications        Notification[]
+  series               Series[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -93,6 +94,10 @@ model Work {
   rankings    WeeklyRanking[]
   tips        Tip[]
 
+  seriesId    String?
+  seriesOrder Int?
+  series      Series?  @relation(fields: [seriesId], references: [id], onDelete: SetNull)
+
   viewCount   Int     @default(0)
   likeCount   Int     @default(0)
   tipTotal    Int     @default(0)
@@ -105,6 +110,7 @@ model Work {
   @@index([authorId])
   @@index([createdAt])
   @@index([likeCount])
+  @@index([seriesId, seriesOrder])
 }
 
 model Tag {
@@ -253,6 +259,23 @@ model PremiumSubscription {
   @@index([userId])
   @@index([status])
   @@index([currentPeriodEnd])
+}
+
+model Series {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  coverImage  String? // シリーズ表紙（1話目の1コマ目をデフォルト使用）
+  authorId    String
+  author      User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  works       Work[]
+  isCompleted Boolean @default(false) // 完結済みフラグ
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([createdAt])
 }
 
 model SiteSetting {
