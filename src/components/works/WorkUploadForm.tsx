@@ -13,15 +13,19 @@ type PanelState = {
 
 type SeriesOption = { id: string; title: string };
 
+const MIN_PANELS = 1;
+const MAX_PANELS = 16;
+const DEFAULT_PANELS = 4;
+
+function emptyPanel(): PanelState {
+  return { file: null, preview: null, uploading: false, url: null };
+}
+
 export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[] }) {
   const router = useRouter();
+  const [panelCount, setPanelCount] = useState(DEFAULT_PANELS);
   const [panels, setPanels] = useState<PanelState[]>(
-    Array.from({ length: 4 }, () => ({
-      file: null,
-      preview: null,
-      uploading: false,
-      url: null,
-    }))
+    Array.from({ length: DEFAULT_PANELS }, emptyPanel)
   );
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -45,6 +49,27 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
       errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [error]);
+
+  // パネル枚数を変更する
+  const changePanelCount = (newCount: number) => {
+    const clamped = Math.max(MIN_PANELS, Math.min(MAX_PANELS, newCount));
+    setPanelCount(clamped);
+    setPanels((prev) => {
+      if (clamped > prev.length) {
+        return [...prev, ...Array.from({ length: clamped - prev.length }, emptyPanel)];
+      }
+      if (clamped < prev.length) {
+        // 削除されるパネルのプレビューURLを解放
+        for (let i = clamped; i < prev.length; i++) {
+          if (prev[i].preview && prev[i].file) {
+            URL.revokeObjectURL(prev[i].preview!);
+          }
+        }
+        return prev.slice(0, clamped);
+      }
+      return prev;
+    });
+  };
 
   const handleFileSelect = useCallback(
     (index: number, file: File) => {
@@ -81,12 +106,7 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
       if (newPanels[index].preview) {
         URL.revokeObjectURL(newPanels[index].preview!);
       }
-      newPanels[index] = {
-        file: null,
-        preview: null,
-        uploading: false,
-        url: null,
-      };
+      newPanels[index] = emptyPanel();
       setPanels(newPanels);
     },
     [panels]
@@ -111,9 +131,16 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
         return;
       }
 
-      // 画像をパネルにセット（最大4枚）
-      const newPanels = [...panels];
-      for (let i = 0; i < Math.min(data.images.length, 4); i++) {
+      // 画像をパネルにセット（取得枚数に合わせてパネル数を調整）
+      const imageCount = Math.min(data.images.length, MAX_PANELS);
+      if (imageCount > panelCount) {
+        changePanelCount(imageCount);
+      }
+      const newPanels = Array.from(
+        { length: Math.max(panelCount, imageCount) },
+        (_, i) => panels[i] ? { ...panels[i] } : emptyPanel()
+      );
+      for (let i = 0; i < imageCount; i++) {
         newPanels[i] = {
           file: null,
           preview: data.images[i],
@@ -122,11 +149,13 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
         };
       }
       setPanels(newPanels);
+      if (imageCount > panelCount) {
+        setPanelCount(imageCount);
+      }
 
       // X投稿URLと説明を自動入力
       setXPostUrl(data.xPostUrl || importUrl.trim());
       if (!description && data.text) {
-        // ハッシュタグやURLを除いたテキスト
         const cleanText = data.text
           .replace(/https?:\/\/\S+/g, "")
           .replace(/#\S+/g, "")
@@ -155,7 +184,6 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
     if (panel.url) return panel.url;
     if (!panel.file) throw new Error(`画像${index + 1}が選択されていません`);
 
-    // パネルのアップロード状態を更新
     setPanels((prev) => {
       const next = [...prev];
       next[index] = { ...next[index], uploading: true };
@@ -204,16 +232,14 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
     }
 
     if (panels.some((p) => !p.file && !p.url)) {
-      setError("4枚すべての画像を選択してください");
+      setError(`${panelCount}枚すべての画像を選択してください`);
       return;
     }
 
     setSubmitting(true);
     try {
-      // 画像を並列アップロード
       const urls = await Promise.all(panels.map((_, i) => uploadPanel(i)));
 
-      // 作品を投稿
       const res = await fetch("/api/works", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -303,7 +329,7 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="max-w-lg mx-auto px-4 py-6">
       <h1 className="text-xl font-bold text-komapara-text mb-6">
-        4コマを投稿する
+        作品を投稿する
       </h1>
 
       {error && (
@@ -345,9 +371,33 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
 
       {/* STEP 1: 画像アップロード */}
       <div className="mb-6">
-        <h2 className="text-sm font-semibold text-komapara-text mb-3">
-          画像（4枚）
-        </h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-komapara-text">
+            画像（{panelCount}枚）
+          </h2>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => changePanelCount(panelCount - 1)}
+              disabled={panelCount <= MIN_PANELS}
+              className="w-7 h-7 flex items-center justify-center rounded-full border border-komapara-border text-komapara-muted hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm font-bold"
+            >
+              -
+            </button>
+            <span className="text-sm font-medium text-komapara-text w-8 text-center">
+              {panelCount}
+            </span>
+            <button
+              type="button"
+              onClick={() => changePanelCount(panelCount + 1)}
+              disabled={panelCount >= MAX_PANELS}
+              className="w-7 h-7 flex items-center justify-center rounded-full border border-komapara-border text-komapara-muted hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm font-bold"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <p className="text-xs text-komapara-muted mb-3">{MIN_PANELS}〜{MAX_PANELS}枚まで設定可</p>
         <div className="space-y-3">
           {panels.map((panel, index) => (
             <div

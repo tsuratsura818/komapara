@@ -104,9 +104,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { title, description, panels, genreSlugs, seriesId, xPostUrl } = body;
 
-    if (!title || !panels || panels.length !== 4) {
+    if (!title || !panels || !Array.isArray(panels) || panels.length < 1 || panels.length > 16) {
       return NextResponse.json(
-        { error: "タイトルと4枚の画像が必要です" },
+        { error: "タイトルと1〜16枚の画像が必要です" },
         { status: 400 }
       );
     }
