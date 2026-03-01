@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 import { processImageToWebP, generateThumbnail } from "@/lib/image";
 
@@ -39,9 +38,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const uuid = randomUUID();
@@ -52,16 +48,25 @@ export async function POST(request: NextRequest) {
       generateThumbnail(buffer, uuid),
     ]);
 
-    await Promise.all([
-      writeFile(path.join(uploadDir, processed.filename), processed.buffer),
-      writeFile(path.join(uploadDir, thumbnail.filename), thumbnail.buffer),
+    // Vercel Blobにアップロード
+    const [mainBlob, thumbBlob] = await Promise.all([
+      put(`panels/${processed.filename}`, processed.buffer, {
+        access: "public",
+        contentType: "image/webp",
+      }),
+      put(`thumbs/${thumbnail.filename}`, thumbnail.buffer, {
+        access: "public",
+        contentType: "image/webp",
+      }),
     ]);
 
-    const url = `/uploads/${processed.filename}`;
-    const thumbUrl = `/uploads/${thumbnail.filename}`;
-
     return NextResponse.json(
-      { url, thumbUrl, width: processed.width, height: processed.height },
+      {
+        url: mainBlob.url,
+        thumbUrl: thumbBlob.url,
+        width: processed.width,
+        height: processed.height,
+      },
       { status: 201 }
     );
   } catch (error) {
