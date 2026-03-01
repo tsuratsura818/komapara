@@ -13,15 +13,22 @@ export function reactionLabel(type: string): string {
   return REACTION_LABELS[type] || "いいね";
 }
 
-const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
-const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY!;
+let vapidConfigured = false;
 
-if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
-  webPush.setVapidDetails(
-    "mailto:komapara@example.com",
-    VAPID_PUBLIC_KEY,
-    VAPID_PRIVATE_KEY
-  );
+try {
+  const publicKey = (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "").replace(/=+$/, "");
+  const privateKey = (process.env.VAPID_PRIVATE_KEY || "").replace(/=+$/, "");
+
+  if (publicKey && privateKey) {
+    webPush.setVapidDetails(
+      "mailto:komapara@example.com",
+      publicKey,
+      privateKey
+    );
+    vapidConfigured = true;
+  }
+} catch {
+  console.warn("VAPID keys are invalid or missing — push notifications disabled");
 }
 
 export type NotificationType =
@@ -56,7 +63,7 @@ export async function sendNotification(opts: SendNotificationOptions) {
     where: { userId },
   });
 
-  if (subscriptions.length === 0) return;
+  if (subscriptions.length === 0 || !vapidConfigured) return;
 
   const payload = JSON.stringify({
     title,
