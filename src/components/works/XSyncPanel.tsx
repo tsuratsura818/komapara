@@ -111,7 +111,7 @@ export function XSyncPanel() {
   const handleImport = async () => {
     const selected = posts.filter((p) => p.selected && p.is4koma);
     if (selected.length === 0) {
-      setError("インポートする投稿を選択してください（4枚画像の投稿のみ対応）");
+      setError("インポートする投稿を選択してください（1〜16枚画像の投稿のみ対応）");
       return;
     }
 
@@ -244,12 +244,12 @@ export function XSyncPanel() {
                           </span>
                           {!post.is4koma && (
                             <span className="ml-2 text-[10px] text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded">
-                              {post.images.length}枚（4枚でないため選択不可）
+                              {post.images.length}枚（画像なしのため選択不可）
                             </span>
                           )}
                           {post.is4koma && (
                             <span className="ml-2 text-[10px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
-                              4コマ対応
+                              {post.images.length}枚
                             </span>
                           )}
                         </div>
@@ -258,7 +258,7 @@ export function XSyncPanel() {
 
                     {/* 画像プレビュー */}
                     <div className="grid grid-cols-4 gap-1 mb-2">
-                      {post.images.slice(0, 4).map((img, imgIdx) => (
+                      {post.images.slice(0, 16).map((img, imgIdx) => (
                         <img
                           key={imgIdx}
                           src={img}

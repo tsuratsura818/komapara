@@ -85,7 +85,7 @@ model Work {
   id          String   @id @default(cuid())
   title       String
   description String?
-  panels      String[] // 4枚の画像URL（順番通り）
+  panels      String[] // 1〜16枚の画像URL（順番通り）
   authorId    String
   author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 

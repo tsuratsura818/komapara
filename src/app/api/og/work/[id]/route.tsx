@@ -88,7 +88,7 @@ export async function GET(
                 justifyContent: "center",
               }}
             >
-              {work.panels.slice(0, 4).map((panel, i) => (
+              {work.panels.map((panel, i) => (
                 <img
                   key={i}
                   src={panel}
@@ -173,7 +173,7 @@ export async function GET(
                 gap: 10,
               }}
             >
-              {work.panels.slice(0, 4).map((panel, i) => (
+              {work.panels.map((panel, i) => (
                 <img
                   key={i}
                   src={panel}

@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
             images: imageUrls,
             text: cleanText,
             author: tweet.author?.screen_name || "",
-            is4koma: imageUrls.length === 4,
+            is4koma: imageUrls.length >= 1 && imageUrls.length <= 16,
           };
         } catch {
           return {
@@ -196,8 +196,8 @@ async function handleImport(
       continue;
     }
 
-    if (!post.images || post.images.length !== 4) {
-      results.push({ xPostUrl: post.xPostUrl, error: "4枚の画像が必要です", workId: null });
+    if (!post.images || post.images.length < 1 || post.images.length > 16) {
+      results.push({ xPostUrl: post.xPostUrl, error: "1〜16枚の画像が必要です", workId: null });
       continue;
     }
 
