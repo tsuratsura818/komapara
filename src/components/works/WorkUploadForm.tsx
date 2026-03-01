@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { GENRES } from "@/lib/utils";
 
@@ -36,6 +36,15 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
     id: string;
     title: string;
   } | null>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // エラーが設定されたら自動スクロールで表示する
+  useEffect(() => {
+    if (error && errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [error]);
 
   const handleFileSelect = useCallback(
     (index: number, file: File) => {
@@ -141,25 +150,48 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
     );
   };
 
-  const uploadPanel = async (index: number): Promise<string | null> => {
+  const uploadPanel = async (index: number): Promise<string> => {
     const panel = panels[index];
     if (panel.url) return panel.url;
-    if (!panel.file) return null;
+    if (!panel.file) throw new Error(`画像${index + 1}が選択されていません`);
 
-    const formData = new FormData();
-    formData.append("file", panel.file);
-
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
+    // パネルのアップロード状態を更新
+    setPanels((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], uploading: true };
+      return next;
     });
 
-    if (!res.ok) {
-      throw new Error(`画像${index + 1}のアップロードに失敗しました`);
-    }
+    try {
+      const formData = new FormData();
+      formData.append("file", panel.file);
 
-    const data = await res.json();
-    return data.url;
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        let message = `画像${index + 1}のアップロードに失敗しました`;
+        try {
+          const errData = await res.json();
+          if (errData.error) message = errData.error;
+        } catch {
+          // レスポンスがJSONでない場合はデフォルトメッセージを使用
+        }
+        throw new Error(message);
+      }
+
+      const data = await res.json();
+      if (!data.url) throw new Error(`画像${index + 1}のURLが取得できませんでした`);
+      return data.url;
+    } finally {
+      setPanels((prev) => {
+        const next = [...prev];
+        next[index] = { ...next[index], uploading: false };
+        return next;
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -181,11 +213,6 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
       // 画像を並列アップロード
       const urls = await Promise.all(panels.map((_, i) => uploadPanel(i)));
 
-      if (urls.some((u) => !u)) {
-        setError("画像のアップロードに失敗しました");
-        return;
-      }
-
       // 作品を投稿
       const res = await fetch("/api/works", {
         method: "POST",
@@ -201,8 +228,14 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "投稿に失敗しました");
+        let message = "投稿に失敗しました";
+        try {
+          const data = await res.json();
+          if (data.error) message = data.error;
+        } catch {
+          // レスポンスがJSONでない場合はデフォルトメッセージを使用
+        }
+        setError(message);
         return;
       }
 
@@ -268,13 +301,13 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto px-4 py-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="max-w-lg mx-auto px-4 py-6">
       <h1 className="text-xl font-bold text-komapara-text mb-6">
         4コマを投稿する
       </h1>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 text-komapara-like text-sm rounded-lg">
+        <div ref={errorRef} className="mb-4 p-3 bg-red-50 text-komapara-like text-sm rounded-lg border border-red-200">
           {error}
         </div>
       )}
@@ -328,12 +361,18 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
                   <img
                     src={panel.preview}
                     alt={`${index + 1}コマ目`}
-                    className="w-full"
+                    className={`w-full transition-opacity ${panel.uploading ? "opacity-50" : ""}`}
                   />
+                  {panel.uploading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  )}
                   <button
                     type="button"
                     onClick={() => removePanel(index)}
-                    className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70"
+                    disabled={submitting}
+                    className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 disabled:opacity-50"
                   >
                     ✕
                   </button>
@@ -464,6 +503,13 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
         </div>
       </div>
 
+      {/* エラー表示（ボタン直上にも表示） */}
+      {error && (
+        <div className="mb-3 p-3 bg-red-50 text-komapara-like text-sm rounded-lg border border-red-200">
+          {error}
+        </div>
+      )}
+
       {/* 投稿ボタン */}
       <button
         type="submit"
@@ -472,6 +518,17 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
       >
         {submitting ? "投稿中..." : "投稿する"}
       </button>
+
+      {/* ボタン無効の理由を表示 */}
+      {!submitting && (!allPanelsReady || !title.trim()) && (
+        <p className="mt-2 text-xs text-komapara-muted text-center">
+          {!allPanelsReady && !title.trim()
+            ? `画像をあと${panels.filter((p) => !p.file && !p.url).length}枚選択し、タイトルを入力してください`
+            : !allPanelsReady
+              ? `画像をあと${panels.filter((p) => !p.file && !p.url).length}枚選択してください`
+              : "タイトルを入力してください"}
+        </p>
+      )}
     </form>
   );
 }
