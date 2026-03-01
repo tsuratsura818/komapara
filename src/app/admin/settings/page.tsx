@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { SettingsClient } from "./SettingsClient";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "サイト設定" };
 
 const DEFAULT_SETTINGS: Record<string, string> = {

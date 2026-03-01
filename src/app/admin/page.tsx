@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatRelativeTime } from "@/lib/utils";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "ダッシュボード" };
 
 const STAT_STYLES = [

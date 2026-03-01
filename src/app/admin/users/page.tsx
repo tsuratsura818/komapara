@@ -3,6 +3,7 @@ import { formatRelativeTime } from "@/lib/utils";
 import { UserActions } from "./UserActions";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "ユーザー管理" };
 
 export default async function AdminUsersPage({

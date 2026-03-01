@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { LibraryTabs } from "@/components/library/LibraryTabs";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "マイライブラリ",
 };

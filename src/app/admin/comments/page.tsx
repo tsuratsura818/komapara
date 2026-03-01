@@ -4,6 +4,7 @@ import { CommentActions } from "./CommentActions";
 import Link from "next/link";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "コメント管理" };
 
 export default async function AdminCommentsPage({

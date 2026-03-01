@@ -3,6 +3,7 @@ import { formatRelativeTime } from "@/lib/utils";
 import { WorkActions } from "./WorkActions";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "作品管理" };
 
 export default async function AdminWorksPage({

@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { FollowButton } from "@/components/auth/FollowButton";
 import { SubscribeButton } from "@/components/subscriptions/SubscribeButton";
 
-export const revalidate = 1800;
+export const dynamic = "force-dynamic";
 
 type Props = { params: { id: string } };
 
