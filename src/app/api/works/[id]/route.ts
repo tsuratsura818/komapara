@@ -82,6 +82,67 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    const work = await prisma.work.findUnique({
+      where: { id: params.id },
+      select: { authorId: true },
+    });
+
+    if (!work) {
+      return NextResponse.json({ error: "作品が見つかりません" }, { status: 404 });
+    }
+    if (work.authorId !== session.user.id) {
+      return NextResponse.json({ error: "自分の作品のみ編集できます" }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const { title, description, genreSlugs } = body as {
+      title?: string;
+      description?: string;
+      genreSlugs?: string[];
+    };
+
+    const data: Record<string, unknown> = {};
+    if (title !== undefined) data.title = title;
+    if (description !== undefined) data.description = description;
+
+    // タグ更新: slugで既存Tagを検索して紐づけ
+    if (genreSlugs !== undefined) {
+      const tags = await prisma.tag.findMany({
+        where: { slug: { in: genreSlugs } },
+      });
+      data.tags = { set: tags.map((t) => ({ id: t.id })) };
+    }
+
+    const updated = await prisma.work.update({
+      where: { id: params.id },
+      data,
+      include: {
+        tags: { select: { name: true, slug: true, emoji: true } },
+      },
+    });
+
+    return NextResponse.json({
+      id: updated.id,
+      title: updated.title,
+      description: updated.description,
+      genres: updated.tags,
+    });
+  } catch (error) {
+    console.error("PATCH /api/works/[id] error:", error);
+    return NextResponse.json({ error: "作品の更新に失敗しました" }, { status: 500 });
+  }
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }

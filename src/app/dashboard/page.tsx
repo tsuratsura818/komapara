@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { WorkCard } from "@/components/works/WorkCard";
+import { DashboardWorkCard } from "@/components/works/DashboardWorkCard";
 import { PlanManager } from "@/components/subscriptions/PlanManager";
 import { XSyncPanel } from "@/components/works/XSyncPanel";
 import { SeriesManager } from "@/components/series/SeriesManager";
@@ -145,10 +145,11 @@ export default async function DashboardPage() {
       {user.works.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
           {user.works.map((work) => (
-            <WorkCard
+            <DashboardWorkCard
               key={work.id}
               id={work.id}
               title={work.title}
+              description={work.description}
               panels={work.panels}
               author={{
                 id: user.id,
