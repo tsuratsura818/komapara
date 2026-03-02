@@ -92,6 +92,12 @@ export default async function DashboardPage() {
   return (
     <div className="px-4 py-6">
       <h1 className="text-xl font-bold gradient-text mb-6">ダッシュボード</h1>
+      {/* DEBUG: セッション情報 */}
+      <div className="text-xs text-komapara-muted mb-4 glass rounded p-2">
+        <p>Session UID: {session.user.id}</p>
+        <p>DB User: {user.id} / {user.name}</p>
+        <p>Works: {user.works.length}件</p>
+      </div>
 
       {/* 統計 */}
       <div className={`grid grid-cols-2 md:grid-cols-${Math.min(stats.length, 7)} gap-3 mb-6`}>
