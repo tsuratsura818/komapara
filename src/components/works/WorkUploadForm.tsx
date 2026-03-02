@@ -127,6 +127,10 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
       });
       const data = await res.json();
       if (!res.ok) {
+        if (res.status === 401) {
+          router.push("/login?callbackUrl=/upload");
+          return;
+        }
         setError(data.error || "インポートに失敗しました");
         return;
       }
@@ -200,6 +204,10 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
       });
 
       if (!res.ok) {
+        if (res.status === 401) {
+          router.push("/login?callbackUrl=/upload");
+          throw new Error("ログインが必要です");
+        }
         let message = `画像${index + 1}のアップロードに失敗しました`;
         try {
           const errData = await res.json();
@@ -254,6 +262,10 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
       });
 
       if (!res.ok) {
+        if (res.status === 401) {
+          router.push("/login?callbackUrl=/upload");
+          return;
+        }
         let message = "投稿に失敗しました";
         try {
           const data = await res.json();
