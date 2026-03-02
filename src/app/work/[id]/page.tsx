@@ -52,9 +52,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function WorkDetailPage({ params }: Props) {
   const session = await auth();
 
-  const work = await prisma.work.update({
+  const work = await prisma.work.findUnique({
     where: { id: params.id },
-    data: { viewCount: { increment: 1 } },
     include: {
       author: {
         select: {
@@ -78,6 +77,12 @@ export default async function WorkDetailPage({ params }: Props) {
   });
 
   if (!work) notFound();
+
+  // 閲覧カウントをバックグラウンドで更新（エラーでも画面表示に影響しない）
+  prisma.work.update({
+    where: { id: params.id },
+    data: { viewCount: { increment: 1 } },
+  }).catch(() => {});
 
   // いいね状態 + リアクション情報
   let userReaction: string | null = null;
