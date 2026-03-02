@@ -35,6 +35,8 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
   const [submitting, setSubmitting] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importUrl, setImportUrl] = useState("");
+  const [importingIg, setImportingIg] = useState(false);
+  const [importUrlIg, setImportUrlIg] = useState("");
   const [error, setError] = useState("");
   const [completedWork, setCompletedWork] = useState<{
     id: string;
@@ -170,6 +172,66 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
       setError("インポートに失敗しました");
     } finally {
       setImporting(false);
+    }
+  };
+
+  const handleImportFromInstagram = async () => {
+    if (!importUrlIg.trim()) {
+      setError("Instagram投稿のURLを入力してください");
+      return;
+    }
+    setError("");
+    setImportingIg(true);
+    try {
+      const res = await fetch("/api/import-from-instagram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: importUrlIg.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        if (res.status === 401) {
+          router.push("/login?callbackUrl=/upload");
+          return;
+        }
+        setError(data.error || "インポートに失敗しました");
+        return;
+      }
+
+      // 画像をパネルにセット
+      const imageCount = Math.min(data.images.length, MAX_PANELS);
+      if (imageCount > panelCount) {
+        changePanelCount(imageCount);
+      }
+      const newPanels = Array.from(
+        { length: Math.max(panelCount, imageCount) },
+        (_, i) => panels[i] ? { ...panels[i] } : emptyPanel()
+      );
+      for (let i = 0; i < imageCount; i++) {
+        newPanels[i] = {
+          file: null,
+          preview: data.images[i],
+          uploading: false,
+          url: data.images[i],
+        };
+      }
+      setPanels(newPanels);
+      if (imageCount > panelCount) {
+        setPanelCount(imageCount);
+      }
+
+      // 説明を自動入力
+      if (!description && data.text) {
+        const cleanText = data.text
+          .replace(/https?:\/\/\S+/g, "")
+          .replace(/#\S+/g, "")
+          .trim();
+        if (cleanText) setDescription(cleanText.slice(0, 200));
+      }
+    } catch {
+      setError("インポートに失敗しました");
+    } finally {
+      setImportingIg(false);
     }
   };
 
@@ -377,6 +439,38 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
             className="px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
           >
             {importing ? "取得中..." : "取得"}
+          </button>
+        </div>
+      </div>
+
+      {/* Instagramからインポート */}
+      <div className="mb-6 p-4 glass rounded-xl border border-white/20">
+        <h2 className="text-sm font-semibold text-komapara-text mb-2 flex items-center gap-2">
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+          </svg>
+          Instagramからインポート
+        </h2>
+        <p className="text-xs text-komapara-muted mb-3">
+          Instagram投稿のURLを貼り付けると、画像を自動取得します
+        </p>
+        <div className="flex gap-2">
+          <input
+            type="url"
+            value={importUrlIg}
+            onChange={(e) => setImportUrlIg(e.target.value)}
+            placeholder="https://www.instagram.com/p/..."
+            className="flex-1 px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            disabled={importingIg}
+          />
+          <button
+            type="button"
+            onClick={handleImportFromInstagram}
+            disabled={importingIg || !importUrlIg.trim()}
+            className="px-4 py-2 text-sm font-medium text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+            style={{ background: "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" }}
+          >
+            {importingIg ? "取得中..." : "取得"}
           </button>
         </div>
       </div>
