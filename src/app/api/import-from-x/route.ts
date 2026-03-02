@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 import { processImageToWebP } from "@/lib/image";
@@ -83,10 +82,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 画像をダウンロードしてWebP変換して保存
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-
+    // 画像をダウンロードしてWebP変換してVercel Blobに保存
     const savedUrls: string[] = [];
     for (const photo of photos) {
       const imageUrl = photo.url;
@@ -98,8 +94,12 @@ export async function POST(request: NextRequest) {
       const buffer = Buffer.from(await imgRes.arrayBuffer());
       const uuid = randomUUID();
       const processed = await processImageToWebP(buffer, uuid);
-      await writeFile(path.join(uploadDir, processed.filename), processed.buffer);
-      savedUrls.push(`/uploads/${processed.filename}`);
+
+      const blob = await put(`panels/${processed.filename}`, processed.buffer, {
+        access: "public",
+        contentType: "image/webp",
+      });
+      savedUrls.push(blob.url);
     }
 
     if (savedUrls.length === 0) {

@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 import { processImageToWebP } from "@/lib/image";
 
@@ -185,9 +184,6 @@ async function handleImport(
     data: { isCreator: true },
   });
 
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(uploadDir, { recursive: true });
-
   const results = [];
 
   for (const post of posts) {
@@ -202,7 +198,7 @@ async function handleImport(
     }
 
     try {
-      // 画像をダウンロードしてWebP変換
+      // 画像をダウンロードしてWebP変換してVercel Blobに保存
       const savedUrls: string[] = [];
       for (const imageUrl of post.images) {
         const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(15000) });
@@ -211,8 +207,12 @@ async function handleImport(
         const buffer = Buffer.from(await imgRes.arrayBuffer());
         const uuid = randomUUID();
         const processed = await processImageToWebP(buffer, uuid);
-        await writeFile(path.join(uploadDir, processed.filename), processed.buffer);
-        savedUrls.push(`/uploads/${processed.filename}`);
+
+        const blob = await put(`panels/${processed.filename}`, processed.buffer, {
+          access: "public",
+          contentType: "image/webp",
+        });
+        savedUrls.push(blob.url);
       }
 
       // 作品作成
