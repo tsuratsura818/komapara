@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// NextAuth v5 のセッションクッキー名
-const SESSION_COOKIE = "authjs.session-token";
-const SECURE_SESSION_COOKIE = "__Secure-authjs.session-token";
-
 export function middleware(request: NextRequest) {
-  const token =
-    request.cookies.get(SECURE_SESSION_COOKIE)?.value ||
-    request.cookies.get(SESSION_COOKIE)?.value;
+  // NextAuth v5 のセッションクッキーを検索（バージョンや環境で名前が変わるため全パターンチェック）
+  const hasSession = request.cookies.getAll().some(
+    (c) => c.name.includes("session-token") && c.value
+  );
 
-  if (!token) {
+  if (!hasSession) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", request.url);
     return NextResponse.redirect(loginUrl);
