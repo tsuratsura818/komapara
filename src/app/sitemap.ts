@@ -2,6 +2,8 @@ import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { GENRES } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://komapara.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
