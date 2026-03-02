@@ -18,6 +18,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.public.blob.vercel-storage.com",
       },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
     ],
     formats: ["image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200],
