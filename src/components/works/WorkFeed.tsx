@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { WorkCard } from "./WorkCard";
 import { AdsenseUnit } from "@/components/ui/AdsenseUnit";
-import { cn } from "@/lib/utils";
+import { cn, GENRES } from "@/lib/utils";
 
 type Work = {
   id: string;
@@ -23,6 +23,7 @@ type Tab = "new" | "popular" | "following";
 export function WorkFeed() {
   const { data: session } = useSession();
   const [tab, setTab] = useState<Tab>("new");
+  const [genre, setGenre] = useState<string | null>(null);
   const [works, setWorks] = useState<Work[]>([]);
   const [, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -33,9 +34,9 @@ export function WorkFeed() {
     async (pageNum: number, reset = false) => {
       setLoading(true);
       try {
-        const res = await fetch(
-          `/api/works?sort=${tab}&page=${pageNum}&limit=20`
-        );
+        const params = new URLSearchParams({ sort: tab, page: String(pageNum), limit: "20" });
+        if (genre) params.set("genre", genre);
+        const res = await fetch(`/api/works?${params}`);
         const data = await res.json();
         const newWorks = data.works ?? [];
 
@@ -51,14 +52,14 @@ export function WorkFeed() {
         setLoading(false);
       }
     },
-    [tab]
+    [tab, genre]
   );
 
-  // タブ変更時にリセット
+  // タブ or カテゴリ変更時にリセット
   useEffect(() => {
     setPage(1);
     fetchWorks(1, true);
-  }, [tab, fetchWorks]);
+  }, [tab, genre, fetchWorks]);
 
   // 無限スクロール
   useEffect(() => {
@@ -111,6 +112,35 @@ export function WorkFeed() {
             </button>
           );
         })}
+      </div>
+
+      {/* カテゴリフィルター */}
+      <div className="flex gap-2 px-4 py-2 overflow-x-auto no-scrollbar">
+        <button
+          onClick={() => setGenre(null)}
+          className={cn(
+            "px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-all shrink-0",
+            genre === null
+              ? "bg-gradient-main text-white shadow-md shadow-purple-500/25"
+              : "glass text-komapara-muted hover:text-komapara-text"
+          )}
+        >
+          すべて
+        </button>
+        {GENRES.map((g) => (
+          <button
+            key={g.slug}
+            onClick={() => setGenre(genre === g.slug ? null : g.slug)}
+            className={cn(
+              "px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-all shrink-0",
+              genre === g.slug
+                ? "bg-gradient-main text-white shadow-md shadow-purple-500/25"
+                : "glass text-komapara-muted hover:text-komapara-text"
+            )}
+          >
+            {g.emoji} {g.name}
+          </button>
+        ))}
       </div>
 
       {/* 作品グリッド */}
