@@ -134,15 +134,15 @@ export default function LpPage() {
       <ScrollAnimations />
 
       {/* ===== Floating Header ===== */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#1a1030]/80 backdrop-blur-md border-b border-white/10">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-14">
-          <Link href="/" className="text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <Link href="/" className="text-lg font-bold gradient-text">
             コマパラ
           </Link>
           <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="text-sm text-white/70 hover:text-white transition-colors"
+              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
             >
               ログイン
             </Link>
@@ -156,19 +156,19 @@ export default function LpPage() {
         </div>
       </header>
 
-      {/* ===== Hero (Animated Aurora Background) ===== */}
-      <section className="relative h-screen flex items-center justify-center px-4 bg-[#1a1030]">
+      {/* ===== Hero (Gradient Background) ===== */}
+      <section className="relative h-screen flex items-center justify-center px-4 bg-gradient-main overflow-hidden">
         <AuroraBlobs />
         <div className="relative z-10 text-center max-w-3xl mx-auto">
-          <p className="text-base md:text-lg font-semibold text-purple-300 tracking-wider mb-6 animate-fade-in">
+          <p className="text-base md:text-lg font-semibold text-white/80 tracking-wider mb-6 animate-fade-in">
             4コマ漫画に特化したポータルサイト
           </p>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] text-white animate-fade-in" style={{ animationDelay: "0.15s" }}>
             4コマの世界を、
             <br />
-            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">もっと楽しく。</span>
+            もっと楽しく。
           </h1>
-          <p className="text-white/70 text-lg md:text-xl mt-8 max-w-xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <p className="text-white/80 text-lg md:text-xl mt-8 max-w-xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
             XやInstagramに散らばる4コマ漫画を一箇所に。
             <br className="hidden md:block" />
             読者には発見を、クリエイターには届ける場所を。
@@ -176,22 +176,22 @@ export default function LpPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 animate-fade-in" style={{ animationDelay: "0.45s" }}>
             <Link
               href="/login"
-              className="w-full sm:w-auto px-10 py-4 text-lg bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-10 py-4 text-lg bg-white text-purple-600 font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-center"
             >
               無料ではじめる
             </Link>
             <a
               href="#features"
-              className="w-full sm:w-auto px-10 py-4 text-lg font-semibold rounded-full border border-white/20 text-white hover:bg-white/10 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-10 py-4 text-lg font-semibold rounded-full border-2 border-white/40 text-white hover:bg-white/10 transition-all duration-300 text-center"
             >
               くわしく見る
             </a>
           </div>
         </div>
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 animate-fade-in" style={{ animationDelay: "1s" }}>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 animate-fade-in" style={{ animationDelay: "1s" }}>
           <span className="text-xs tracking-widest">SCROLL</span>
-          <div className="w-px h-8 bg-gradient-to-b from-white/30 to-transparent" />
+          <div className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent" />
         </div>
       </section>
 
@@ -378,30 +378,32 @@ export default function LpPage() {
       </section>
 
       {/* ===== Final CTA ===== */}
-      <section className="relative py-24 px-4 text-center bg-[#1a1030]">
-        <AuroraBlobs />
+      <section className="relative py-24 px-4 text-center bg-gradient-main overflow-hidden">
         <div className="relative z-10 max-w-lg mx-auto lp-animate">
           <h2 className="text-3xl md:text-4xl font-bold text-white">
-            さあ、<span className="bg-gradient-to-r from-purple-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">はじめよう</span>
+            さあ、はじめよう
           </h2>
-          <p className="text-white/70 mt-4">
+          <p className="text-white/80 mt-4">
             登録は無料。今すぐお気に入りの4コマを探しに行こう。
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
             <Link
               href="/login"
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-8 py-3.5 bg-white text-purple-600 font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-center"
             >
               無料ではじめる
             </Link>
             <Link
               href="/"
-              className="w-full sm:w-auto px-8 py-3.5 font-semibold rounded-full border border-white/20 text-white hover:bg-white/10 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-8 py-3.5 font-semibold rounded-full border-2 border-white/40 text-white hover:bg-white/10 transition-all duration-300 text-center"
             >
               作品を見てみる
             </Link>
           </div>
         </div>
+        {/* Decorative */}
+        <div className="absolute top-10 right-[10%] w-20 h-20 bg-white/10 rounded-xl rotate-12 animate-float" />
+        <div className="absolute bottom-10 left-[10%] w-16 h-16 bg-white/5 rounded-xl -rotate-6 animate-float" style={{ animationDelay: "1.5s" }} />
       </section>
 
       {/* ===== Footer ===== */}
