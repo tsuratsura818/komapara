@@ -134,15 +134,15 @@ export default function LpPage() {
       <ScrollAnimations />
 
       {/* ===== Floating Header ===== */}
-      <header className="fixed top-0 left-0 right-0 z-50 glass">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#1a1030]/80 backdrop-blur-md border-b border-white/10">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 h-14">
-          <Link href="/" className="text-lg font-bold gradient-text">
+          <Link href="/" className="text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
             コマパラ
           </Link>
           <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="text-sm text-komapara-muted hover:text-komapara-text transition-colors"
+              className="text-sm text-white/70 hover:text-white transition-colors"
             >
               ログイン
             </Link>
@@ -157,18 +157,18 @@ export default function LpPage() {
       </header>
 
       {/* ===== Hero (Animated Aurora Background) ===== */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 pt-14">
+      <section className="relative h-screen flex items-center justify-center px-4 bg-[#1a1030]">
         <AuroraBlobs />
         <div className="relative z-10 text-center max-w-3xl mx-auto">
-          <p className="text-base md:text-lg font-semibold text-gradient-purple tracking-wider mb-6 animate-fade-in">
+          <p className="text-base md:text-lg font-semibold text-purple-300 tracking-wider mb-6 animate-fade-in">
             4コマ漫画に特化したポータルサイト
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] text-komapara-text animate-fade-in" style={{ animationDelay: "0.15s" }}>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] text-white animate-fade-in" style={{ animationDelay: "0.15s" }}>
             4コマの世界を、
             <br />
-            <span className="gradient-text">もっと楽しく。</span>
+            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">もっと楽しく。</span>
           </h1>
-          <p className="text-komapara-muted text-lg md:text-xl mt-8 max-w-xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <p className="text-white/70 text-lg md:text-xl mt-8 max-w-xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
             XやInstagramに散らばる4コマ漫画を一箇所に。
             <br className="hidden md:block" />
             読者には発見を、クリエイターには届ける場所を。
@@ -176,46 +176,46 @@ export default function LpPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 animate-fade-in" style={{ animationDelay: "0.45s" }}>
             <Link
               href="/login"
-              className="w-full sm:w-auto px-10 py-4 text-lg bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 hover:scale-105 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-10 py-4 text-lg bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300 text-center"
             >
               無料ではじめる
             </Link>
             <a
               href="#features"
-              className="w-full sm:w-auto px-10 py-4 text-lg glass font-semibold rounded-full hover:shadow-md transition-all duration-300 text-center text-komapara-text"
+              className="w-full sm:w-auto px-10 py-4 text-lg font-semibold rounded-full border border-white/20 text-white hover:bg-white/10 transition-all duration-300 text-center"
             >
               くわしく見る
             </a>
           </div>
         </div>
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-komapara-muted/50 animate-fade-in" style={{ animationDelay: "1s" }}>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 animate-fade-in" style={{ animationDelay: "1s" }}>
           <span className="text-xs tracking-widest">SCROLL</span>
-          <div className="w-px h-8 bg-gradient-to-b from-komapara-muted/30 to-transparent" />
+          <div className="w-px h-8 bg-gradient-to-b from-white/30 to-transparent" />
         </div>
       </section>
 
       {/* ===== Problem Section ===== */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12 lp-animate">
-            <p className="text-sm font-semibold text-gradient-purple tracking-wider mb-2">PROBLEM</p>
-            <h2 className="text-2xl md:text-3xl font-bold">
+            <p className="text-sm font-bold text-purple-600 tracking-wider mb-2">PROBLEM</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
               こんな経験、ありませんか？
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {READER_PROBLEMS.map((item, i) => (
-              <div key={item.problem} className={`lp-animate lp-animate-delay-${Math.min(i + 1, 3)} glass rounded-xl p-5`}>
+              <div key={item.problem} className={`lp-animate lp-animate-delay-${Math.min(i + 1, 3)} bg-gray-50 rounded-xl p-6 border border-gray-200`}>
                 <div className="flex items-start gap-3">
                   <span className="text-2xl flex-shrink-0">{item.icon}</span>
                   <div>
-                    <h3 className="font-bold text-base">{item.problem}</h3>
-                    <p className="text-sm text-komapara-muted mt-1">
-                      <span className="line-through opacity-60">{item.before}</span>
+                    <h3 className="font-bold text-base text-gray-900">{item.problem}</h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      <span className="line-through">{item.before}</span>
                     </p>
-                    <p className="text-sm font-semibold mt-1">
-                      <span className="gradient-text">→ {item.after}</span>
+                    <p className="text-sm font-bold text-purple-600 mt-1">
+                      → {item.after}
                     </p>
                   </div>
                 </div>
@@ -226,21 +226,14 @@ export default function LpPage() {
       </section>
 
       {/* ===== 3 Pillars ===== */}
-      <section id="features" className="py-20 px-4 relative">
-        <div
-          className="absolute inset-0 -z-10 opacity-50"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(139,92,246,0.08) 0%, transparent 70%)",
-          }}
-        />
+      <section id="features" className="py-20 px-4 bg-gray-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 lp-animate">
-            <p className="text-sm font-semibold text-gradient-purple tracking-wider mb-2">CONCEPT</p>
-            <h2 className="text-2xl md:text-3xl font-bold">
+            <p className="text-sm font-bold text-purple-600 tracking-wider mb-2">CONCEPT</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
               読む・描く・つながる
             </h2>
-            <p className="text-komapara-muted text-sm mt-3 max-w-md mx-auto">
+            <p className="text-gray-600 text-base mt-3 max-w-md mx-auto">
               コマパラは3つの体験を1つのプラットフォームで実現します
             </p>
           </div>
@@ -248,24 +241,21 @@ export default function LpPage() {
             {PILLARS.map((pillar, i) => (
               <div
                 key={pillar.title}
-                className={`lp-animate lp-animate-delay-${i + 1} glass rounded-2xl p-6 text-center relative overflow-hidden group hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
+                className={`lp-animate lp-animate-delay-${i + 1} bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
               >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${pillar.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
-                />
-                <div className="text-4xl mb-4 relative">{pillar.emoji}</div>
+                <div className="text-4xl mb-4">{pillar.emoji}</div>
                 <h3
-                  className={`font-bold text-xl relative bg-gradient-to-r ${pillar.gradient} bg-clip-text text-transparent`}
+                  className={`font-bold text-xl bg-gradient-to-r ${pillar.gradient} bg-clip-text text-transparent`}
                 >
                   {pillar.title}
                 </h3>
-                <p className="text-sm text-komapara-muted mt-2 relative">
+                <p className="text-sm text-gray-600 mt-2">
                   {pillar.description}
                 </p>
-                <ul className="mt-4 space-y-1.5 relative">
+                <ul className="mt-4 space-y-2">
                   {pillar.features.map((f) => (
-                    <li key={f} className="text-xs text-komapara-muted flex items-center justify-center gap-1.5">
-                      <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${pillar.gradient} inline-block`} />
+                    <li key={f} className="text-sm text-gray-700 flex items-center justify-center gap-1.5">
+                      <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${pillar.gradient} inline-block flex-shrink-0`} />
                       {f}
                     </li>
                   ))}
@@ -277,24 +267,24 @@ export default function LpPage() {
       </section>
 
       {/* ===== For Creators ===== */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 lp-animate">
-            <p className="text-sm font-semibold text-gradient-purple tracking-wider mb-2">FOR CREATORS</p>
-            <h2 className="text-2xl md:text-3xl font-bold">
+            <p className="text-sm font-bold text-purple-600 tracking-wider mb-2">FOR CREATORS</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
               クリエイターの味方
             </h2>
-            <p className="text-komapara-muted text-sm mt-3 max-w-md mx-auto">
+            <p className="text-gray-600 text-base mt-3 max-w-md mx-auto">
               投稿・分析・収益化がワンストップ。創作活動に集中できる環境を。
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {CREATOR_FEATURES.map((feature, i) => (
-              <div key={feature.title} className={`lp-animate lp-animate-delay-${Math.min(i + 1, 3)} glass rounded-xl p-5 flex items-start gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300`}>
+              <div key={feature.title} className={`lp-animate lp-animate-delay-${Math.min(i + 1, 3)} bg-gray-50 rounded-xl p-6 flex items-start gap-4 border border-gray-200 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300`}>
                 <span className="text-3xl flex-shrink-0">{feature.icon}</span>
                 <div>
-                  <h3 className="font-bold">{feature.title}</h3>
-                  <p className="text-sm text-komapara-muted mt-1">{feature.description}</p>
+                  <h3 className="font-bold text-gray-900">{feature.title}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{feature.description}</p>
                 </div>
               </div>
             ))}
@@ -303,18 +293,11 @@ export default function LpPage() {
       </section>
 
       {/* ===== How It Works ===== */}
-      <section className="py-20 px-4 relative">
-        <div
-          className="absolute inset-0 -z-10 opacity-50"
-          style={{
-            background:
-              "radial-gradient(ellipse 50% 40% at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 70%)",
-          }}
-        />
+      <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12 lp-animate">
-            <p className="text-sm font-semibold text-gradient-purple tracking-wider mb-2">HOW IT WORKS</p>
-            <h2 className="text-2xl md:text-3xl font-bold">
+            <p className="text-sm font-bold text-purple-600 tracking-wider mb-2">HOW IT WORKS</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
               かんたん3ステップ
             </h2>
           </div>
@@ -322,13 +305,13 @@ export default function LpPage() {
             {STEPS.map((s, i) => (
               <div key={s.step} className={`lp-animate lp-animate-delay-${i + 1} text-center relative`}>
                 {i < STEPS.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-px bg-gradient-to-r from-purple-300 to-pink-300 opacity-30" />
+                  <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-px bg-gradient-to-r from-purple-300 to-pink-300" />
                 )}
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-main text-white font-bold text-lg mb-4 shadow-lg shadow-purple-500/20">
                   {s.step}
                 </div>
-                <h3 className="font-bold text-base">{s.title}</h3>
-                <p className="text-sm text-komapara-muted mt-2">{s.description}</p>
+                <h3 className="font-bold text-base text-gray-900">{s.title}</h3>
+                <p className="text-sm text-gray-600 mt-2">{s.description}</p>
               </div>
             ))}
           </div>
@@ -336,31 +319,31 @@ export default function LpPage() {
       </section>
 
       {/* ===== Comparison ===== */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12 lp-animate">
-            <p className="text-sm font-semibold text-gradient-purple tracking-wider mb-2">COMPARISON</p>
-            <h2 className="text-2xl md:text-3xl font-bold">
+            <p className="text-sm font-bold text-purple-600 tracking-wider mb-2">COMPARISON</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
               なぜコマパラ？
             </h2>
           </div>
-          <div className="lp-animate glass rounded-2xl overflow-hidden">
+          <div className="lp-animate bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-komapara-border">
-                  <th className="text-left p-4 font-semibold">機能</th>
-                  <th className="p-4 font-bold gradient-text">コマパラ</th>
-                  <th className="p-4 font-semibold text-komapara-muted">pixiv</th>
-                  <th className="p-4 font-semibold text-komapara-muted">X</th>
+                <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="text-left p-4 font-semibold text-gray-900">機能</th>
+                  <th className="p-4 font-bold text-purple-600">コマパラ</th>
+                  <th className="p-4 font-semibold text-gray-500">pixiv</th>
+                  <th className="p-4 font-semibold text-gray-500">X</th>
                 </tr>
               </thead>
               <tbody>
                 {COMPARISONS.map((row) => (
-                  <tr key={row.feature} className="border-b border-komapara-border/50 last:border-0">
-                    <td className="p-4 font-medium">{row.feature}</td>
+                  <tr key={row.feature} className="border-b border-gray-100 last:border-0">
+                    <td className="p-4 font-medium text-gray-900">{row.feature}</td>
                     <td className="p-4 text-center">{row.komapara ? "✅" : "—"}</td>
-                    <td className="p-4 text-center">{row.pixiv ? "⚪" : "—"}</td>
-                    <td className="p-4 text-center">{row.x ? "⚪" : "—"}</td>
+                    <td className="p-4 text-center text-gray-400">{row.pixiv ? "⚪" : "—"}</td>
+                    <td className="p-4 text-center text-gray-400">{row.x ? "⚪" : "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -370,29 +353,22 @@ export default function LpPage() {
       </section>
 
       {/* ===== FAQ ===== */}
-      <section className="py-20 px-4 relative">
-        <div
-          className="absolute inset-0 -z-10 opacity-50"
-          style={{
-            background:
-              "radial-gradient(ellipse 50% 40% at 70% 50%, rgba(236,72,153,0.06) 0%, transparent 70%)",
-          }}
-        />
+      <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12 lp-animate">
-            <p className="text-sm font-semibold text-gradient-purple tracking-wider mb-2">FAQ</p>
-            <h2 className="text-2xl md:text-3xl font-bold">
+            <p className="text-sm font-bold text-purple-600 tracking-wider mb-2">FAQ</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
               よくある質問
             </h2>
           </div>
           <div className="space-y-4">
             {FAQS.map((faq, i) => (
-              <div key={faq.q} className={`lp-animate lp-animate-delay-${Math.min(i + 1, 3)} glass rounded-xl p-5`}>
-                <h3 className="font-bold flex items-start gap-2">
-                  <span className="gradient-text flex-shrink-0">Q.</span>
+              <div key={faq.q} className={`lp-animate lp-animate-delay-${Math.min(i + 1, 3)} bg-white rounded-xl p-6 border border-gray-200`}>
+                <h3 className="font-bold text-gray-900 flex items-start gap-2">
+                  <span className="text-purple-600 flex-shrink-0">Q.</span>
                   {faq.q}
                 </h3>
-                <p className="text-sm text-komapara-muted mt-2 pl-6">
+                <p className="text-gray-600 mt-2 pl-6">
                   {faq.a}
                 </p>
               </div>
@@ -402,34 +378,25 @@ export default function LpPage() {
       </section>
 
       {/* ===== Final CTA ===== */}
-      <section className="relative py-24 px-4 text-center">
-        <div
-          className="absolute inset-0 -z-10"
-          style={{
-            background: [
-              "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(139,92,246,0.15) 0%, transparent 60%)",
-              "radial-gradient(ellipse 60% 40% at 20% 80%, rgba(59,130,246,0.1) 0%, transparent 50%)",
-              "radial-gradient(ellipse 60% 40% at 80% 20%, rgba(236,72,153,0.1) 0%, transparent 50%)",
-            ].join(", "),
-          }}
-        />
+      <section className="relative py-24 px-4 text-center bg-[#1a1030]">
+        <AuroraBlobs />
         <div className="relative z-10 max-w-lg mx-auto lp-animate">
-          <h2 className="text-3xl md:text-4xl font-bold">
-            さあ、<span className="gradient-text">はじめよう</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white">
+            さあ、<span className="bg-gradient-to-r from-purple-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">はじめよう</span>
           </h2>
-          <p className="text-komapara-muted mt-4">
+          <p className="text-white/70 mt-4">
             登録は無料。今すぐお気に入りの4コマを探しに行こう。
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
             <Link
               href="/login"
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 hover:scale-105 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300 text-center"
             >
               無料ではじめる
             </Link>
             <Link
               href="/"
-              className="w-full sm:w-auto px-8 py-3.5 glass font-semibold rounded-full hover:shadow-md transition-all duration-300 text-center text-komapara-text"
+              className="w-full sm:w-auto px-8 py-3.5 font-semibold rounded-full border border-white/20 text-white hover:bg-white/10 transition-all duration-300 text-center"
             >
               作品を見てみる
             </Link>
@@ -438,19 +405,19 @@ export default function LpPage() {
       </section>
 
       {/* ===== Footer ===== */}
-      <footer className="py-8 px-4 border-t border-komapara-border/50">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-komapara-muted">
+      <footer className="py-8 px-4 bg-white border-t border-gray-200">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
           <Link href="/" className="font-bold gradient-text text-base">
             コマパラ
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/about" className="hover:text-komapara-text transition-colors">
+            <Link href="/about" className="hover:text-gray-900 transition-colors">
               コマパラについて
             </Link>
-            <Link href="/" className="hover:text-komapara-text transition-colors">
+            <Link href="/" className="hover:text-gray-900 transition-colors">
               作品を見る
             </Link>
-            <Link href="/login" className="hover:text-komapara-text transition-colors">
+            <Link href="/login" className="hover:text-gray-900 transition-colors">
               ログイン
             </Link>
           </div>
