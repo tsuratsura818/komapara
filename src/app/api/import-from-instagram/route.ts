@@ -131,10 +131,21 @@ function removeInstagramCrop(url: string): string {
   }
 }
 
-// GraphQLノードから最良の画像URLを取得（display_resources > display_url）
+// GraphQLノードから最良の画像URLを取得
+// 優先順位: image_versions2.candidates（未クロップ） > display_url > display_resources（クロップ済みの場合あり）
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getBestGraphQLImageUrl(node: any): string | null {
-  // display_resources（複数解像度）から最大のものを優先
+  // 1) image_versions2.candidates（未クロップのオリジナル比率）を最優先
+  const candidates = node?.image_versions2?.candidates;
+  if (candidates && Array.isArray(candidates) && candidates.length > 0) {
+    const best = getBestCandidate(candidates);
+    if (best) return best;
+  }
+
+  // 2) display_url（display_resourcesより未クロップの可能性が高い）
+  if (node?.display_url) return node.display_url;
+
+  // 3) display_resources（正方形クロップ済みの場合あり）
   const resources = node?.display_resources;
   if (resources && Array.isArray(resources) && resources.length > 0) {
     const best = resources.reduce(
@@ -143,7 +154,7 @@ function getBestGraphQLImageUrl(node: any): string | null {
     );
     if (best.src) return best.src;
   }
-  return node?.display_url ?? null;
+  return null;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -686,11 +697,12 @@ export async function POST(request: NextRequest) {
     const canonicalUrl = `https://www.instagram.com/p/${shortcode}/`;
 
     // 戦略を順番に試す（2枚以上取れたら即終了）
+    // Mobile APIを優先: image_versions2.candidatesで未クロップ画像を取得できる
     type Strategy = { name: string; fn: () => Promise<FetchResult | null> };
     const strategies: Strategy[] = [
-      { name: "GraphQL GET", fn: () => fetchViaGraphQL(shortcode) },
-      { name: "GraphQL POST", fn: () => fetchViaGraphQLPost(shortcode) },
       { name: "Mobile API", fn: () => fetchViaMobileApi(shortcode) },
+      { name: "GraphQL POST", fn: () => fetchViaGraphQLPost(shortcode) },
+      { name: "GraphQL GET", fn: () => fetchViaGraphQL(shortcode) },
       { name: "JSON API", fn: () => fetchViaJsonApi(shortcode) },
       { name: "Embed", fn: () => fetchViaEmbed(shortcode) },
       { name: "Page Scraping", fn: () => fetchViaPageScraping(shortcode) },
@@ -753,7 +765,10 @@ export async function POST(request: NextRequest) {
           if (imgRes.ok) {
             buffer = Buffer.from(await imgRes.arrayBuffer());
             downloaded = true;
+            console.log(`[IG] Downloaded: ${tryUrl.slice(0, 120)}... (${buffer.length} bytes)`);
             break;
+          } else {
+            console.warn(`[IG] Download failed (${imgRes.status}): ${tryUrl.slice(0, 120)}`);
           }
         }
         if (!downloaded) {
