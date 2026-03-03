@@ -95,6 +95,37 @@ function extractJsonAfterKey(str: string, key: string, fromIdx = 0): string | nu
 // メディアデータ抽出
 // ============================================================
 
+// Instagram CDN URLからクロップ・リサイズパラメータを除去してオリジナル画像URLを取得
+function removeInstagramCrop(url: string): string {
+  try {
+    const u = new URL(url);
+    // /c0.180.1440.1440a/ のようなクロップ指定を除去
+    u.pathname = u.pathname.replace(/\/c[\d.]+a?\//g, "/");
+    // /s1080x1080/ のようなサイズ指定を除去
+    u.pathname = u.pathname.replace(/\/s\d+x\d+\//g, "/");
+    // /p1080x1080/ のようなサイズ指定を除去
+    u.pathname = u.pathname.replace(/\/p\d+x\d+\//g, "/");
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
+// GraphQLノードから最良の画像URLを取得（display_resources > display_url）
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getBestGraphQLImageUrl(node: any): string | null {
+  // display_resources（複数解像度）から最大のものを優先
+  const resources = node?.display_resources;
+  if (resources && Array.isArray(resources) && resources.length > 0) {
+    const best = resources.reduce(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (a: any, b: any) => ((a.config_width ?? 0) > (b.config_width ?? 0) ? a : b)
+    );
+    if (best.src) return best.src;
+  }
+  return node?.display_url ?? null;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractGraphQLMedia(media: any): FetchResult | null {
   if (!media) return null;
@@ -104,11 +135,12 @@ function extractGraphQLMedia(media: any): FetchResult | null {
   const edges = media.edge_sidecar_to_children?.edges;
   if (edges && edges.length > 0) {
     for (const edge of edges) {
-      const node = edge.node;
-      if (node?.display_url) imageUrls.push(node.display_url);
+      const url = getBestGraphQLImageUrl(edge.node);
+      if (url) imageUrls.push(url);
     }
-  } else if (media.display_url) {
-    imageUrls.push(media.display_url);
+  } else {
+    const url = getBestGraphQLImageUrl(media);
+    if (url) imageUrls.push(url);
   }
 
   const caption =
@@ -683,18 +715,31 @@ export async function POST(request: NextRequest) {
     for (const imageUrl of result.imageUrls) {
       let buffer: Buffer;
       try {
-        const imgRes = await fetch(imageUrl, {
-          headers: {
-            "User-Agent": BROWSER_UA,
-            Referer: "https://www.instagram.com/",
-          },
-          signal: AbortSignal.timeout(15000),
-        });
-        if (!imgRes.ok) {
-          console.error(`[IG] Image download failed: ${imgRes.status} for ${imageUrl.slice(0, 80)}`);
+        // クロップ除去URLを優先し、失敗時はオリジナルURLにフォールバック
+        const uncroppedUrl = removeInstagramCrop(imageUrl);
+        const urlsToTry = uncroppedUrl !== imageUrl
+          ? [uncroppedUrl, imageUrl]
+          : [imageUrl];
+
+        let downloaded = false;
+        for (const tryUrl of urlsToTry) {
+          const imgRes = await fetch(tryUrl, {
+            headers: {
+              "User-Agent": BROWSER_UA,
+              Referer: "https://www.instagram.com/",
+            },
+            signal: AbortSignal.timeout(15000),
+          });
+          if (imgRes.ok) {
+            buffer = Buffer.from(await imgRes.arrayBuffer());
+            downloaded = true;
+            break;
+          }
+        }
+        if (!downloaded) {
+          console.error(`[IG] Image download failed for ${imageUrl.slice(0, 80)}`);
           continue;
         }
-        buffer = Buffer.from(await imgRes.arrayBuffer());
       } catch (e) {
         console.error("[IG] Image download error:", e);
         continue;
