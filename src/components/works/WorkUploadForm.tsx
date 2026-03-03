@@ -401,7 +401,7 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="max-w-4xl mx-auto px-4 py-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="max-w-lg mx-auto px-4 py-6">
       <h1 className="text-xl font-bold text-komapara-text mb-6">
         作品を投稿する
       </h1>
@@ -513,11 +513,11 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
               className="relative"
             >
               {panel.preview ? (
-                <div className="relative rounded-lg overflow-hidden border border-komapara-border">
+                <div className="relative rounded-lg border border-komapara-border bg-gray-50">
                   <img
                     src={panel.preview}
                     alt={`${index + 1}コマ目`}
-                    className={`w-full transition-opacity ${panel.uploading ? "opacity-50" : ""}`}
+                    className={`w-full h-auto max-h-[480px] object-contain rounded-lg transition-opacity ${panel.uploading ? "opacity-50" : ""}`}
                   />
                   {panel.uploading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30">
