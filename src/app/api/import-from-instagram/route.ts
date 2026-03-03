@@ -361,13 +361,35 @@ async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | nu
     if (!res.ok) return null;
     const html = await res.text();
     const imageUrls: string[] = [];
+    const seen = new Set<string>();
 
-    // OGイメージのみ取得（ld+jsonやdisplay_urlは他の投稿の画像を拾うため使わない）
-    const ogImage = html.match(
-      /<meta\s+(?:property|name)="og:image"\s+content="([^"]*?)"/
-    )?.[1];
-    if (ogImage) {
-      imageUrls.push(unescapeUrl(ogImage));
+    // 1) <script type="application/ld+json"> から画像取得（投稿固有の構造化データ）
+    const ldJsonRegex = /<script\s+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g;
+    let ldMatch;
+    while ((ldMatch = ldJsonRegex.exec(html)) !== null) {
+      try {
+        const ld = JSON.parse(ldMatch[1]);
+        const images = ld.image ?? ld.contentUrl ?? ld.thumbnailUrl;
+        if (Array.isArray(images)) {
+          for (const img of images) {
+            const u = typeof img === "string" ? img : img?.url;
+            if (u && !seen.has(u)) { seen.add(u); imageUrls.push(u); }
+          }
+        } else if (typeof images === "string" && !seen.has(images)) {
+          seen.add(images); imageUrls.push(images);
+        }
+      } catch { /* ignore */ }
+    }
+
+    // 2) OGイメージ（フォールバック）
+    if (imageUrls.length === 0) {
+      const ogImage = html.match(
+        /<meta\s+(?:property|name)="og:image"\s+content="([^"]*?)"/
+      )?.[1];
+      if (ogImage) {
+        const u = unescapeUrl(ogImage);
+        if (!seen.has(u)) { seen.add(u); imageUrls.push(u); }
+      }
     }
 
     if (imageUrls.length === 0) return null;
@@ -397,6 +419,89 @@ async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | nu
     console.warn("[IG] Page scraping failed:", e);
     return null;
   }
+}
+
+// ============================================================
+// 戦略7: img_index を巡回して OG画像を1枚ずつ取得（最終フォールバック）
+// ============================================================
+
+// OGタグ抽出（property/content の順序が逆のパターンにも対応）
+function extractOgTag(html: string, property: string): string | null {
+  const p = property.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const m1 = html.match(new RegExp(`<meta\\s+(?:property|name)="${p}"\\s+content="([^"]*?)"`, "i"));
+  if (m1) return m1[1];
+  const m2 = html.match(new RegExp(`<meta\\s+content="([^"]*?)"\\s+(?:property|name)="${p}"`, "i"));
+  return m2 ? m2[1] : null;
+}
+
+async function fetchViaImgIndex(shortcode: string): Promise<FetchResult | null> {
+  const imageUrls: string[] = [];
+  const seen = new Set<string>();
+  let text = "";
+  let author = "";
+  const MAX_INDEX = 16;
+
+  for (let idx = 1; idx <= MAX_INDEX; idx++) {
+    try {
+      const url = `https://www.instagram.com/p/${shortcode}/?img_index=${idx}`;
+      const res = await fetch(url, {
+        headers: {
+          "User-Agent": BROWSER_UA,
+          Accept: "text/html,application/xhtml+xml",
+          "Accept-Language": "ja-JP,ja;q=0.9,en;q=0.8",
+          "Sec-Fetch-Dest": "document",
+          "Sec-Fetch-Mode": "navigate",
+          "Sec-Fetch-Site": "none",
+        },
+        redirect: "follow",
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (!res.ok) break;
+      const html = await res.text();
+
+      // ページが投稿ページか確認（ログインやフィードへのリダイレクトを除外）
+      if (!html.includes(shortcode) && !html.includes("og:image")) {
+        console.warn(`[IG] img_index=${idx}: page does not contain shortcode`);
+        break;
+      }
+
+      const ogImage = extractOgTag(html, "og:image");
+      if (!ogImage) break;
+
+      const imgUrl = unescapeUrl(ogImage);
+
+      // Instagram CDN画像でない場合はスキップ
+      if (!imgUrl.includes("cdninstagram") && !imgUrl.includes("fbcdn")) {
+        console.warn(`[IG] img_index=${idx}: og:image is not from Instagram CDN`);
+        break;
+      }
+
+      // 同じ画像が返ってきたらカルーセル終端
+      if (seen.has(imgUrl)) break;
+      seen.add(imgUrl);
+      imageUrls.push(imgUrl);
+
+      // 1枚目でテキスト・author取得
+      if (idx === 1) {
+        const ogDesc = extractOgTag(html, "og:description");
+        const ogTitle = extractOgTag(html, "og:title");
+        text = ogDesc ? unescapeUrl(ogDesc) : "";
+        if (ogTitle) {
+          const m =
+            ogTitle.match(/^(.+?)(?:\s+on\s+Instagram|\s*はInstagram)/) ??
+            ogTitle.match(/^@?([^:–—\-]+)/);
+          if (m) author = m[1].replace(/^@/, "").trim();
+        }
+      }
+    } catch (e) {
+      console.warn(`[IG] img_index=${idx} failed:`, e);
+      break;
+    }
+  }
+
+  console.log(`[IG] img_index: collected ${imageUrls.length} images`);
+  return imageUrls.length > 0 ? { text, imageUrls, author } : null;
 }
 
 // ============================================================
@@ -489,6 +594,14 @@ export async function POST(request: NextRequest) {
       // 1枚だけ取れた場合は保持しつつ次の戦略も試す
       if (r && count === 1 && !result) {
         result = r;
+      }
+    }
+
+    // 1枚以下しか取れなかった場合、img_indexで巡回取得を試みる
+    if (!result || result.imageUrls.length <= 1) {
+      const imgIndexResult = await fetchViaImgIndex(shortcode);
+      if (imgIndexResult && imgIndexResult.imageUrls.length > (result?.imageUrls.length ?? 0)) {
+        result = imgIndexResult;
       }
     }
 
