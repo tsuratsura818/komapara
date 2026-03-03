@@ -99,12 +99,32 @@ function extractJsonAfterKey(str: string, key: string, fromIdx = 0): string | nu
 function removeInstagramCrop(url: string): string {
   try {
     const u = new URL(url);
-    // /c0.180.1440.1440a/ のようなクロップ指定を除去
-    u.pathname = u.pathname.replace(/\/c[\d.]+a?\//g, "/");
-    // /s1080x1080/ のようなサイズ指定を除去
-    u.pathname = u.pathname.replace(/\/s\d+x\d+\//g, "/");
-    // /p1080x1080/ のようなサイズ指定を除去
-    u.pathname = u.pathname.replace(/\/p\d+x\d+\//g, "/");
+
+    // 1) パス内のクロップ・サイズ指定を除去
+    u.pathname = u.pathname
+      .replace(/\/c[\d.]+a?\//g, "/")
+      .replace(/\/s\d+x\d+\//g, "/")
+      .replace(/\/p\d+x\d+\//g, "/");
+
+    // 2) stp クエリパラメータ内のクロップ・サイズ指定を除去
+    //    例: stp=dst-jpg_e35_s1080x1080_cr0.0.1080.1080
+    //    例: stp=c0.0.1080.1080.dst-jpg_e35_s1080x1080
+    const stp = u.searchParams.get("stp");
+    if (stp) {
+      const cleaned = stp
+        .replace(/^c[\d.]+\./, "")       // 先頭 c0.0.1080.1080. (crop prefix)
+        .replace(/_cr[\d.]+/g, "")       // _cr0.0.1080.1080 (crop)
+        .replace(/_[sp]\d+x\d+/g, "")   // _s1080x1080 / _p1080x1080 (size)
+        .replace(/^[sp]\d+x\d+_?/, "")  // 先頭 s1080x1080 (size prefix)
+        .replace(/__+/g, "_")
+        .replace(/^_|_$/g, "");
+      if (cleaned) {
+        u.searchParams.set("stp", cleaned);
+      } else {
+        u.searchParams.delete("stp");
+      }
+    }
+
     return u.toString();
   } catch {
     return url;
