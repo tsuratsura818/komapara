@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コマパラ サービス企画書</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;900&display=swap');
+
+  :root {
+    --purple: #8B5CF6;
+    --blue: #3B82F6;
+    --pink: #EC4899;
+    --green: #10B981;
+    --orange: #F97316;
+    --dark: #1F2937;
+    --muted: #6B7280;
+    --light: #F9FAFB;
+    --border: #E5E7EB;
+    --gradient: linear-gradient(135deg, #8B5CF6, #3B82F6, #EC4899);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--dark);
+    background: var(--light);
+    line-height: 1.8;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ===== Cover ===== */
+  .cover {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    background: var(--gradient);
+    color: #fff;
+    padding: 60px 40px;
+    position: relative; overflow: hidden;
+  }
+  .cover::before {
+    content: ''; position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .cover::after {
+    content: ''; position: absolute;
+    bottom: -150px; left: -80px;
+    width: 500px; height: 500px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .cover-content { position: relative; z-index: 1; }
+  .cover h1 { font-size: 3.5rem; font-weight: 900; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .cover .tagline { font-size: 1.4rem; font-weight: 300; opacity: 0.9; margin-bottom: 40px; }
+  .cover .meta { font-size: 0.9rem; opacity: 0.7; }
+  .cover .doc-type {
+    display: inline-block;
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 100px;
+    padding: 8px 32px;
+    font-size: 1.1rem; font-weight: 500;
+    margin-bottom: 24px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== Common ===== */
+  .section { max-width: 1100px; margin: 0 auto; padding: 80px 40px; }
+  .section-divider { height: 4px; background: var(--gradient); max-width: 1020px; margin: 0 auto; border-radius: 2px; }
+  .section-number {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    background: var(--gradient); color: #fff;
+    border-radius: 50%; font-size: 1rem; font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .section h2 { font-size: 2rem; font-weight: 700; margin-bottom: 32px; }
+  .section h3 { font-size: 1.3rem; font-weight: 600; margin: 36px 0 16px; }
+  .section p { color: var(--muted); margin-bottom: 16px; font-size: 1.05rem; }
+  .section-desc { font-size: 1.1rem; color: var(--muted); margin-bottom: 40px; max-width: 800px; }
+
+  /* ===== Illustration ===== */
+  .illust-box {
+    background: #fff; border-radius: 20px;
+    padding: 40px; border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 40px;
+    margin: 24px 0;
+  }
+  .illust-box.reverse { flex-direction: row-reverse; }
+  .illust-box .illust-svg { flex-shrink: 0; width: 300px; }
+  .illust-box .illust-text { flex: 1; }
+  .illust-box .illust-text h4 { font-size: 1.35rem; font-weight: 700; margin-bottom: 12px; }
+  .illust-box .illust-text p { font-size: 1.05rem; color: var(--muted); margin-bottom: 12px; line-height: 1.9; }
+
+  /* ===== Cards ===== */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin: 24px 0; }
+  .card { background: #fff; border-radius: 16px; padding: 28px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .card-icon { font-size: 2rem; margin-bottom: 12px; }
+  .card h4 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
+  .card p { font-size: 1rem; color: var(--muted); margin: 0; }
+
+  /* ===== Overview ===== */
+  .overview-box { background: #fff; border-radius: 16px; padding: 32px; border: 1px solid var(--border); margin-bottom: 32px; }
+  .overview-row { display: flex; border-bottom: 1px solid var(--border); padding: 12px 0; }
+  .overview-row:last-child { border-bottom: none; }
+  .overview-label { width: 160px; font-weight: 600; font-size: 1rem; flex-shrink: 0; }
+  .overview-value { flex: 1; color: var(--muted); font-size: 1rem; }
+
+  /* ===== Pitch ===== */
+  .pitch-box { background: var(--gradient); color: #fff; border-radius: 16px; padding: 40px; text-align: center; margin: 32px 0; }
+  .pitch-box p { color: rgba(255,255,255,0.95); font-size: 1.2rem; line-height: 2; max-width: 800px; margin: 0 auto; }
+
+  /* ===== Table ===== */
+  .styled-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 24px 0; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); font-size: 1rem; }
+  .styled-table thead { background: linear-gradient(135deg, #8B5CF6, #3B82F6); color: #fff; }
+  .styled-table th { padding: 14px 16px; text-align: left; font-weight: 600; font-size: 0.95rem; }
+  .styled-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .styled-table tbody tr:last-child td { border-bottom: none; }
+  .styled-table tbody tr:hover { background: #F9FAFB; }
+  .compare-table td:first-child { font-weight: 600; color: var(--dark); }
+  .compare-table .best { color: var(--purple); font-weight: 700; }
+
+  /* ===== Problem Section ===== */
+  .problem-section { margin: 32px 0; }
+  .problem-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .problem-icon-circle {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+  }
+  .problem-icon-circle.reader { background: #DBEAFE; }
+  .problem-icon-circle.creator-x { background: #F3E8FF; }
+  .problem-icon-circle.creator-ig { background: #FCE7F3; }
+  .problem-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .problem-card {
+    background: #fff; border-radius: 16px; padding: 24px;
+    border-left: 4px solid; position: relative;
+  }
+  .problem-card.reader { border-color: var(--blue); }
+  .problem-card.creator-x { border-color: var(--purple); }
+  .problem-card.creator-ig { border-color: var(--pink); }
+  .problem-card .label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .problem-card.reader .label { color: var(--blue); }
+  .problem-card.creator-x .label { color: var(--purple); }
+  .problem-card.creator-ig .label { color: var(--pink); }
+  .problem-card h4 { margin-bottom: 6px; font-size: 1rem; }
+  .problem-card .problem-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+  .problem-card .solution { display: flex; align-items: flex-start; gap: 8px; background: #F0FDF4; border-radius: 8px; padding: 10px 12px; }
+  .problem-card .solution-icon { color: var(--green); font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .problem-card .solution p { font-size: 0.95rem; color: #065F46; margin: 0; font-weight: 500; }
+
+  /* ===== Pillar ===== */
+  .pillar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 32px 0; }
+  .pillar {
+    text-align: center; background: #fff; border-radius: 20px;
+    padding: 40px 24px; border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .pillar::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gradient); }
+  .pillar .icon { font-size: 3rem; margin-bottom: 16px; }
+  .pillar h4 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+  .pillar p { font-size: 1.05rem; color: var(--muted); margin: 0; }
+
+  /* ===== Flow Visual ===== */
+  .flow-visual {
+    background: #fff; border-radius: 20px; padding: 32px 20px;
+    border: 1px solid var(--border); margin: 24px 0;
+  }
+  .flow-visual h4 { text-align: center; font-size: 1.25rem; margin-bottom: 32px; }
+  .flow-steps { display: flex; align-items: flex-start; gap: 8px; justify-content: center; flex-wrap: nowrap; }
+  .flow-step-card {
+    text-align: center; width: 100px; flex-shrink: 0;
+  }
+  .flow-step-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 8px; font-size: 1.3rem;
+  }
+  .flow-step-icon.blue { background: #DBEAFE; }
+  .flow-step-icon.purple { background: #F3E8FF; }
+  .flow-step-icon.pink { background: #FCE7F3; }
+  .flow-step-icon.green { background: #D1FAE5; }
+  .flow-step-icon.orange { background: #FEF3C7; }
+  .flow-step-icon.gradient { background: var(--gradient); color: #fff; }
+  .flow-step-label { font-size: 0.9rem; font-weight: 600; color: var(--dark); }
+  .flow-step-desc { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+  .flow-connector { display: flex; align-items: center; padding-top: 16px; color: var(--border); font-size: 1.2rem; flex-shrink: 0; }
+
+  /* ===== Feature Showcase ===== */
+  .feature-showcase {
+    background: #fff; border-radius: 20px;
+    padding: 32px; border: 1px solid var(--border);
+    display: flex; gap: 32px; align-items: center;
+    margin: 20px 0;
+  }
+  .feature-showcase.reverse { flex-direction: row-reverse; }
+  .feature-mockup {
+    width: 320px; flex-shrink: 0;
+    border-radius: 16px; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .feature-mockup svg { display: block; width: 100%; height: auto; }
+  .feature-info { flex: 1; }
+  .feature-badge {
+    display: inline-block; padding: 4px 12px;
+    border-radius: 100px; font-size: 0.7rem; font-weight: 700;
+    margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .feature-badge.reader { background: #DBEAFE; color: #1E40AF; }
+  .feature-badge.creator { background: #FCE7F3; color: #9D174D; }
+  .feature-info h4 { font-size: 1.35rem; font-weight: 700; margin-bottom: 10px; }
+  .feature-info p { font-size: 1.05rem; color: var(--muted); margin-bottom: 14px; line-height: 1.9; }
+  .feature-points { list-style: none; }
+  .feature-points li {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 1rem; color: var(--dark);
+    padding: 5px 0;
+  }
+  .feature-points li::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--gradient); flex-shrink: 0; }
+
+  /* ===== Revenue / KPI / Tech / etc ===== */
+  .revenue-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 24px 0; }
+  .revenue-card { background: #fff; border-radius: 16px; padding: 28px; text-align: center; border: 1px solid var(--border); }
+  .revenue-card .amount { font-size: 2rem; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .timeline { position: relative; padding-left: 32px; margin: 24px 0; }
+  .timeline::before { content: ''; position: absolute; left: 11px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .timeline-item { position: relative; margin-bottom: 28px; }
+  .timeline-dot { position: absolute; left: -32px; top: 4px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: #fff; }
+  .timeline-dot.done { background: #10B981; }
+  .timeline-dot.current { background: var(--gradient); box-shadow: 0 0 0 4px rgba(139,92,246,0.2); }
+  .timeline-dot.planned { background: var(--border); }
+  .timeline-date { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+  .timeline-title { font-weight: 600; margin-top: 2px; }
+
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 0.75rem; font-weight: 600; }
+  .badge-done { background: #D1FAE5; color: #065F46; }
+  .badge-progress { background: #DBEAFE; color: #1E40AF; }
+  .badge-planned { background: #F3F4F6; color: #6B7280; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 24px 0; }
+  .kpi-card { background: #fff; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid var(--border); }
+  .kpi-value { font-size: 1.6rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .kpi-label { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  .uv-list { list-style: none; margin: 24px 0; }
+  .uv-list li { display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .uv-list li:last-child { border-bottom: none; }
+  .uv-num { width: 32px; height: 32px; background: var(--gradient); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+  .uv-text strong { display: block; margin-bottom: 4px; color: var(--dark); font-size: 1.1rem; }
+  .uv-text span { font-size: 1rem; color: var(--muted); }
+
+  .tech-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0; }
+  .tech-item { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+  .tech-item .tech-label { font-size: 0.75rem; font-weight: 600; color: var(--purple); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .tech-item .tech-value { font-weight: 500; font-size: 1.05rem; }
+
+  .summary-box { background: var(--gradient); color: #fff; border-radius: 20px; padding: 48px; text-align: center; margin: 32px 0; }
+  .summary-box h3 { color: #fff; font-size: 1.6rem; margin-bottom: 16px; }
+  .summary-box p { color: rgba(255,255,255,0.9); font-size: 1.15rem; max-width: 800px; margin: 0 auto; line-height: 2; }
+
+  /* ===== Ecosystem Diagram ===== */
+  .ecosystem { background: #fff; border-radius: 20px; padding: 48px; border: 1px solid var(--border); margin: 32px 0; text-align: center; }
+  .ecosystem h4 { font-size: 1.1rem; margin-bottom: 24px; }
+  .eco-row { display: flex; justify-content: center; align-items: center; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+  .eco-node {
+    width: 140px; padding: 16px; border-radius: 16px;
+    text-align: center; font-size: 0.85rem; font-weight: 600;
+  }
+  .eco-node.sns { background: #F3E8FF; color: #7C3AED; }
+  .eco-node.platform { background: var(--gradient); color: #fff; font-size: 1.1rem; width: 180px; padding: 20px; border-radius: 20px; }
+  .eco-node.reader { background: #DBEAFE; color: #1E40AF; }
+  .eco-node.creator { background: #FCE7F3; color: #9D174D; }
+  .eco-node.money { background: #D1FAE5; color: #065F46; }
+  .eco-arrow { font-size: 1.5rem; color: var(--muted); }
+
+  @media print {
+    .cover { min-height: auto; padding: 80px 40px; break-after: page; }
+    .section { break-inside: avoid; padding: 40px; }
+    body { background: #fff; }
+  }
+  @media (max-width: 768px) {
+    .cover h1 { font-size: 2.2rem; }
+    .pillar-grid, .revenue-grid, .tech-grid { grid-template-columns: 1fr; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .feature-showcase, .feature-showcase.reverse, .illust-box, .illust-box.reverse { flex-direction: column; }
+    .feature-mockup, .illust-box .illust-svg { width: 100%; }
+    .section { padding: 48px 24px; }
+    .flow-steps { flex-direction: column; align-items: center; }
+    .flow-connector { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER ==================== -->
+<div class="cover">
+  <div class="cover-content">
+    <div class="doc-type">SERVICE PLAN</div>
+    <h1>コマパラ</h1>
+    <p class="tagline">4コマの世界を、もっと楽しく。</p>
+    <p class="meta">サービス企画書 | 2026.03</p>
+  </div>
+</div>
+
+<!-- ==================== 1. サービス概要 ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">1</div>
+  <h2>サービス概要</h2>
+
+  <div class="overview-box">
+    <div class="overview-row"><div class="overview-label">サービス名</div><div class="overview-value"><strong>コマパラ</strong>（Komapara）</div></div>
+    <div class="overview-row"><div class="overview-label">ジャンル</div><div class="overview-value">4コマ漫画ポータルサイト</div></div>
+    <div class="overview-row"><div class="overview-label">ポジション</div><div class="overview-value">4コマ漫画に特化した「読む・描く・つながる」プラットフォーム</div></div>
+    <div class="overview-row"><div class="overview-label">URL</div><div class="overview-value">https://komapara.vercel.app</div></div>
+  </div>
+
+  <div class="pitch-box">
+    <p>XやInstagramに散らばる4コマ漫画を一箇所に集め、<br>
+    読者には「いつでもサクッと楽しめる4コマ体験」を、<br>
+    クリエイターには「作品を届ける場所と収益化の手段」を提供する<br>
+    プラットフォームです。</p>
+  </div>
+
+  <!-- エコシステム図（SVG） -->
+  <div class="ecosystem" style="padding:32px 16px;">
+    <h4 style="font-size:1.3rem; margin-bottom:20px;">コマパラのエコシステム</h4>
+    <svg viewBox="0 0 960 520" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:960px; margin:0 auto; display:block;">
+      <defs>
+        <radialGradient id="igGrad" cx="30%" cy="107%" r="150%">
+          <stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/>
+          <stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/>
+          <stop offset="90%" stop-color="#285AEB"/>
+        </radialGradient>
+        <linearGradient id="kpGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#8B5CF6"/><stop offset="50%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#EC4899"/>
+        </linearGradient>
+        <marker id="ecoArr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 L2 4 Z" fill="#8B5CF6"/></marker>
+        <marker id="ecoArrGreen" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 L2 4 Z" fill="#10B981"/></marker>
+        <marker id="ecoArrPink" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 L2 4 Z" fill="#EC4899"/></marker>
+        <marker id="ecoArrBlue" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 L2 4 Z" fill="#3B82F6"/></marker>
+        <marker id="ecoArrDark" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 L2 4 Z" fill="#6B7280"/></marker>
+      </defs>
+
+      <!-- ========== ノード ========== -->
+
+      <!-- 左: クリエイター (y中央=185) -->
+      <rect x="30" y="110" width="160" height="150" rx="20" fill="#FDF2F8" stroke="#FBCFE8" stroke-width="2"/>
+      <g transform="translate(110,150)">
+        <circle cx="0" cy="0" r="26" fill="#F9A8D4" opacity="0.4"/>
+        <g transform="translate(-14,-14) scale(1.2)">
+          <path d="M3 21.5L3.5 17.5L18.5 2.5C19.3 1.7 20.7 1.7 21.5 2.5C22.3 3.3 22.3 4.7 21.5 5.5L6.5 20.5L3 21.5Z" fill="#EC4899" stroke="#9D174D" stroke-width="1"/>
+          <path d="M16 5L19 8" stroke="#9D174D" stroke-width="1"/>
+        </g>
+      </g>
+      <text x="110" y="202" text-anchor="middle" font-size="15" font-weight="700" fill="#9D174D" font-family="'Noto Sans JP', sans-serif">クリエイター</text>
+      <text x="110" y="220" text-anchor="middle" font-size="10" fill="#BE185D" font-family="'Noto Sans JP', sans-serif">4コマを描いて投稿</text>
+      <text x="110" y="242" text-anchor="middle" font-size="9" fill="#9CA3AF" font-family="'Noto Sans JP', sans-serif">直接投稿 or SNS経由</text>
+
+      <!-- 上中: X (Twitter) (中心=350,65) -->
+      <rect x="280" y="25" width="140" height="80" rx="14" fill="#fff" stroke="#E5E7EB" stroke-width="2"/>
+      <circle cx="350" cy="50" r="16" fill="#000"/>
+      <text x="350" y="56" text-anchor="middle" font-size="16" font-weight="900" fill="#fff" font-family="Arial, sans-serif">&#120143;</text>
+      <text x="350" y="88" text-anchor="middle" font-size="11" font-weight="600" fill="#1F2937" font-family="'Noto Sans JP', sans-serif">X（Twitter）</text>
+
+      <!-- 下中: Instagram (中心=350,305) -->
+      <rect x="280" y="260" width="140" height="80" rx="14" fill="#fff" stroke="#E5E7EB" stroke-width="2"/>
+      <rect x="330" y="271" width="40" height="40" rx="11" fill="url(#igGrad)"/>
+      <rect x="334.5" y="275.5" width="31" height="31" rx="7" fill="none" stroke="#fff" stroke-width="2.2"/>
+      <circle cx="350" cy="291" r="7" fill="none" stroke="#fff" stroke-width="2.2"/>
+      <circle cx="361" cy="280" r="2.2" fill="#fff"/>
+      <text x="350" y="328" text-anchor="middle" font-size="11" font-weight="600" fill="#1F2937" font-family="'Noto Sans JP', sans-serif">Instagram</text>
+
+      <!-- 中央: コマパラ (中心=580,185) -->
+      <rect x="480" y="110" width="200" height="150" rx="24" fill="url(#kpGrad)"/>
+      <rect x="496" y="120" width="168" height="32" rx="16" fill="rgba(255,255,255,0.12)"/>
+      <g transform="translate(580, 155)">
+        <rect x="-20" y="-20" width="18" height="18" rx="3" fill="rgba(255,255,255,0.85)"/>
+        <rect x="2" y="-20" width="18" height="18" rx="3" fill="rgba(255,255,255,0.65)"/>
+        <rect x="-20" y="2" width="18" height="18" rx="3" fill="rgba(255,255,255,0.65)"/>
+        <rect x="2" y="2" width="18" height="18" rx="3" fill="rgba(255,255,255,0.45)"/>
+      </g>
+      <text x="580" y="210" text-anchor="middle" font-size="26" font-weight="900" fill="#fff" font-family="'Noto Sans JP', sans-serif">コマパラ</text>
+      <text x="580" y="240" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.8)" font-family="'Noto Sans JP', sans-serif">4コマ漫画プラットフォーム</text>
+
+      <!-- 右上: 読者 (中心=780,170) -->
+      <rect x="720" y="100" width="120" height="120" rx="20" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="2"/>
+      <g transform="translate(780, 140)">
+        <circle cx="0" cy="0" r="22" fill="#BFDBFE" opacity="0.4"/>
+        <g transform="translate(-12,-10) scale(1.0)">
+          <circle cx="12" cy="5" r="4" fill="#3B82F6"/>
+          <path d="M6 12 Q12 16 18 12 L18 22 L6 22 Z" fill="#3B82F6" opacity="0.7"/>
+          <rect x="3" y="14" width="8" height="6" rx="1" fill="#1E40AF" transform="rotate(-15,7,17)"/>
+          <rect x="13" y="14" width="8" height="6" rx="1" fill="#1E40AF" transform="rotate(15,17,17)"/>
+        </g>
+      </g>
+      <text x="780" y="188" text-anchor="middle" font-size="15" font-weight="700" fill="#1E40AF" font-family="'Noto Sans JP', sans-serif">読者</text>
+      <text x="780" y="206" text-anchor="middle" font-size="10" fill="#1E40AF" font-family="'Noto Sans JP', sans-serif">4コマを楽しむ</text>
+
+      <!-- 右下: お気に入りクリエイター (中心=820,340) -->
+      <rect x="730" y="275" width="180" height="110" rx="16" fill="#FDF2F8" stroke="#F9A8D4" stroke-width="2"/>
+      <rect x="772" y="265" width="116" height="22" rx="11" fill="url(#kpGrad)"/>
+      <text x="830" y="280" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="'Noto Sans JP', sans-serif">コマパラに参加中</text>
+      <!-- 3人のアイコン -->
+      <g transform="translate(790, 325)">
+        <circle cx="0" cy="0" r="15" fill="#FBCFE8"/>
+        <g transform="translate(-7,-7) scale(0.6)">
+          <path d="M3 21.5L3.5 17.5L18.5 2.5C19.3 1.7 20.7 1.7 21.5 2.5C22.3 3.3 22.3 4.7 21.5 5.5L6.5 20.5L3 21.5Z" fill="#EC4899" stroke="#9D174D" stroke-width="1.5"/>
+        </g>
+      </g>
+      <g transform="translate(830, 320)">
+        <circle cx="0" cy="0" r="15" fill="#FBCFE8"/>
+        <g transform="translate(-7,-7) scale(0.6)">
+          <path d="M3 21.5L3.5 17.5L18.5 2.5C19.3 1.7 20.7 1.7 21.5 2.5C22.3 3.3 22.3 4.7 21.5 5.5L6.5 20.5L3 21.5Z" fill="#EC4899" stroke="#9D174D" stroke-width="1.5"/>
+        </g>
+      </g>
+      <g transform="translate(870, 325)">
+        <circle cx="0" cy="0" r="15" fill="#FBCFE8"/>
+        <g transform="translate(-7,-7) scale(0.6)">
+          <path d="M3 21.5L3.5 17.5L18.5 2.5C19.3 1.7 20.7 1.7 21.5 2.5C22.3 3.3 22.3 4.7 21.5 5.5L6.5 20.5L3 21.5Z" fill="#EC4899" stroke="#9D174D" stroke-width="1.5"/>
+        </g>
+      </g>
+      <text x="830" y="365" text-anchor="middle" font-size="11" font-weight="700" fill="#9D174D" font-family="'Noto Sans JP', sans-serif">お気に入りのクリエイター</text>
+
+      <!-- 下中央: 投げ銭・サブスク (中心=550,440) -->
+      <rect x="440" y="400" width="220" height="75" rx="16" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="2"/>
+      <g transform="translate(490, 438)">
+        <circle cx="0" cy="0" r="16" fill="#FCD34D" stroke="#F59E0B" stroke-width="1.5"/>
+        <text x="0" y="5" text-anchor="middle" font-size="14" font-weight="900" fill="#92400E" font-family="Arial">&#165;</text>
+      </g>
+      <text x="590" y="432" text-anchor="middle" font-size="14" font-weight="700" fill="#065F46" font-family="'Noto Sans JP', sans-serif">投げ銭・サブスク</text>
+      <text x="590" y="454" text-anchor="middle" font-size="10" fill="#6B7280" font-family="'Noto Sans JP', sans-serif">コマパラが決済を仲介</text>
+
+      <!-- ========== 矢印 ========== -->
+
+      <!-- 1. クリエイター → X -->
+      <path d="M190 145 L278 80" stroke="#6B7280" stroke-width="2.5" fill="none" marker-end="url(#ecoArrDark)"/>
+      <rect x="200" y="88" width="68" height="20" rx="10" fill="#F3F4F6"/>
+      <text x="234" y="102" text-anchor="middle" font-size="9" font-weight="600" fill="#6B7280" font-family="'Noto Sans JP', sans-serif">SNSに投稿</text>
+
+      <!-- 2. クリエイター → Instagram -->
+      <path d="M190 225 L278 285" stroke="#6B7280" stroke-width="2.5" fill="none" marker-end="url(#ecoArrDark)"/>
+      <rect x="200" y="252" width="68" height="20" rx="10" fill="#F3F4F6"/>
+      <text x="234" y="266" text-anchor="middle" font-size="9" font-weight="600" fill="#6B7280" font-family="'Noto Sans JP', sans-serif">SNSに投稿</text>
+
+      <!-- 3. コマパラ → X (自動連携) -->
+      <path d="M478 140 Q440 70 422 65" stroke="#8B5CF6" stroke-width="3" fill="none" marker-end="url(#ecoArr)"/>
+      <rect x="430" y="80" width="58" height="20" rx="10" fill="#F3E8FF"/>
+      <text x="459" y="94" text-anchor="middle" font-size="9" font-weight="600" fill="#7C3AED" font-family="'Noto Sans JP', sans-serif">自動連携</text>
+
+      <!-- 4. コマパラ → Instagram (自動連携) -->
+      <path d="M478 235 Q440 295 422 300" stroke="#EC4899" stroke-width="3" fill="none" marker-end="url(#ecoArrPink)"/>
+      <rect x="430" y="270" width="58" height="20" rx="10" fill="#FCE7F3"/>
+      <text x="459" y="284" text-anchor="middle" font-size="9" font-weight="600" fill="#9D174D" font-family="'Noto Sans JP', sans-serif">自動連携</text>
+
+      <!-- 5. クリエイター → コマパラ (直接投稿) -->
+      <path d="M190 185 L478 185" stroke="#EC4899" stroke-width="2.5" stroke-dasharray="8 4" fill="none" marker-end="url(#ecoArrPink)"/>
+      <rect x="295" y="168" width="72" height="20" rx="10" fill="#FCE7F3"/>
+      <text x="331" y="182" text-anchor="middle" font-size="9" font-weight="600" fill="#9D174D" font-family="'Noto Sans JP', sans-serif">直接投稿も</text>
+
+      <!-- 6. コマパラ → 読者 -->
+      <path d="M680 170 L718 160" stroke="#3B82F6" stroke-width="3" fill="none" marker-end="url(#ecoArrBlue)"/>
+      <rect x="682" y="145" width="36" height="18" rx="9" fill="#DBEAFE"/>
+      <text x="700" y="158" text-anchor="middle" font-size="8" font-weight="600" fill="#1E40AF" font-family="'Noto Sans JP', sans-serif">届く</text>
+
+      <!-- 7. 読者 → お気に入りクリエイター -->
+      <path d="M790 220 L800 273" stroke="#EC4899" stroke-width="3" fill="none" marker-end="url(#ecoArrPink)"/>
+      <rect x="800" y="235" width="50" height="18" rx="9" fill="#FCE7F3"/>
+      <text x="825" y="248" text-anchor="middle" font-size="8" font-weight="700" fill="#9D174D" font-family="'Noto Sans JP', sans-serif">応援！</text>
+
+      <!-- 8. お気に入りクリエイター → 投げ銭 -->
+      <path d="M730 365 Q680 400 662 405" stroke="#10B981" stroke-width="3" fill="none" marker-end="url(#ecoArrGreen)"/>
+      <rect x="670" y="378" width="60" height="18" rx="9" fill="#ECFDF5"/>
+      <text x="700" y="391" text-anchor="middle" font-size="8" font-weight="600" fill="#065F46" font-family="'Noto Sans JP', sans-serif">投げ銭</text>
+
+      <!-- 9. 投げ銭 → クリエイター (収益バック) -->
+      <path d="M440 438 Q280 450 170 262" stroke="#10B981" stroke-width="3" fill="none" marker-end="url(#ecoArrGreen)"/>
+      <rect x="260" y="420" width="90" height="22" rx="11" fill="#ECFDF5"/>
+      <text x="305" y="435" text-anchor="middle" font-size="9" font-weight="700" fill="#065F46" font-family="'Noto Sans JP', sans-serif">収益バック</text>
+
+      <!-- ===== 好循環テキスト ===== -->
+      <text x="480" y="508" text-anchor="middle" font-size="12" font-weight="600" fill="#6B7280" font-family="'Noto Sans JP', sans-serif">&#10227; 読者が増える &#8594; 収益が増える &#8594; クリエイターが増える &#8594; 作品が増える &#8594; 読者が増える...</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ==================== 2. 解決する課題 - 読者 ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">2</div>
+  <h2>解決する課題 &#8212; 読者</h2>
+  <p class="section-desc">4コマ漫画を楽しみたい読者が、X・Instagramで抱える4つの課題をコマパラが解決します。</p>
+
+  <!-- イラスト付き課題説明 -->
+  <div class="illust-box">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- スマホ -->
+        <rect x="90" y="20" width="100" height="160" rx="12" fill="#fff" stroke="#E5E7EB" stroke-width="2"/>
+        <rect x="100" y="40" width="80" height="16" rx="4" fill="#E5E7EB"/>
+        <rect x="100" y="64" width="80" height="40" rx="4" fill="#DBEAFE"/>
+        <rect x="100" y="112" width="80" height="40" rx="4" fill="#F3E8FF"/>
+        <text x="140" y="88" text-anchor="middle" font-size="10" fill="#6B7280">4コマ</text>
+        <text x="140" y="136" text-anchor="middle" font-size="10" fill="#6B7280">4コマ</text>
+        <!-- 矢印（流れる） -->
+        <path d="M130 160 L130 180 L150 180" stroke="#EF4444" stroke-width="2" stroke-dasharray="4 2" fill="none"/>
+        <text x="200" y="184" font-size="9" fill="#EF4444" font-weight="600">流れて消える...</text>
+        <!-- X/IG ロゴ -->
+        <circle cx="40" cy="60" r="20" fill="#F3E8FF"/>
+        <text x="40" y="65" text-anchor="middle" font-size="14" font-weight="700" fill="#7C3AED">X</text>
+        <circle cx="40" cy="120" r="20" fill="#FCE7F3"/>
+        <text x="40" y="125" text-anchor="middle" font-size="14" font-weight="700" fill="#EC4899">IG</text>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128270; 課題1：4コマが見つけにくい</h4>
+      <p>XのタイムラインやInstagramのフィードでは、4コマ漫画は他の投稿に埋もれてすぐ流れてしまいます。「面白い4コマ」を探そうとしても、ハッシュタグ頼みで検索性が低い状態です。</p>
+      <div class="problem-card reader" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p><strong>ジャンル別・週間ランキング・キーワード検索</strong>で、好みの4コマがすぐ見つかる</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="illust-box reverse">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- 複数アカウント巡回 -->
+        <circle cx="60" cy="70" r="24" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+        <text x="60" y="74" text-anchor="middle" font-size="9" fill="#1E40AF" font-weight="600">作家A</text>
+        <circle cx="140" cy="50" r="24" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="2"/>
+        <text x="140" y="54" text-anchor="middle" font-size="9" fill="#7C3AED" font-weight="600">作家B</text>
+        <circle cx="220" cy="70" r="24" fill="#FCE7F3" stroke="#EC4899" stroke-width="2"/>
+        <text x="220" y="74" text-anchor="middle" font-size="9" fill="#9D174D" font-weight="600">作家C</text>
+        <!-- 矢印で巡回 -->
+        <path d="M84 70 L116 55" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+        <path d="M164 55 L196 65" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)"/>
+        <!-- 疲れた人 -->
+        <circle cx="140" cy="140" r="28" fill="#FEF3C7"/>
+        <text x="140" y="136" text-anchor="middle" font-size="20">&#128555;</text>
+        <text x="140" y="158" text-anchor="middle" font-size="8" fill="#6B7280">巡回疲れ...</text>
+        <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#6B7280"/></marker></defs>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128260; 課題2：まとめて読めない</h4>
+      <p>複数の作家をフォローしていても、XとInstagramの両方を開き、それぞれのアカウントを巡回する必要があります。「あの作家の新作出たかな？」と毎回確認するのは手間です。</p>
+      <div class="problem-card reader" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p><strong>フォロー機能＋統合フィード</strong>で、お気に入り作家の新作を一箇所で自動集約</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="illust-box">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- スクロール -->
+        <rect x="90" y="20" width="100" height="160" rx="12" fill="#fff" stroke="#E5E7EB" stroke-width="2"/>
+        <rect x="102" y="35" width="76" height="12" rx="3" fill="#E5E7EB"/>
+        <rect x="102" y="52" width="76" height="12" rx="3" fill="#E5E7EB"/>
+        <rect x="102" y="69" width="76" height="12" rx="3" fill="#E5E7EB"/>
+        <rect x="102" y="86" width="76" height="12" rx="3" fill="#E5E7EB"/>
+        <rect x="102" y="103" width="76" height="12" rx="3" fill="#E5E7EB"/>
+        <rect x="102" y="120" width="76" height="12" rx="3" fill="#E5E7EB"/>
+        <rect x="102" y="137" width="76" height="12" rx="3" fill="#E5E7EB"/>
+        <rect x="102" y="154" width="76" height="12" rx="3" fill="#E5E7EB"/>
+        <!-- 上向き矢印 -->
+        <path d="M200 160 L200 40" stroke="#EF4444" stroke-width="2" marker-end="url(#arr2)"/>
+        <text x="220" y="100" font-size="9" fill="#EF4444" font-weight="600">遡るしか<tspan x="220" dy="12">ない...</tspan></text>
+        <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 8 L4 0 L8 8" fill="#EF4444"/></marker></defs>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128218; 課題3：読み返せない</h4>
+      <p>「あの面白かった4コマ、もう一回見たい」と思っても、XやInstagramのタイムラインを延々遡るしかありません。お気に入りの作品をストックする場所がないのです。</p>
+      <div class="problem-card reader" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p><strong>マイライブラリ</strong>でいいね・閲覧履歴を自動管理、いつでも読み返せる</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="illust-box reverse">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- シリーズのコマ -->
+        <rect x="20" y="50" width="50" height="60" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+        <text x="45" y="75" text-anchor="middle" font-size="8" fill="#1E40AF" font-weight="600">第1話</text>
+        <text x="45" y="88" text-anchor="middle" font-size="7" fill="#6B7280">2/10</text>
+        <rect x="80" y="50" width="50" height="60" rx="6" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="1.5"/>
+        <text x="105" y="75" text-anchor="middle" font-size="8" fill="#7C3AED" font-weight="600">第2話</text>
+        <text x="105" y="88" text-anchor="middle" font-size="7" fill="#6B7280">2/17</text>
+        <rect x="140" y="50" width="50" height="60" rx="6" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <text x="165" y="80" text-anchor="middle" font-size="16">&#10067;</text>
+        <rect x="200" y="50" width="50" height="60" rx="6" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <text x="225" y="80" text-anchor="middle" font-size="16">&#10067;</text>
+        <!-- 困惑 -->
+        <text x="140" y="150" text-anchor="middle" font-size="11" fill="#6B7280">どこまで読んだっけ...？</text>
+        <text x="140" y="170" text-anchor="middle" font-size="20">&#129300;</text>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128279; 課題4：シリーズが追えない</h4>
+      <p>連載ものの4コマは、XやInstagramでは投稿が時系列に埋もれ、「何話まで読んだか」「次の話はどれか」がわからなくなります。</p>
+      <div class="problem-card reader" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p><strong>シリーズ機能</strong>で前後ナビ付き連載管理。途中から読んでも迷わない</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 3. 解決する課題 - Xクリエイター ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">3</div>
+  <h2>解決する課題 &#8212; Xクリエイター</h2>
+  <p class="section-desc">Xで4コマを投稿しているクリエイターが抱える課題と、コマパラによる解決策。</p>
+
+  <div class="illust-box">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- 4コマ作品 -->
+        <rect x="30" y="30" width="70" height="90" rx="8" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="1.5"/>
+        <text x="65" y="60" text-anchor="middle" font-size="20">&#128054;</text>
+        <text x="65" y="80" text-anchor="middle" font-size="8" fill="#7C3AED" font-weight="600">面白い4コマ</text>
+        <text x="65" y="95" text-anchor="middle" font-size="7" fill="#6B7280">❤️ 1,200</text>
+        <!-- 矢印 -->
+        <path d="M110 75 L145 75" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arrX1)"/>
+        <!-- コインに変わらない -->
+        <circle cx="175" cy="60" r="20" fill="#FEF3C7" stroke="#F97316" stroke-width="1.5"/>
+        <text x="175" y="65" text-anchor="middle" font-size="14">&#128176;</text>
+        <line x1="160" y1="45" x2="190" y2="75" stroke="#EF4444" stroke-width="3"/>
+        <text x="175" y="100" text-anchor="middle" font-size="8" fill="#EF4444" font-weight="600">収益化できない</text>
+        <!-- FANBOX等 -->
+        <rect x="210" y="40" width="55" height="22" rx="4" fill="#E5E7EB"/>
+        <text x="237" y="55" text-anchor="middle" font-size="7" fill="#6B7280">FANBOX</text>
+        <rect x="210" y="68" width="55" height="22" rx="4" fill="#E5E7EB"/>
+        <text x="237" y="83" text-anchor="middle" font-size="7" fill="#6B7280">BOOTH</text>
+        <text x="237" y="110" text-anchor="middle" font-size="7" fill="#9CA3AF">導線が弱い...</text>
+        <!-- 困惑 -->
+        <text x="65" y="155" text-anchor="middle" font-size="24">&#128557;</text>
+        <text x="65" y="175" text-anchor="middle" font-size="8" fill="#6B7280">クリエイター</text>
+        <defs><marker id="arrX1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#9CA3AF"/></marker></defs>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128176; 課題1：収益化の壁</h4>
+      <p>Xだけでは4コマ漫画を直接収益化できません。FANBOXやBOOTHへの導線も弱く、「面白い」が「いいね」で終わってしまい、収益に繋がらない構造です。</p>
+      <div class="problem-card creator-x" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p>コマパラ上で<strong>投げ銭・月額サブスク</strong>を直接提供。作品を読んだ流れでそのまま応援へ</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="illust-box reverse">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- アルゴリズムの壁 -->
+        <rect x="20" y="40" width="100" height="120" rx="8" fill="#fff" stroke="#E5E7EB" stroke-width="1.5"/>
+        <text x="70" y="60" text-anchor="middle" font-size="10" font-weight="700" fill="#7C3AED">X Algorithm</text>
+        <!-- グラフ（不安定な線） -->
+        <polyline points="35,130 50,90 60,120 75,80 90,110 105,95" stroke="#8B5CF6" stroke-width="2" fill="none"/>
+        <text x="70" y="148" text-anchor="middle" font-size="7" fill="#6B7280">インプレッション（不安定）</text>
+        <!-- 壁 -->
+        <rect x="135" y="40" width="8" height="120" rx="2" fill="#E5E7EB"/>
+        <text x="139" y="30" text-anchor="middle" font-size="7" fill="#EF4444" font-weight="600">壁</text>
+        <!-- フォロワー外の人々 -->
+        <circle cx="180" cy="70" r="14" fill="#DBEAFE"/>
+        <text x="180" y="74" text-anchor="middle" font-size="10">&#128100;</text>
+        <circle cx="215" cy="85" r="14" fill="#DBEAFE"/>
+        <text x="215" y="89" text-anchor="middle" font-size="10">&#128100;</text>
+        <circle cx="250" cy="65" r="14" fill="#DBEAFE"/>
+        <text x="250" y="69" text-anchor="middle" font-size="10">&#128100;</text>
+        <circle cx="195" cy="120" r="14" fill="#DBEAFE"/>
+        <text x="195" y="124" text-anchor="middle" font-size="10">&#128100;</text>
+        <circle cx="240" cy="115" r="14" fill="#DBEAFE"/>
+        <text x="240" y="119" text-anchor="middle" font-size="10">&#128100;</text>
+        <text x="215" y="155" text-anchor="middle" font-size="8" fill="#EF4444" font-weight="600">新規読者に届かない</text>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128260; 課題2：リーチの限界</h4>
+      <p>Xのアルゴリズムに完全に依存しており、フォロワー外への露出が不安定です。良い作品でもアルゴリズムに乗らなければ新規読者に届きません。</p>
+      <div class="problem-card creator-x" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p><strong>ランキング・ジャンル別</strong>ページで、フォロワー外の新規読者に自動露出</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="illust-box">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- Xのいいねだけ -->
+        <rect x="30" y="30" width="100" height="60" rx="10" fill="#fff" stroke="#E5E7EB" stroke-width="1.5"/>
+        <text x="80" y="55" text-anchor="middle" font-size="9" fill="#1F2937" font-weight="600">Xの反応</text>
+        <text x="80" y="75" text-anchor="middle" font-size="20">&#10084;&#65039;</text>
+        <text x="80" y="105" text-anchor="middle" font-size="8" fill="#9CA3AF">「いいね」だけ...</text>
+        <!-- コマパラの5種 -->
+        <rect x="150" y="20" width="115" height="80" rx="10" fill="#fff" stroke="#8B5CF6" stroke-width="2"/>
+        <text x="207" y="40" text-anchor="middle" font-size="9" fill="#8B5CF6" font-weight="700">コマパラの反応</text>
+        <text x="168" y="68" font-size="16">&#10084;&#65039;</text>
+        <text x="188" y="68" font-size="16">&#128514;</text>
+        <text x="208" y="68" font-size="16">&#128546;</text>
+        <text x="228" y="68" font-size="16">&#129309;</text>
+        <text x="248" y="68" font-size="16">&#10024;</text>
+        <text x="207" y="90" text-anchor="middle" font-size="7" fill="#7C3AED">感情が具体的に伝わる！</text>
+        <!-- クリエイターの気持ち -->
+        <text x="80" y="140" text-anchor="middle" font-size="9" fill="#6B7280">笑った？ 泣いた？ 共感？</text>
+        <text x="80" y="170" text-anchor="middle" font-size="24">&#129300;</text>
+        <path d="M135 140 L160 110" stroke="#10B981" stroke-width="2" stroke-dasharray="4 2"/>
+        <text x="200" y="130" text-anchor="middle" font-size="9" fill="#10B981" font-weight="600">解決！</text>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128172; 課題3：反応が浅い</h4>
+      <p>Xの「いいね」だけでは、読者が笑ったのか、泣いたのか、共感したのかがわかりません。クリエイターにとって、読者の感情は次の作品を描くための大切なモチベーションです。</p>
+      <div class="problem-card creator-x" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p><strong>5種リアクション</strong>（&#10084;&#65039;&#128514;&#128546;&#129309;&#10024;）＋コメントで具体的フィードバック</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="illust-box reverse">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- 手動で再投稿 -->
+        <rect x="20" y="30" width="70" height="50" rx="8" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="1.5"/>
+        <text x="55" y="50" text-anchor="middle" font-size="12" font-weight="900" fill="#7C3AED">X</text>
+        <text x="55" y="65" text-anchor="middle" font-size="7" fill="#6B7280">投稿済み</text>
+        <!-- 矢印（手動） -->
+        <path d="M95 55 L125 55" stroke="#EF4444" stroke-width="2" stroke-dasharray="4 2"/>
+        <text x="110" y="48" text-anchor="middle" font-size="7" fill="#EF4444">手動</text>
+        <!-- pixiv -->
+        <rect x="130" y="30" width="60" height="50" rx="8" fill="#E5E7EB"/>
+        <text x="160" y="55" text-anchor="middle" font-size="7" fill="#6B7280">pixiv</text>
+        <text x="160" y="68" text-anchor="middle" font-size="7" fill="#6B7280">再投稿...</text>
+        <!-- 矢印（手動） -->
+        <path d="M195 55 L215 55" stroke="#EF4444" stroke-width="2" stroke-dasharray="4 2"/>
+        <text x="205" y="48" text-anchor="middle" font-size="7" fill="#EF4444">手動</text>
+        <!-- ニコニコ -->
+        <rect x="220" y="30" width="50" height="50" rx="8" fill="#E5E7EB"/>
+        <text x="245" y="55" text-anchor="middle" font-size="7" fill="#6B7280">ニコニコ</text>
+        <text x="245" y="68" text-anchor="middle" font-size="7" fill="#6B7280">再投稿...</text>
+        <!-- 疲れた -->
+        <text x="140" y="110" text-anchor="middle" font-size="24">&#128553;</text>
+        <text x="140" y="130" text-anchor="middle" font-size="9" fill="#EF4444" font-weight="600">全部手動で二度手間！</text>
+        <!-- コマパラの解決 -->
+        <rect x="60" y="145" width="160" height="40" rx="10" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+        <text x="140" y="163" text-anchor="middle" font-size="8" fill="#065F46" font-weight="600">&#10003; コマパラ：URLを貼るだけで自動取り込み</text>
+        <text x="140" y="177" text-anchor="middle" font-size="7" fill="#065F46">バッチ一括連携も対応</text>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128247; 課題4：投稿の二度手間</h4>
+      <p>X以外のプラットフォームにも作品を展開したいと思っても、毎回手動で再投稿するのは大きな負担です。クリエイターの時間は作品制作に使うべきです。</p>
+      <div class="problem-card creator-x" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p>X投稿URLを貼るだけで<strong>ワンタップ自動インポート</strong>。バッチ一括連携も可能</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 4. 解決する課題 - Instagramクリエイター ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">4</div>
+  <h2>解決する課題 &#8212; Instagramクリエイター</h2>
+  <p class="section-desc">Instagramで4コマを投稿しているクリエイター特有の課題と、コマパラによる解決策。</p>
+
+  <div class="illust-box">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- IG投稿 -->
+        <rect x="20" y="25" width="100" height="80" rx="10" fill="#fff" stroke="#E5E7EB" stroke-width="1.5"/>
+        <rect x="25" y="30" width="90" height="50" rx="6" fill="#FCE7F3"/>
+        <text x="70" y="60" text-anchor="middle" font-size="16">&#128054;</text>
+        <text x="70" y="98" text-anchor="middle" font-size="8" fill="#1F2937" font-weight="600">面白い4コマ漫画</text>
+        <!-- リンク不可 -->
+        <rect x="30" y="115" width="80" height="22" rx="4" fill="#FEE2E2" stroke="#EF4444" stroke-width="1"/>
+        <text x="70" y="130" text-anchor="middle" font-size="7" fill="#EF4444" font-weight="600">&#128279; リンク貼れない</text>
+        <!-- 右側：導線の弱さ -->
+        <path d="M125 65 L150 45" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <path d="M125 65 L150 65" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <path d="M125 65 L150 85" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <!-- 目的地 -->
+        <rect x="155" y="30" width="55" height="22" rx="4" fill="#E5E7EB"/>
+        <text x="182" y="45" text-anchor="middle" font-size="7" fill="#6B7280">&#128176; 収益化</text>
+        <rect x="155" y="55" width="55" height="22" rx="4" fill="#E5E7EB"/>
+        <text x="182" y="70" text-anchor="middle" font-size="7" fill="#6B7280">&#127760; 自サイト</text>
+        <rect x="155" y="80" width="55" height="22" rx="4" fill="#E5E7EB"/>
+        <text x="182" y="95" text-anchor="middle" font-size="7" fill="#6B7280">&#128101; フォロー</text>
+        <!-- NG -->
+        <text x="230" y="50" font-size="14" fill="#EF4444">&#10060;</text>
+        <text x="230" y="75" font-size="14" fill="#EF4444">&#10060;</text>
+        <text x="230" y="100" font-size="14" fill="#EF4444">&#10060;</text>
+        <!-- プロフのリンク1つだけ -->
+        <rect x="140" y="120" width="130" height="30" rx="6" fill="#FEF3C7"/>
+        <text x="205" y="139" text-anchor="middle" font-size="7" fill="#92400E">プロフィールのリンク1つが唯一の頼り</text>
+        <text x="140" y="175" text-anchor="middle" font-size="9" fill="#EF4444" font-weight="600">外部への導線がほぼゼロ</text>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128279; 課題1：リンク導線がない</h4>
+      <p>Instagramの投稿にはリンクが貼れません。プロフィールのリンク1つだけが頼りで、収益化や自サイトへの導線が極端に弱い構造です。</p>
+      <div class="problem-card creator-ig" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p>コマパラに集約することで<strong>作品ページから直接収益化・フォロー</strong>が可能に</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="illust-box">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- IG検索画面 -->
+        <rect x="30" y="20" width="120" height="160" rx="10" fill="#fff" stroke="#E5E7EB" stroke-width="1.5"/>
+        <rect x="38" y="28" width="104" height="20" rx="6" fill="#F3F4F6"/>
+        <text x="90" y="42" text-anchor="middle" font-size="8" fill="#9CA3AF">&#128269; 4コマ漫画</text>
+        <!-- グリッド（写真に埋もれる） -->
+        <rect x="38" y="54" width="32" height="32" rx="2" fill="#DBEAFE"/>
+        <text x="54" y="74" text-anchor="middle" font-size="10">&#127796;</text>
+        <rect x="74" y="54" width="32" height="32" rx="2" fill="#D1FAE5"/>
+        <text x="90" y="74" text-anchor="middle" font-size="10">&#127828;</text>
+        <rect x="110" y="54" width="32" height="32" rx="2" fill="#FCE7F3"/>
+        <text x="126" y="74" text-anchor="middle" font-size="8" fill="#9D174D">4コマ</text>
+        <rect x="38" y="90" width="32" height="32" rx="2" fill="#FEF3C7"/>
+        <text x="54" y="110" text-anchor="middle" font-size="10">&#128248;</text>
+        <rect x="74" y="90" width="32" height="32" rx="2" fill="#E5E7EB"/>
+        <text x="90" y="110" text-anchor="middle" font-size="10">&#127968;</text>
+        <rect x="110" y="90" width="32" height="32" rx="2" fill="#DBEAFE"/>
+        <text x="126" y="110" text-anchor="middle" font-size="10">&#128062;</text>
+        <rect x="38" y="126" width="32" height="32" rx="2" fill="#F3E8FF"/>
+        <text x="54" y="146" text-anchor="middle" font-size="10">&#127924;</text>
+        <rect x="74" y="126" width="32" height="32" rx="2" fill="#D1FAE5"/>
+        <text x="90" y="146" text-anchor="middle" font-size="10">&#127861;</text>
+        <rect x="110" y="126" width="32" height="32" rx="2" fill="#FEE2E2"/>
+        <text x="126" y="146" text-anchor="middle" font-size="8" fill="#9D174D">4コマ</text>
+        <!-- 吹き出し -->
+        <rect x="165" y="50" width="100" height="40" rx="8" fill="#FEE2E2"/>
+        <text x="215" y="68" text-anchor="middle" font-size="8" fill="#EF4444" font-weight="600">9枚中2枚だけ...</text>
+        <text x="215" y="80" text-anchor="middle" font-size="7" fill="#EF4444">写真に埋もれる</text>
+        <!-- ハッシュタグ -->
+        <text x="215" y="115" text-anchor="middle" font-size="8" fill="#9CA3AF">#4コマ漫画</text>
+        <text x="215" y="130" text-anchor="middle" font-size="8" fill="#9CA3AF">#4コマ</text>
+        <text x="215" y="145" text-anchor="middle" font-size="8" fill="#9CA3AF">#漫画好き</text>
+        <text x="215" y="165" text-anchor="middle" font-size="7" fill="#EF4444">タグ頼みの発見性</text>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128269; 課題2：検索されにくい</h4>
+      <p>Instagramの検索はビジュアル重視で、4コマ漫画は風景写真やグルメ画像に埋もれてしまいます。ハッシュタグに頼るしかなく、ターゲット読者に的確にリーチできません。</p>
+      <div class="problem-card creator-ig" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p>4コマ漫画専門のコマパラなら<strong>ジャンル・キーワード検索</strong>で的確にマッチ</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="illust-box reverse">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- IGプロフィールグリッド -->
+        <rect x="20" y="20" width="130" height="160" rx="10" fill="#fff" stroke="#E5E7EB" stroke-width="1.5"/>
+        <text x="85" y="38" text-anchor="middle" font-size="8" fill="#1F2937" font-weight="600">プロフィール</text>
+        <!-- グリッド -->
+        <rect x="28" y="46" width="36" height="36" rx="3" fill="#FCE7F3"/>
+        <text x="46" y="64" text-anchor="middle" font-size="6" fill="#9D174D">第8話</text>
+        <rect x="68" y="46" width="36" height="36" rx="3" fill="#F3E8FF"/>
+        <text x="86" y="64" text-anchor="middle" font-size="6" fill="#7C3AED">番外編</text>
+        <rect x="108" y="46" width="36" height="36" rx="3" fill="#FCE7F3"/>
+        <text x="126" y="64" text-anchor="middle" font-size="6" fill="#9D174D">第7話</text>
+        <rect x="28" y="86" width="36" height="36" rx="3" fill="#DBEAFE"/>
+        <text x="46" y="104" text-anchor="middle" font-size="6" fill="#1E40AF">イラスト</text>
+        <rect x="68" y="86" width="36" height="36" rx="3" fill="#FCE7F3"/>
+        <text x="86" y="104" text-anchor="middle" font-size="6" fill="#9D174D">第6話</text>
+        <rect x="108" y="86" width="36" height="36" rx="3" fill="#D1FAE5"/>
+        <text x="126" y="104" text-anchor="middle" font-size="6" fill="#065F46">日常</text>
+        <rect x="28" y="126" width="36" height="36" rx="3" fill="#FCE7F3"/>
+        <text x="46" y="144" text-anchor="middle" font-size="6" fill="#9D174D">第5話</text>
+        <rect x="68" y="126" width="36" height="36" rx="3" fill="#FEF3C7"/>
+        <text x="86" y="144" text-anchor="middle" font-size="6" fill="#92400E">写真</text>
+        <rect x="108" y="126" width="36" height="36" rx="3" fill="#FCE7F3"/>
+        <text x="126" y="144" text-anchor="middle" font-size="6" fill="#9D174D">第4話</text>
+        <!-- 困惑の吹き出し -->
+        <rect x="160" y="40" width="105" height="55" rx="8" fill="#FEE2E2"/>
+        <text x="212" y="58" text-anchor="middle" font-size="7" fill="#EF4444" font-weight="600">&#129300; どれが何話？</text>
+        <text x="212" y="72" text-anchor="middle" font-size="7" fill="#EF4444">話数順に読めない</text>
+        <text x="212" y="86" text-anchor="middle" font-size="7" fill="#EF4444">連載と単発が混在</text>
+        <!-- コマパラの解決 -->
+        <rect x="160" y="115" width="105" height="55" rx="8" fill="#D1FAE5"/>
+        <text x="212" y="133" text-anchor="middle" font-size="7" fill="#065F46" font-weight="600">&#10003; コマパラなら</text>
+        <text x="212" y="147" text-anchor="middle" font-size="7" fill="#065F46">シリーズ自動管理</text>
+        <text x="212" y="161" text-anchor="middle" font-size="7" fill="#065F46">前後ナビで迷わない</text>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128202; 課題3：連載管理の不在</h4>
+      <p>Instagramにはシリーズ・連載の概念がありません。プロフィールグリッドに並ぶ投稿は、連載もイラストも日常写真も混在し、読者は話数順に読むことができません。</p>
+      <div class="problem-card creator-ig" style="margin:0; border-radius:12px;">
+        <div class="solution">
+          <div class="solution-icon">&#10003;</div>
+          <p><strong>シリーズ機能</strong>で話数管理＋前後ナビ。Instagram連携で自動取り込み</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 5. ターゲットユーザー ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">5</div>
+  <h2>ターゲットユーザー</h2>
+
+  <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:3rem; margin-bottom:8px;">&#128214;</div>
+      <h4>読者</h4>
+      <p style="font-size:0.8rem;">20〜40代スマホユーザー<br>スキマ時間に4コマを楽しみたい</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:3rem; margin-bottom:8px;">&#120143;</div>
+      <h4>Xクリエイター</h4>
+      <p style="font-size:0.8rem;">Xで4コマを投稿する作家<br>新規読者獲得＋収益化を目指す</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:3rem; margin-bottom:8px;">&#128247;</div>
+      <h4>Instagramクリエイター</h4>
+      <p style="font-size:0.8rem;">Instagramで4コマを投稿する作家<br>リンク制限の壁を越えたい</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 6. サービスコンセプト ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">6</div>
+  <h2>サービスコンセプト</h2>
+
+  <div class="pillar-grid">
+    <div class="pillar">
+      <div class="icon">&#128214;</div>
+      <h4>読む</h4>
+      <p>多彩なクリエイターの4コマ漫画をいつでもどこでも楽しめる</p>
+    </div>
+    <div class="pillar">
+      <div class="icon">&#9997;&#65039;</div>
+      <h4>描く</h4>
+      <p>4枚の画像をアップロードするだけで簡単に作品を公開できる</p>
+    </div>
+    <div class="pillar">
+      <div class="icon">&#129309;</div>
+      <h4>つながる</h4>
+      <p>いいね・コメント・フォローで作家と読者がつながる</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 7. 体験フロー ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">7</div>
+  <h2>体験フロー</h2>
+  <p class="section-desc">読者・クリエイターそれぞれがコマパラをどのように使うのか、具体的な体験を図解します。</p>
+
+  <!-- 読者シナリオイラスト -->
+  <div class="illust-box">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- 通勤電車 -->
+        <rect x="15" y="50" width="250" height="80" rx="12" fill="#fff" stroke="#E5E7EB" stroke-width="1.5"/>
+        <rect x="25" y="55" width="40" height="50" rx="4" fill="#DBEAFE"/>
+        <rect x="75" y="55" width="40" height="50" rx="4" fill="#DBEAFE"/>
+        <text x="45" y="82" text-anchor="middle" font-size="8" fill="#1E40AF">窓</text>
+        <text x="95" y="82" text-anchor="middle" font-size="8" fill="#1E40AF">窓</text>
+        <!-- スマホを見る人 -->
+        <circle cx="160" cy="70" r="14" fill="#FEF3C7"/>
+        <text x="160" y="75" text-anchor="middle" font-size="16">&#128578;</text>
+        <!-- スマホ -->
+        <rect x="178" y="62" width="22" height="32" rx="4" fill="#1F2937"/>
+        <rect x="180" y="66" width="18" height="24" rx="2" fill="#8B5CF6"/>
+        <text x="189" y="82" text-anchor="middle" font-size="6" fill="#fff">4コマ</text>
+        <!-- 笑ってる -->
+        <text x="215" y="70" font-size="10" fill="#F97316">&#128514;</text>
+        <text x="230" y="82" font-size="7" fill="#6B7280">プッ</text>
+        <!-- 吹き出し -->
+        <rect x="60" y="145" width="160" height="35" rx="8" fill="#F3E8FF"/>
+        <text x="140" y="160" text-anchor="middle" font-size="8" fill="#7C3AED" font-weight="600">&#128214; 通勤中のスキマ時間に4コマを楽しむ</text>
+        <text x="140" y="174" text-anchor="middle" font-size="7" fill="#7C3AED">検索 → 発見 → 読む → 応援 の自然な流れ</text>
+        <!-- 時計 -->
+        <text x="35" y="35" font-size="10">&#9200;</text>
+        <text x="50" y="35" font-size="8" fill="#6B7280">スキマ時間 3分</text>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#128214; 読者のシナリオ</h4>
+      <p>通勤中や休憩中のスキマ時間にスマホでコマパラを開く。新着フィードで気になる4コマを発見し、没入ビューワーで作品を楽しむ。5種リアクションで気持ちを伝え、お気に入りの作家をフォロー。次回の新作は通知でキャッチ。</p>
+    </div>
+  </div>
+
+  <div class="flow-visual">
+    <h4>&#128214; 読者の体験フロー</h4>
+    <div class="flow-steps">
+      <div class="flow-step-card">
+        <div class="flow-step-icon blue">&#127758;</div>
+        <div class="flow-step-label">サイト訪問</div>
+        <div class="flow-step-desc">検索・SNSから</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon purple">&#128270;</div>
+        <div class="flow-step-label">4コマ発見</div>
+        <div class="flow-step-desc">フィード・ランキング</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon pink">&#128214;</div>
+        <div class="flow-step-label">作品を読む</div>
+        <div class="flow-step-desc">没入ビューワー</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon orange">&#128588;</div>
+        <div class="flow-step-label">リアクション</div>
+        <div class="flow-step-desc">5種スタンプ</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon green">&#128101;</div>
+        <div class="flow-step-label">フォロー</div>
+        <div class="flow-step-desc">新作通知ON</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon gradient">&#128176;</div>
+        <div class="flow-step-label">応援</div>
+        <div class="flow-step-desc">投げ銭・サブスク</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- クリエイターシナリオイラスト -->
+  <div class="illust-box reverse">
+    <div class="illust-svg">
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="200" rx="16" fill="#F8FAFC"/>
+        <!-- 作家の机 -->
+        <rect x="40" y="100" width="200" height="6" rx="2" fill="#D4C5A9"/>
+        <!-- タブレット -->
+        <rect x="60" y="40" width="80" height="55" rx="6" fill="#1F2937"/>
+        <rect x="64" y="44" width="72" height="47" rx="4" fill="#fff"/>
+        <!-- 4コマ描画中 -->
+        <rect x="68" y="48" width="30" height="16" rx="2" fill="#FCE7F3"/>
+        <rect x="68" y="68" width="30" height="16" rx="2" fill="#F3E8FF"/>
+        <rect x="102" y="48" width="30" height="16" rx="2" fill="#DBEAFE"/>
+        <rect x="102" y="68" width="30" height="16" rx="2" fill="#D1FAE5"/>
+        <!-- ペン -->
+        <line x1="148" y1="50" x2="165" y2="90" stroke="#6B7280" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="148" cy="50" r="3" fill="#8B5CF6"/>
+        <!-- 矢印 -->
+        <path d="M100 105 L100 125" stroke="#8B5CF6" stroke-width="2" marker-end="url(#arrFlow1)"/>
+        <!-- X & IG 同時投稿 -->
+        <rect x="40" y="130" width="60" height="30" rx="6" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="1.5"/>
+        <text x="70" y="148" text-anchor="middle" font-size="10" font-weight="900" fill="#7C3AED">X</text>
+        <text x="70" y="158" text-anchor="middle" font-size="6" fill="#6B7280">投稿</text>
+        <rect x="110" y="130" width="60" height="30" rx="6" fill="#FCE7F3" stroke="#EC4899" stroke-width="1.5"/>
+        <text x="140" y="148" text-anchor="middle" font-size="8" fill="#9D174D">&#128247; IG</text>
+        <text x="140" y="158" text-anchor="middle" font-size="6" fill="#6B7280">投稿</text>
+        <!-- コマパラに自動連携 -->
+        <path d="M170 145 L200 145" stroke="#10B981" stroke-width="2" marker-end="url(#arrFlow2)"/>
+        <rect x="200" y="130" width="65" height="30" rx="6" fill="#D1FAE5" stroke="#10B981" stroke-width="1.5"/>
+        <text x="232" y="146" text-anchor="middle" font-size="7" fill="#065F46" font-weight="600">コマパラ</text>
+        <text x="232" y="157" text-anchor="middle" font-size="6" fill="#065F46">自動連携</text>
+        <defs>
+          <marker id="arrFlow1" markerWidth="6" markerHeight="6" refX="3" refY="5" orient="auto"><path d="M0 0 L3 6 L6 0" fill="#8B5CF6"/></marker>
+          <marker id="arrFlow2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#10B981"/></marker>
+        </defs>
+      </svg>
+    </div>
+    <div class="illust-text">
+      <h4>&#9997;&#65039; クリエイターのシナリオ</h4>
+      <p>いつも通りXやInstagramに4コマを投稿。そのURLをコマパラに貼るだけで、画像もテキストも自動取り込み。追加の作業なく、コマパラでも作品が公開され、新しい読者と収益化の機会が手に入ります。</p>
+    </div>
+  </div>
+
+  <div class="flow-visual">
+    <h4>&#9997;&#65039; クリエイターの体験フロー（X / Instagram 共通）</h4>
+    <div class="flow-steps">
+      <div class="flow-step-card">
+        <div class="flow-step-icon purple" style="font-size:0.9rem; font-weight:900;">X / IG</div>
+        <div class="flow-step-label">SNSに投稿</div>
+        <div class="flow-step-desc">いつも通り</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon blue">&#128279;</div>
+        <div class="flow-step-label">URL貼り付け</div>
+        <div class="flow-step-desc">コマパラで連携</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon green">&#9889;</div>
+        <div class="flow-step-label">自動取り込み</div>
+        <div class="flow-step-desc">画像+テキスト</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon orange">&#127881;</div>
+        <div class="flow-step-label">公開完了</div>
+        <div class="flow-step-desc">最短10秒</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon pink">&#128200;</div>
+        <div class="flow-step-label">新規読者獲得</div>
+        <div class="flow-step-desc">ランキング露出</div>
+      </div>
+      <div class="flow-connector">&#8594;</div>
+      <div class="flow-step-card">
+        <div class="flow-step-icon gradient">&#128176;</div>
+        <div class="flow-step-label">収益化</div>
+        <div class="flow-step-desc">投げ銭・サブスク</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 8. 主要機能 - 読者 ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">8</div>
+  <h2>主要機能 &#8212; 読者向け</h2>
+
+  <!-- フィード -->
+  <div class="feature-showcase">
+    <div class="feature-mockup">
+      <svg viewBox="0 0 320 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="320" height="400" fill="#FAFAFA"/>
+        <!-- ヘッダー -->
+        <rect width="320" height="48" fill="url(#grd)" rx="0"/>
+        <text x="20" y="30" font-size="16" font-weight="700" fill="#fff">コマパラ</text>
+        <!-- タブ -->
+        <rect y="48" width="320" height="36" fill="#fff"/>
+        <text x="55" y="72" text-anchor="middle" font-size="11" font-weight="600" fill="#8B5CF6">新着</text>
+        <text x="160" y="72" text-anchor="middle" font-size="11" fill="#9CA3AF">人気</text>
+        <text x="265" y="72" text-anchor="middle" font-size="11" fill="#9CA3AF">フォロー中</text>
+        <line x1="20" y1="82" x2="90" y2="82" stroke="#8B5CF6" stroke-width="2"/>
+        <!-- ジャンルチップ -->
+        <rect x="12" y="92" width="52" height="22" rx="11" fill="#8B5CF6"/>
+        <text x="38" y="106" text-anchor="middle" font-size="9" fill="#fff">すべて</text>
+        <rect x="70" y="92" width="52" height="22" rx="11" fill="#fff" stroke="#E5E7EB"/>
+        <text x="96" y="106" text-anchor="middle" font-size="9" fill="#6B7280">日常</text>
+        <rect x="128" y="92" width="52" height="22" rx="11" fill="#fff" stroke="#E5E7EB"/>
+        <text x="154" y="106" text-anchor="middle" font-size="9" fill="#6B7280">ギャグ</text>
+        <!-- カード1 -->
+        <rect x="12" y="122" width="145" height="125" rx="10" fill="#fff" stroke="#E5E7EB"/>
+        <rect x="12" y="122" width="145" height="80" rx="10" fill="#DBEAFE"/>
+        <text x="84" y="168" text-anchor="middle" font-size="28">&#128054;</text>
+        <text x="22" y="216" font-size="10" font-weight="600" fill="#1F2937">犬と暮らす日常</text>
+        <text x="22" y="232" font-size="8" fill="#6B7280">&#10084; 24  &#128065; 142</text>
+        <!-- カード2 -->
+        <rect x="163" y="122" width="145" height="125" rx="10" fill="#fff" stroke="#E5E7EB"/>
+        <rect x="163" y="122" width="145" height="80" rx="10" fill="#F3E8FF"/>
+        <text x="235" y="168" text-anchor="middle" font-size="28">&#128568;</text>
+        <text x="173" y="216" font-size="10" font-weight="600" fill="#1F2937">会社員の叫び</text>
+        <text x="173" y="232" font-size="8" fill="#6B7280">&#10084; 56  &#128065; 389</text>
+        <!-- カード3 -->
+        <rect x="12" y="255" width="145" height="125" rx="10" fill="#fff" stroke="#E5E7EB"/>
+        <rect x="12" y="255" width="145" height="80" rx="10" fill="#FCE7F3"/>
+        <text x="84" y="301" text-anchor="middle" font-size="28">&#128049;</text>
+        <text x="22" y="349" font-size="10" font-weight="600" fill="#1F2937">猫パンチ日記</text>
+        <text x="22" y="365" font-size="8" fill="#6B7280">&#10084; 89  &#128065; 567</text>
+        <!-- カード4 -->
+        <rect x="163" y="255" width="145" height="125" rx="10" fill="#fff" stroke="#E5E7EB"/>
+        <rect x="163" y="255" width="145" height="80" rx="10" fill="#D1FAE5"/>
+        <text x="235" y="301" text-anchor="middle" font-size="28">&#128118;</text>
+        <text x="173" y="349" font-size="10" font-weight="600" fill="#1F2937">育児あるある</text>
+        <text x="173" y="365" font-size="8" fill="#6B7280">&#10084; 34  &#128065; 201</text>
+        <defs><linearGradient id="grd" x1="0" y1="0" x2="320" y2="0"><stop stop-color="#8B5CF6"/><stop offset="0.5" stop-color="#3B82F6"/><stop offset="1" stop-color="#EC4899"/></linearGradient></defs>
+      </svg>
+    </div>
+    <div class="feature-info">
+      <div class="feature-badge reader">READER</div>
+      <h4>スマートフィード</h4>
+      <p>新着・人気・フォロー中の3タブと8ジャンルフィルターで、好みの4コマが即座に見つかります。サーバーサイドレンダリングで待ち時間ゼロ。</p>
+      <ul class="feature-points">
+        <li>新着 / 人気 / フォロー中の3タブ切替</li>
+        <li>8ジャンル（日常・ギャグ・育児・猫・仕事・恋愛・感動・エッセイ）</li>
+        <li>無限スクロールで次々と読める</li>
+        <li>SSRで初回表示が高速</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 5種リアクション -->
+  <div class="feature-showcase reverse">
+    <div class="feature-mockup">
+      <svg viewBox="0 0 320 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="320" height="280" fill="#FAFAFA"/>
+        <rect x="20" y="20" width="280" height="140" rx="12" fill="#1F2937"/>
+        <text x="160" y="95" text-anchor="middle" font-size="13" fill="#fff" opacity="0.6">4コマ漫画ビューワー</text>
+        <!-- リアクションバー -->
+        <rect x="20" y="175" width="280" height="50" rx="25" fill="#fff" stroke="#E5E7EB"/>
+        <text x="55" y="205" text-anchor="middle" font-size="22">&#10084;&#65039;</text>
+        <text x="110" y="205" text-anchor="middle" font-size="22">&#128514;</text>
+        <text x="165" y="205" text-anchor="middle" font-size="22">&#128546;</text>
+        <text x="220" y="205" text-anchor="middle" font-size="22">&#129309;</text>
+        <text x="268" y="205" text-anchor="middle" font-size="22">&#10024;</text>
+        <!-- カウント -->
+        <text x="55" y="250" text-anchor="middle" font-size="9" fill="#6B7280" font-weight="600">いいね</text>
+        <text x="110" y="250" text-anchor="middle" font-size="9" fill="#6B7280" font-weight="600">笑った</text>
+        <text x="165" y="250" text-anchor="middle" font-size="9" fill="#6B7280" font-weight="600">泣いた</text>
+        <text x="220" y="250" text-anchor="middle" font-size="9" fill="#6B7280" font-weight="600">共感</text>
+        <text x="268" y="250" text-anchor="middle" font-size="9" fill="#6B7280" font-weight="600">すごい</text>
+      </svg>
+    </div>
+    <div class="feature-info">
+      <div class="feature-badge reader">READER</div>
+      <h4>5種リアクション &amp; 没入ビューワー</h4>
+      <p>ダーク背景の没入感あるビューワーで4コマを楽しんだ後、5種類のリアクションスタンプで気持ちを伝えられます。</p>
+      <ul class="feature-points">
+        <li>&#10084;&#65039; いいね / &#128514; 笑った / &#128546; 泣いた / &#129309; 共感 / &#10024; すごい</li>
+        <li>クリエイターに読者の感情がリアルに伝わる</li>
+        <li>ダーク背景で作品に集中できるビューワー</li>
+        <li>コメント機能で直接フィードバックも</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ランキング＋ライブラリ -->
+  <div class="card-grid">
+    <div class="card">
+      <div style="font-size:2.5rem; text-align:center; margin-bottom:12px;">&#127942;</div>
+      <h4>週間ランキング</h4>
+      <p>毎週月曜に自動集計。いいね×2＋閲覧数のスコアでTOP20を表示。ポディウムデザインで上位3作品を強調。新しい作品との出会いを生みます。</p>
+    </div>
+    <div class="card">
+      <div style="font-size:2.5rem; text-align:center; margin-bottom:12px;">&#128218;</div>
+      <h4>マイライブラリ</h4>
+      <p>いいねした作品と閲覧履歴を自動保存。「あの面白かった4コマ」にいつでもアクセスでき、自分だけの4コマコレクションが作れます。</p>
+    </div>
+    <div class="card">
+      <div style="font-size:2.5rem; text-align:center; margin-bottom:12px;">&#128276;</div>
+      <h4>プッシュ通知</h4>
+      <p>フォロー中の作家が新作を投稿すると、ブラウザを閉じていてもプッシュ通知でお知らせ。新作を見逃しません。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 9. 主要機能 - クリエイター ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">9</div>
+  <h2>主要機能 &#8212; クリエイター向け</h2>
+
+  <!-- SNS連携 -->
+  <div class="feature-showcase">
+    <div class="feature-mockup">
+      <svg viewBox="0 0 320 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="320" height="300" fill="#FAFAFA"/>
+        <text x="160" y="30" text-anchor="middle" font-size="12" font-weight="600" fill="#1F2937">投稿方法を選択</text>
+        <!-- 3つの選択肢 -->
+        <rect x="20" y="50" width="280" height="60" rx="12" fill="#fff" stroke="#8B5CF6" stroke-width="2"/>
+        <text x="50" y="78" font-size="20">&#128444;&#65039;</text>
+        <text x="80" y="76" font-size="12" font-weight="600" fill="#1F2937">画像を直接アップロード</text>
+        <text x="80" y="92" font-size="9" fill="#6B7280">ドラッグ&ドロップで簡単投稿</text>
+
+        <rect x="20" y="120" width="280" height="60" rx="12" fill="#F3E8FF" stroke="#8B5CF6" stroke-width="2"/>
+        <text x="50" y="148" font-size="18" font-weight="900" fill="#7C3AED">X</text>
+        <text x="80" y="146" font-size="12" font-weight="600" fill="#1F2937">Xから自動インポート</text>
+        <text x="80" y="162" font-size="9" fill="#6B7280">投稿URLを貼るだけ / バッチ一括も可</text>
+
+        <rect x="20" y="190" width="280" height="60" rx="12" fill="#FCE7F3" stroke="#EC4899" stroke-width="2"/>
+        <text x="50" y="220" font-size="18">&#128247;</text>
+        <text x="80" y="216" font-size="12" font-weight="600" fill="#1F2937">Instagramから自動インポート</text>
+        <text x="80" y="232" font-size="9" fill="#6B7280">投稿URLを貼るだけで画像+テキスト取得</text>
+
+        <rect x="60" y="265" width="200" height="24" rx="4" fill="#D1FAE5"/>
+        <text x="160" y="281" text-anchor="middle" font-size="9" font-weight="600" fill="#065F46">&#10003; 3つの方法から選べる！最短10秒で投稿完了</text>
+      </svg>
+    </div>
+    <div class="feature-info">
+      <div class="feature-badge creator">CREATOR</div>
+      <h4>3つの投稿方法</h4>
+      <p>画像の直接アップロードに加え、X・Instagramからのワンタップ自動インポートに対応。既存のSNS投稿を再利用できるため、新たな手間は最小限です。</p>
+      <ul class="feature-points">
+        <li>画像ドラッグ&ドロップ＋ウィザード形式</li>
+        <li>X投稿URLから画像・テキストを自動取得</li>
+        <li>Instagram投稿URLから画像・テキストを自動取得</li>
+        <li>Xバッチインポートで過去作品も一括移行</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ダッシュボード＋収益 -->
+  <div class="feature-showcase reverse">
+    <div class="feature-mockup">
+      <svg viewBox="0 0 320 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="320" height="280" fill="#FAFAFA"/>
+        <text x="20" y="28" font-size="14" font-weight="700" fill="#1F2937">ダッシュボード</text>
+        <!-- 統計カード -->
+        <rect x="12" y="42" width="90" height="56" rx="10" fill="#fff" stroke="#E5E7EB"/>
+        <text x="57" y="64" text-anchor="middle" font-size="18" font-weight="800" fill="#8B5CF6">12</text>
+        <text x="57" y="82" text-anchor="middle" font-size="8" fill="#6B7280">作品数</text>
+        <rect x="112" y="42" width="90" height="56" rx="10" fill="#fff" stroke="#E5E7EB"/>
+        <text x="157" y="64" text-anchor="middle" font-size="18" font-weight="800" fill="#3B82F6">3.4k</text>
+        <text x="157" y="82" text-anchor="middle" font-size="8" fill="#6B7280">総閲覧数</text>
+        <rect x="212" y="42" width="90" height="56" rx="10" fill="#fff" stroke="#E5E7EB"/>
+        <text x="257" y="64" text-anchor="middle" font-size="18" font-weight="800" fill="#EC4899">289</text>
+        <text x="257" y="82" text-anchor="middle" font-size="8" fill="#6B7280">総いいね</text>
+        <!-- 収益 -->
+        <rect x="12" y="108" width="145" height="56" rx="10" fill="#fff" stroke="#E5E7EB"/>
+        <text x="84" y="130" text-anchor="middle" font-size="18" font-weight="800" fill="#10B981">&#165;12,500</text>
+        <text x="84" y="148" text-anchor="middle" font-size="8" fill="#6B7280">投げ銭収益</text>
+        <rect x="165" y="108" width="137" height="56" rx="10" fill="#fff" stroke="#E5E7EB"/>
+        <text x="233" y="130" text-anchor="middle" font-size="18" font-weight="800" fill="#F97316">48</text>
+        <text x="233" y="148" text-anchor="middle" font-size="8" fill="#6B7280">フォロワー</text>
+        <!-- 作品一覧 -->
+        <text x="20" y="192" font-size="10" font-weight="600" fill="#1F2937">あなたの作品</text>
+        <rect x="12" y="200" width="90" height="70" rx="8" fill="#DBEAFE"/>
+        <rect x="112" y="200" width="90" height="70" rx="8" fill="#F3E8FF"/>
+        <rect x="212" y="200" width="90" height="70" rx="8" fill="#FCE7F3"/>
+      </svg>
+    </div>
+    <div class="feature-info">
+      <div class="feature-badge creator">CREATOR</div>
+      <h4>ダッシュボード &amp; 収益管理</h4>
+      <p>作品数・閲覧数・いいね・フォロワー・収益をリアルタイムで確認。投げ銭・サブスク収益も一目で把握でき、創作のモチベーションを維持します。</p>
+      <ul class="feature-points">
+        <li>7つの統計指標をカード形式で一覧表示</li>
+        <li>投げ銭（手数料10%）＋サブスク（手数料15%）</li>
+        <li>シリーズ管理（連載の作成・話数順管理・完結フラグ）</li>
+        <li>X同期パネルで未連携の投稿を一括取り込み</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 10. 競合比較 ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">10</div>
+  <h2>競合比較・差別化</h2>
+
+  <table class="styled-table compare-table">
+    <thead><tr><th>比較軸</th><th>コマパラ</th><th>pixiv</th><th>ニコニコ静画</th><th>X</th><th>Instagram</th></tr></thead>
+    <tbody>
+      <tr><td>4コマ特化</td><td class="best">&#9678; 専用設計</td><td>&#9651; 汎用</td><td>&#9651; 汎用</td><td>&#10005;</td><td>&#10005;</td></tr>
+      <tr><td>SNS連携</td><td class="best">&#9678; X+IG自動</td><td>&#10005;</td><td>&#10005;</td><td>&#8213;</td><td>&#8213;</td></tr>
+      <tr><td>モバイルUX</td><td class="best">&#9678; 最優先</td><td>&#9675;</td><td>&#9651;</td><td>&#9675;</td><td>&#9678;</td></tr>
+      <tr><td>収益化</td><td class="best">&#9678; 投げ銭+サブスク</td><td>&#9675; FANBOX</td><td>&#9651;</td><td>&#10005;</td><td>&#10005;</td></tr>
+      <tr><td>ランキング</td><td class="best">&#9678; 週次自動</td><td>&#9675;</td><td>&#9675;</td><td>&#10005;</td><td>&#10005;</td></tr>
+      <tr><td>シリーズ管理</td><td class="best">&#9678; ナビ付き</td><td>&#9675;</td><td>&#9675;</td><td>&#10005;</td><td>&#10005;</td></tr>
+      <tr><td>外部リンク</td><td>&#9675;</td><td>&#9675;</td><td>&#9675;</td><td>&#9675;</td><td class="best" style="color:#EF4444;">&#10005; 不可</td></tr>
+    </tbody>
+  </table>
+
+  <h3>コマパラだけのユニークバリュー</h3>
+  <ul class="uv-list">
+    <li><div class="uv-num">1</div><div class="uv-text"><strong>4コマ漫画に完全特化</strong><span>ビューワー・投稿・ジャンルすべてが4コマ最適化</span></div></li>
+    <li><div class="uv-num">2</div><div class="uv-text"><strong>X &amp; Instagram 両方からワンタップ連携</strong><span>両SNSの既存投稿を再利用。投稿の二度手間を完全排除</span></div></li>
+    <li><div class="uv-num">3</div><div class="uv-text"><strong>5種リアクションスタンプ</strong><span>「いいね」以上の感情を読者がクリエイターに届けられる</span></div></li>
+    <li><div class="uv-num">4</div><div class="uv-text"><strong>Instagramにない収益化導線</strong><span>IGの投稿リンク不可問題を解消。コマパラ経由で投げ銭・サブスクへ</span></div></li>
+    <li><div class="uv-num">5</div><div class="uv-text"><strong>OGP自動生成 &amp; SNSシェア最適化</strong><span>3パターン（縦長/正方形/横長）でどのSNSでも最適表示</span></div></li>
+  </ul>
+</div>
+
+<!-- ==================== 11. マネタイズ ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">11</div>
+  <h2>マネタイズ（収益モデル）</h2>
+
+  <div class="revenue-grid">
+    <div class="revenue-card"><div style="font-size:2rem; margin-bottom:8px;">&#128240;</div><h4>広告収入</h4><p style="font-size:0.85rem; color:var(--muted);">Google AdSense<br>フィード内 / 作品詳細</p></div>
+    <div class="revenue-card"><h4>トランザクション手数料</h4><div class="amount">10〜15%</div><p style="font-size:0.85rem; color:var(--muted); margin-top:8px;">投げ銭: 10% / サブスク: 15%</p></div>
+    <div class="revenue-card"><h4>プレミアム月額</h4><div class="amount">300円/月</div><p style="font-size:0.85rem; color:var(--muted); margin-top:8px;">広告非表示</p></div>
+  </div>
+
+  <h3>収益シミュレーション（月間）</h3>
+  <table class="styled-table">
+    <thead><tr><th>指標</th><th>初期（100人）</th><th>成長期（1,000人）</th><th>安定期（10,000人）</th></tr></thead>
+    <tbody>
+      <tr><td>広告収入</td><td>〜1,000円</td><td>〜10,000円</td><td>〜100,000円</td></tr>
+      <tr><td>投げ銭手数料</td><td>〜500円</td><td>〜5,000円</td><td>〜50,000円</td></tr>
+      <tr><td>サブスク手数料</td><td>〜300円</td><td>〜3,000円</td><td>〜30,000円</td></tr>
+      <tr><td>プレミアム</td><td>〜3,000円</td><td>〜30,000円</td><td>〜300,000円</td></tr>
+      <tr><td><strong>月間合計</strong></td><td><strong>〜4,800円</strong></td><td><strong>〜48,000円</strong></td><td><strong>〜480,000円</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 12. 技術構成 ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">12</div>
+  <h2>技術構成</h2>
+  <div class="tech-grid">
+    <div class="tech-item"><div class="tech-label">Frontend</div><div class="tech-value">Next.js 14 (App Router) + TypeScript + Tailwind CSS</div></div>
+    <div class="tech-item"><div class="tech-label">Backend</div><div class="tech-value">Next.js API Routes + Prisma ORM</div></div>
+    <div class="tech-item"><div class="tech-label">Auth</div><div class="tech-value">NextAuth.js v5 (Google / X / Magic Link)</div></div>
+    <div class="tech-item"><div class="tech-label">Database</div><div class="tech-value">PostgreSQL (Supabase)</div></div>
+    <div class="tech-item"><div class="tech-label">Storage</div><div class="tech-value">Vercel Blob (WebP auto-convert)</div></div>
+    <div class="tech-item"><div class="tech-label">Hosting</div><div class="tech-value">Vercel (auto-deploy, edge delivery)</div></div>
+    <div class="tech-item"><div class="tech-label">Push</div><div class="tech-value">Web Push API + VAPID</div></div>
+    <div class="tech-item"><div class="tech-label">PWA</div><div class="tech-value">Service Worker + manifest.json</div></div>
+  </div>
+</div>
+
+<!-- ==================== 13. デザインコンセプト ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">13</div>
+  <h2>デザインコンセプト</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h4>&#127912; カラーパレット</h4>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <div style="width:48px; height:48px; border-radius:12px; background:#8B5CF6;"></div>
+        <div style="width:48px; height:48px; border-radius:12px; background:#3B82F6;"></div>
+        <div style="width:48px; height:48px; border-radius:12px; background:#EC4899;"></div>
+        <div style="width:48px; height:48px; border-radius:12px; background:#FAFAFA; border:1px solid #E5E7EB;"></div>
+        <div style="width:48px; height:48px; border-radius:12px; background:#1F2937;"></div>
+      </div>
+      <p style="margin-top:8px;">パープル → ブルー → ピンクのグラデーション</p>
+    </div>
+    <div class="card">
+      <h4>&#128295; UI原則</h4>
+      <p><strong>モバイルファースト</strong> - スマホ閲覧を最優先<br>
+      <strong>コンテンツが主役</strong> - 4コマが映えるダーク背景<br>
+      <strong>直感的操作</strong> - ワンタップリアクション<br>
+      <strong>軽快な動作</strong> - アニメーション最小限</p>
+    </div>
+    <div class="card">
+      <h4>&#128396;&#65039; スタイル</h4>
+      <p>Geist Sans / グラスモーフィズム / ソフトな丸み / 透明感<br>「カジュアルだけど洗練された」空間を演出</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 14. KPI ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">14</div>
+  <h2>KPI・成功指標</h2>
+  <div class="pitch-box" style="margin-bottom:32px;">
+    <p style="font-size:1rem;"><strong>北極星指標</strong><br>週間アクティブ読者数（WAU） &times; 1人あたり平均閲覧作品数</p>
+  </div>
+  <h3>3ヶ月後の目標</h3>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-value">500</div><div class="kpi-label">月間UU</div></div>
+    <div class="kpi-card"><div class="kpi-value">5+</div><div class="kpi-label">1セッション閲覧数</div></div>
+    <div class="kpi-card"><div class="kpi-value">30%</div><div class="kpi-label">翌週再訪率</div></div>
+    <div class="kpi-card"><div class="kpi-value">100</div><div class="kpi-label">月間投稿数</div></div>
+    <div class="kpi-card"><div class="kpi-value">1万円</div><div class="kpi-label">MRR</div></div>
+  </div>
+</div>
+
+<!-- ==================== 15. ロードマップ ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">15</div>
+  <h2>ロードマップ</h2>
+  <div class="timeline">
+    <div class="timeline-item"><div class="timeline-dot done">&#10003;</div><div class="timeline-date">2026年2月</div><div class="timeline-title">MVP完成 <span class="badge badge-done">完了</span></div><p style="font-size:0.85rem;">認証・投稿・フィード・ランキング・いいね・コメント・フォロー・検索</p></div>
+    <div class="timeline-item"><div class="timeline-dot done">&#10003;</div><div class="timeline-date">2026年2月</div><div class="timeline-title">Phase 2 <span class="badge badge-done">完了</span></div><p style="font-size:0.85rem;">X連携・OGP・SEO・投げ銭・サブスク・プレミアム・PWA・管理画面</p></div>
+    <div class="timeline-item"><div class="timeline-dot done">&#10003;</div><div class="timeline-date">2026年3月</div><div class="timeline-title">機能拡充 <span class="badge badge-done">完了</span></div><p style="font-size:0.85rem;">シリーズ・リアクション5種・Instagram連携・通知・パフォーマンス改善</p></div>
+    <div class="timeline-item"><div class="timeline-dot current">&#9679;</div><div class="timeline-date">2026年3月</div><div class="timeline-title">サービスLP制作 <span class="badge badge-progress">進行中</span></div><p style="font-size:0.85rem;">サービス紹介ランディングページ</p></div>
+    <div class="timeline-item"><div class="timeline-dot planned"></div><div class="timeline-date">2026年4月</div><div class="timeline-title">初期ユーザー獲得 <span class="badge badge-planned">計画</span></div><p style="font-size:0.85rem;">クリエイター招待・SNSプロモーション</p></div>
+    <div class="timeline-item"><div class="timeline-dot planned"></div><div class="timeline-date">2026年5月</div><div class="timeline-title">AIネタ出し機能 <span class="badge badge-planned">計画</span></div></div>
+    <div class="timeline-item"><div class="timeline-dot planned"></div><div class="timeline-date">2026年6月</div><div class="timeline-title">グッズEC連携 <span class="badge badge-planned">計画</span></div></div>
+  </div>
+</div>
+
+<!-- ==================== 16. まとめ ==================== -->
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-number">16</div>
+  <h2>まとめ</h2>
+  <div class="summary-box">
+    <h3>読者とクリエイターの好循環を生み出す</h3>
+    <p>コマパラは「4コマ漫画」というニッチだが根強い人気を持つコンテンツに特化し、<br>
+    X・Instagramに散らばる作品を集約。<br>
+    <strong>「読みたい4コマがすぐ見つかる」「描いた4コマがすぐ届く」</strong><br>
+    という体験を実現するプラットフォームです。</p>
+  </div>
+  <p style="text-align:center; color:var(--muted); font-size:0.85rem; margin-top:48px;">&copy; 2026 コマパラ All Rights Reserved.</p>
+</div>
+
+</body>
+</html>
