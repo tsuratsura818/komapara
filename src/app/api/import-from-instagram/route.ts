@@ -425,6 +425,16 @@ async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | nu
 // 戦略7: img_index を巡回して OG画像を1枚ずつ取得（最終フォールバック）
 // ============================================================
 
+// CDN URLからクエリパラメータを除いたパス部分を取得（重複判定用）
+function getImagePathKey(url: string): string {
+  try {
+    const u = new URL(url);
+    return u.pathname;
+  } catch {
+    return url.split("?")[0];
+  }
+}
+
 // OGタグ抽出（property/content の順序が逆のパターンにも対応）
 function extractOgTag(html: string, property: string): string | null {
   const p = property.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -477,9 +487,10 @@ async function fetchViaImgIndex(shortcode: string): Promise<FetchResult | null> 
         break;
       }
 
-      // 同じ画像が返ってきたらカルーセル終端
-      if (seen.has(imgUrl)) break;
-      seen.add(imgUrl);
+      // 同じ画像が返ってきたらカルーセル終端（CDNトークンが変わるためパスで比較）
+      const pathKey = getImagePathKey(imgUrl);
+      if (seen.has(pathKey)) break;
+      seen.add(pathKey);
       imageUrls.push(imgUrl);
 
       // 1枚目でテキスト・author取得
