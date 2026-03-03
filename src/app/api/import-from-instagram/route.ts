@@ -733,7 +733,7 @@ export async function POST(request: NextRequest) {
     // 画像をダウンロード → WebP変換 → Vercel Blob に保存
     const savedUrls: string[] = [];
     for (const imageUrl of result.imageUrls) {
-      let buffer: Buffer;
+      let buffer!: Buffer;
       try {
         // クロップ除去URLを優先し、失敗時はオリジナルURLにフォールバック
         const uncroppedUrl = removeInstagramCrop(imageUrl);
