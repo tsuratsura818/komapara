@@ -46,6 +46,55 @@ function getBestCandidate(
   return candidates.reduce((a, b) => (a.width > b.width ? a : b)).url;
 }
 
+// ============================================================
+// JSON 抽出ヘルパー（括弧マッチング方式）
+// ============================================================
+
+// 開始位置から対応する閉じ括弧までのJSON文字列を抽出
+function extractJsonAt(str: string, startIdx: number): string | null {
+  const ch = str[startIdx];
+  if (ch !== "{" && ch !== "[") return null;
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  const limit = Math.min(str.length, startIdx + 500_000);
+  for (let i = startIdx; i < limit; i++) {
+    const c = str[i];
+    if (esc) { esc = false; continue; }
+    if (c === "\\" && inStr) { esc = true; continue; }
+    if (c === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (c === "{" || c === "[") depth++;
+    else if (c === "}" || c === "]") {
+      depth--;
+      if (depth === 0) return str.substring(startIdx, i + 1);
+    }
+  }
+  return null;
+}
+
+// "key": の後にあるJSONオブジェクトを抽出
+function extractJsonAfterKey(str: string, key: string, fromIdx = 0): string | null {
+  const keyPattern = `"${key}"`;
+  const idx = str.indexOf(keyPattern, fromIdx);
+  if (idx === -1) return null;
+  // "key" の後に : を探す
+  let pos = idx + keyPattern.length;
+  while (pos < str.length && str[pos] !== ":") pos++;
+  if (pos >= str.length) return null;
+  pos++; // skip :
+  // 空白スキップ
+  while (pos < str.length && /\s/.test(str[pos])) pos++;
+  if (str[pos] === "{" || str[pos] === "[") {
+    return extractJsonAt(str, pos);
+  }
+  return null;
+}
+
+// ============================================================
+// メディアデータ抽出
+// ============================================================
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractGraphQLMedia(media: any): FetchResult | null {
   if (!media) return null;
@@ -96,6 +145,57 @@ function extractItemsMedia(item: any): FetchResult | null {
   return imageUrls.length > 0 ? { text: caption, imageUrls, author } : null;
 }
 
+// ============================================================
+// HTML深層スキャン: shortcode_media JSONを括弧マッチで抽出
+// ============================================================
+function deepScanForMedia(html: string, shortcode: string): FetchResult | null {
+  // パターン1: "shortcode_media" キーを探す
+  const keys = ["shortcode_media", "xdt_shortcode_media"];
+  for (const key of keys) {
+    let fromIdx = 0;
+    while (true) {
+      const jsonStr = extractJsonAfterKey(html, key, fromIdx);
+      if (!jsonStr) break;
+      fromIdx = html.indexOf(`"${key}"`, fromIdx) + key.length + 2;
+
+      try {
+        const media = JSON.parse(jsonStr);
+        // ターゲット投稿のshortcodeと一致するか確認
+        if (media.shortcode && media.shortcode !== shortcode) continue;
+
+        const result = media.edge_sidecar_to_children
+          ? extractGraphQLMedia(media)
+          : extractItemsMedia(media);
+        if (result && result.imageUrls.length > 1) return result;
+      } catch { /* JSONパース失敗は無視 */ }
+    }
+  }
+
+  // パターン2: "items" 配列内の carousel_media を探す
+  let itemsIdx = 0;
+  while (true) {
+    const itemsStr = extractJsonAfterKey(html, "items", itemsIdx);
+    if (!itemsStr || !itemsStr.startsWith("[")) break;
+    itemsIdx = html.indexOf('"items"', itemsIdx) + 7;
+
+    try {
+      const items = JSON.parse(itemsStr);
+      if (!Array.isArray(items)) continue;
+
+      for (const item of items) {
+        // shortcode/codeが一致するか確認
+        const code = item.code ?? item.shortcode;
+        if (code && code !== shortcode) continue;
+
+        const result = extractItemsMedia(item);
+        if (result && result.imageUrls.length > 1) return result;
+      }
+    } catch { /* ignore */ }
+  }
+
+  return null;
+}
+
 const BROWSER_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 const IG_APP_ID = "936619743392459";
@@ -131,11 +231,12 @@ async function fetchViaGraphQL(shortcode: string): Promise<FetchResult | null> {
 // 戦略2: GraphQL POST（doc_id、Instagram最新Web形式）
 // ============================================================
 async function fetchViaGraphQLPost(shortcode: string): Promise<FetchResult | null> {
-  // 複数のdoc_idを試す（Instagramが定期的に変更するため）
   const docIds = [
     "8845758582119845",
     "17888483320059182",
     "9496378587088351",
+    "7511350078897498",
+    "25531498899829322",
   ];
 
   for (const docId of docIds) {
@@ -171,7 +272,6 @@ async function fetchViaGraphQLPost(shortcode: string): Promise<FetchResult | nul
 
       const json = await res.json();
 
-      // レスポンス形式の解析（複数パターン対応）
       const media =
         json?.data?.shortcode_media ??
         json?.data?.xdt_shortcode_media ??
@@ -179,7 +279,6 @@ async function fetchViaGraphQLPost(shortcode: string): Promise<FetchResult | nul
 
       if (!media) continue;
 
-      // GraphQL形式 or Items形式で抽出
       const result = media.edge_sidecar_to_children
         ? extractGraphQLMedia(media)
         : extractItemsMedia(media);
@@ -203,9 +302,11 @@ async function fetchViaMobileApi(shortcode: string): Promise<FetchResult | null>
     const res = await fetch(url, {
       headers: {
         "User-Agent":
-          "Instagram 275.0.0.27.98 Android (33/13; 420dpi; 1080x2400; samsung; SM-G991B; o1s; exynos2100; en_US; 458229258)",
+          "Instagram 317.0.0.34.109 Android (34/14; 420dpi; 1080x2400; samsung; SM-S928B; e3q; qcom; ja_JP; 580250901)",
         Accept: "*/*",
-        "X-IG-App-ID": IG_APP_ID,
+        "X-IG-App-ID": "567067343352427",
+        "X-IG-Capabilities": "3brTvw8=",
+        "X-IG-Connection-Type": "WIFI",
       },
       signal: AbortSignal.timeout(10000),
     });
@@ -254,13 +355,12 @@ async function fetchViaJsonApi(shortcode: string): Promise<FetchResult | null> {
 }
 
 // ============================================================
-// 戦略5: embed ページからスクレイピング
+// 戦略5: embed ページからスクレイピング（括弧マッチング方式）
 // ============================================================
 async function fetchViaEmbed(shortcode: string): Promise<FetchResult | null> {
-  // /embed/ と /embed/captioned/ の両方を試す
   const embedUrls = [
-    `https://www.instagram.com/p/${shortcode}/embed/`,
     `https://www.instagram.com/p/${shortcode}/embed/captioned/`,
+    `https://www.instagram.com/p/${shortcode}/embed/`,
   ];
 
   for (const embedUrl of embedUrls) {
@@ -276,65 +376,56 @@ async function fetchViaEmbed(shortcode: string): Promise<FetchResult | null> {
 
       if (!res.ok) continue;
       const html = await res.text();
-      const imageUrls: string[] = [];
-      const seen = new Set<string>();
 
-      // 1) window.__additionalDataLoaded パターン
-      const addDataMatch = html.match(
-        /window\.__additionalDataLoaded\s*\(\s*['"][^'"]*['"]\s*,\s*({.+?})\s*\)/
-      );
-      if (addDataMatch) {
-        try {
-          const data = JSON.parse(addDataMatch[1]);
-          const media = data?.shortcode_media ?? data?.graphql?.shortcode_media;
-          const result = extractGraphQLMedia(media);
-          if (result && result.imageUrls.length > 1) return result;
-          if (result) {
-            for (const u of result.imageUrls) {
-              if (!seen.has(u)) { seen.add(u); imageUrls.push(u); }
+      // 1) window.__additionalDataLoaded パターン（括弧マッチ方式）
+      const addDataIdx = html.indexOf("window.__additionalDataLoaded");
+      if (addDataIdx !== -1) {
+        // 第2引数のJSON objectを見つける
+        const commaIdx = html.indexOf(",", addDataIdx);
+        if (commaIdx !== -1) {
+          let pos = commaIdx + 1;
+          while (pos < html.length && html[pos] !== "{") pos++;
+          if (html[pos] === "{") {
+            const jsonStr = extractJsonAt(html, pos);
+            if (jsonStr) {
+              try {
+                const data = JSON.parse(jsonStr);
+                const media = data?.shortcode_media ?? data?.graphql?.shortcode_media;
+                const result = extractGraphQLMedia(media);
+                if (result && result.imageUrls.length > 1) return result;
+              } catch { /* ignore */ }
             }
-          }
-        } catch { /* ignore */ }
-      }
-
-      // 2) gql_data パターン（新しいembed形式）
-      const gqlMatch = html.match(/"gql_data"\s*:\s*({[\s\S]*?"shortcode_media"[\s\S]*?})\s*[,}]/);
-      if (gqlMatch) {
-        try {
-          const data = JSON.parse(gqlMatch[1]);
-          const result = extractGraphQLMedia(data?.shortcode_media);
-          if (result && result.imageUrls.length > 1) return result;
-          if (result) {
-            for (const u of result.imageUrls) {
-              if (!seen.has(u)) { seen.add(u); imageUrls.push(u); }
-            }
-          }
-        } catch { /* ignore */ }
-      }
-
-      // 3) embedページの主画像（<img class="EmbeddedMediaImage">）を1枚だけ取得
-      if (imageUrls.length === 0) {
-        const mainImgMatch = html.match(
-          /<img[^>]+class="[^"]*EmbeddedMediaImage[^"]*"[^>]+src="([^"]+)"/
-        );
-        if (mainImgMatch) {
-          const imgUrl = unescapeUrl(mainImgMatch[1]);
-          if (!seen.has(imgUrl)) {
-            seen.add(imgUrl);
-            imageUrls.push(imgUrl);
           }
         }
       }
 
-      if (imageUrls.length > 0) {
-        // キャプション取得
+      // 2) gql_data パターン（括弧マッチ方式）
+      const gqlJsonStr = extractJsonAfterKey(html, "gql_data");
+      if (gqlJsonStr) {
+        try {
+          const data = JSON.parse(gqlJsonStr);
+          const result = extractGraphQLMedia(data?.shortcode_media);
+          if (result && result.imageUrls.length > 1) return result;
+        } catch { /* ignore */ }
+      }
+
+      // 3) HTML全体を深層スキャン（shortcode_media / items を括弧マッチで探索）
+      const deepResult = deepScanForMedia(html, shortcode);
+      if (deepResult && deepResult.imageUrls.length > 1) return deepResult;
+
+      // 4) 単一画像フォールバック（EmbeddedMediaImage）
+      const mainImgMatch = html.match(
+        /<img[^>]+class="[^"]*EmbeddedMediaImage[^"]*"[^>]+src="([^"]+)"/
+      );
+      if (mainImgMatch) {
+        const imgUrl = unescapeUrl(mainImgMatch[1]);
         const captionMatch = html.match(
           /<div\s+class="[^"]*Caption[^"]*"[^>]*>[\s\S]*?<span[^>]*>([\s\S]*?)<\/span>/
         );
         const text = captionMatch
           ? captionMatch[1].replace(/<[^>]+>/g, "").trim()
           : "";
-        return { text, imageUrls, author: "" };
+        return { text, imageUrls: [imgUrl], author: "" };
       }
     } catch (e) {
       console.warn(`[IG] Embed fetch failed (${embedUrl}):`, e);
@@ -344,7 +435,7 @@ async function fetchViaEmbed(shortcode: string): Promise<FetchResult | null> {
 }
 
 // ============================================================
-// 戦略6: 通常ページからスクレイピング（Googlebotヘッダ）
+// 戦略6: 通常ページ（Googlebot UA）+ 深層スキャン
 // ============================================================
 async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | null> {
   try {
@@ -360,10 +451,14 @@ async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | nu
 
     if (!res.ok) return null;
     const html = await res.text();
+
+    // 1) 深層スキャン（shortcode_media / items JSONを括弧マッチで検索）
+    const deepResult = deepScanForMedia(html, shortcode);
+    if (deepResult && deepResult.imageUrls.length > 1) return deepResult;
+
+    // 2) <script type="application/ld+json"> から画像取得
     const imageUrls: string[] = [];
     const seen = new Set<string>();
-
-    // 1) <script type="application/ld+json"> から画像取得（投稿固有の構造化データ）
     const ldJsonRegex = /<script\s+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g;
     let ldMatch;
     while ((ldMatch = ldJsonRegex.exec(html)) !== null) {
@@ -381,7 +476,7 @@ async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | nu
       } catch { /* ignore */ }
     }
 
-    // 2) OGイメージ（フォールバック）
+    // 3) OGイメージ（フォールバック）
     if (imageUrls.length === 0) {
       const ogImage = html.match(
         /<meta\s+(?:property|name)="og:image"\s+content="([^"]*?)"/
@@ -394,7 +489,6 @@ async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | nu
 
     if (imageUrls.length === 0) return null;
 
-    // author / text
     const ogTitle = html.match(
       /<meta\s+(?:property|name)="og:title"\s+content="([^"]*?)"/
     )?.[1];
@@ -422,97 +516,54 @@ async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | nu
 }
 
 // ============================================================
-// 戦略7: img_index を巡回して OG画像を1枚ずつ取得（最終フォールバック）
+// 戦略7: ブラウザUA + 深層スキャン（Googlebotとは異なるレスポンスを期待）
 // ============================================================
-
-// CDN URLからクエリパラメータを除いたパス部分を取得（重複判定用）
-function getImagePathKey(url: string): string {
+async function fetchViaBrowserPage(shortcode: string): Promise<FetchResult | null> {
   try {
-    const u = new URL(url);
-    return u.pathname;
-  } catch {
-    return url.split("?")[0];
-  }
-}
+    const url = `https://www.instagram.com/p/${shortcode}/`;
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": BROWSER_UA,
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "ja-JP,ja;q=0.9,en;q=0.8",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+        "sec-ch-ua": '"Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+      },
+      signal: AbortSignal.timeout(15000),
+    });
 
-// OGタグ抽出（property/content の順序が逆のパターンにも対応）
-function extractOgTag(html: string, property: string): string | null {
-  const p = property.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const m1 = html.match(new RegExp(`<meta\\s+(?:property|name)="${p}"\\s+content="([^"]*?)"`, "i"));
-  if (m1) return m1[1];
-  const m2 = html.match(new RegExp(`<meta\\s+content="([^"]*?)"\\s+(?:property|name)="${p}"`, "i"));
-  return m2 ? m2[1] : null;
-}
+    if (!res.ok) return null;
+    const html = await res.text();
 
-async function fetchViaImgIndex(shortcode: string): Promise<FetchResult | null> {
-  const imageUrls: string[] = [];
-  const seen = new Set<string>();
-  let text = "";
-  let author = "";
-  const MAX_INDEX = 16;
+    // 深層スキャン
+    const deepResult = deepScanForMedia(html, shortcode);
+    if (deepResult) return deepResult;
 
-  for (let idx = 1; idx <= MAX_INDEX; idx++) {
-    try {
-      const url = `https://www.instagram.com/p/${shortcode}/?img_index=${idx}`;
-      const res = await fetch(url, {
-        headers: {
-          "User-Agent": BROWSER_UA,
-          Accept: "text/html,application/xhtml+xml",
-          "Accept-Language": "ja-JP,ja;q=0.9,en;q=0.8",
-          "Sec-Fetch-Dest": "document",
-          "Sec-Fetch-Mode": "navigate",
-          "Sec-Fetch-Site": "none",
-        },
-        redirect: "follow",
-        signal: AbortSignal.timeout(10000),
-      });
-
-      if (!res.ok) break;
-      const html = await res.text();
-
-      // ページが投稿ページか確認（ログインやフィードへのリダイレクトを除外）
-      if (!html.includes(shortcode) && !html.includes("og:image")) {
-        console.warn(`[IG] img_index=${idx}: page does not contain shortcode`);
-        break;
-      }
-
-      const ogImage = extractOgTag(html, "og:image");
-      if (!ogImage) break;
-
-      const imgUrl = unescapeUrl(ogImage);
-
-      // Instagram CDN画像でない場合はスキップ
-      if (!imgUrl.includes("cdninstagram") && !imgUrl.includes("fbcdn")) {
-        console.warn(`[IG] img_index=${idx}: og:image is not from Instagram CDN`);
-        break;
-      }
-
-      // 同じ画像が返ってきたらカルーセル終端（CDNトークンが変わるためパスで比較）
-      const pathKey = getImagePathKey(imgUrl);
-      if (seen.has(pathKey)) break;
-      seen.add(pathKey);
-      imageUrls.push(imgUrl);
-
-      // 1枚目でテキスト・author取得
-      if (idx === 1) {
-        const ogDesc = extractOgTag(html, "og:description");
-        const ogTitle = extractOgTag(html, "og:title");
-        text = ogDesc ? unescapeUrl(ogDesc) : "";
-        if (ogTitle) {
-          const m =
-            ogTitle.match(/^(.+?)(?:\s+on\s+Instagram|\s*はInstagram)/) ??
-            ogTitle.match(/^@?([^:–—\-]+)/);
-          if (m) author = m[1].replace(/^@/, "").trim();
-        }
-      }
-    } catch (e) {
-      console.warn(`[IG] img_index=${idx} failed:`, e);
-      break;
+    // OGイメージフォールバック
+    const ogImage = html.match(
+      /<meta\s+(?:property|name)="og:image"\s+content="([^"]*?)"/
+    )?.[1];
+    if (ogImage) {
+      const ogDesc = html.match(
+        /<meta\s+(?:property|name)="og:description"\s+content="([^"]*?)"/
+      )?.[1];
+      return {
+        text: ogDesc ? unescapeUrl(ogDesc) : "",
+        imageUrls: [unescapeUrl(ogImage)],
+        author: "",
+      };
     }
-  }
 
-  console.log(`[IG] img_index: collected ${imageUrls.length} images`);
-  return imageUrls.length > 0 ? { text, imageUrls, author } : null;
+    return null;
+  } catch (e) {
+    console.warn("[IG] Browser page failed:", e);
+    return null;
+  }
 }
 
 // ============================================================
@@ -591,6 +642,7 @@ export async function POST(request: NextRequest) {
       { name: "JSON API", fn: () => fetchViaJsonApi(shortcode) },
       { name: "Embed", fn: () => fetchViaEmbed(shortcode) },
       { name: "Page Scraping", fn: () => fetchViaPageScraping(shortcode) },
+      { name: "Browser Page", fn: () => fetchViaBrowserPage(shortcode) },
     ];
 
     let result: FetchResult | null = null;
@@ -605,14 +657,6 @@ export async function POST(request: NextRequest) {
       // 1枚だけ取れた場合は保持しつつ次の戦略も試す
       if (r && count === 1 && !result) {
         result = r;
-      }
-    }
-
-    // 1枚以下しか取れなかった場合、img_indexで巡回取得を試みる
-    if (!result || result.imageUrls.length <= 1) {
-      const imgIndexResult = await fetchViaImgIndex(shortcode);
-      if (imgIndexResult && imgIndexResult.imageUrls.length > (result?.imageUrls.length ?? 0)) {
-        result = imgIndexResult;
       }
     }
 
