@@ -472,6 +472,70 @@ async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | nu
 }
 
 // ============================================================
+// 戦略7: img_index を巡回して OG画像を1枚ずつ取得（最終フォールバック）
+// ============================================================
+async function fetchViaImgIndex(shortcode: string): Promise<FetchResult | null> {
+  const imageUrls: string[] = [];
+  const seen = new Set<string>();
+  let text = "";
+  let author = "";
+  const MAX_INDEX = 16;
+
+  for (let idx = 1; idx <= MAX_INDEX; idx++) {
+    try {
+      const url = `https://www.instagram.com/p/${shortcode}/?img_index=${idx}`;
+      const res = await fetch(url, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+          Accept: "text/html",
+        },
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (!res.ok) break;
+      const html = await res.text();
+
+      const ogImage = html.match(
+        /<meta\s+(?:property|name)="og:image"\s+content="([^"]*?)"/
+      )?.[1];
+
+      if (!ogImage) break;
+
+      const imgUrl = unescapeUrl(ogImage);
+
+      // 同じ画像が返ってきたらカルーセル終端
+      if (seen.has(imgUrl)) break;
+      seen.add(imgUrl);
+      imageUrls.push(imgUrl);
+
+      // 1枚目でテキスト・author取得
+      if (idx === 1) {
+        const ogDesc = html.match(
+          /<meta\s+(?:property|name)="og:description"\s+content="([^"]*?)"/
+        )?.[1];
+        const ogTitle = html.match(
+          /<meta\s+(?:property|name)="og:title"\s+content="([^"]*?)"/
+        )?.[1];
+        text = ogDesc ? unescapeUrl(ogDesc) : "";
+        if (ogTitle) {
+          const m =
+            ogTitle.match(/^(.+?)(?:\s+on\s+Instagram|\s*はInstagram)/) ??
+            ogTitle.match(/^@?([^:–—\-]+)/);
+          if (m) author = m[1].replace(/^@/, "").trim();
+        }
+      }
+    } catch (e) {
+      console.warn(`[IG] img_index=${idx} failed:`, e);
+      break;
+    }
+  }
+
+  console.log(`[IG] img_index: collected ${imageUrls.length} images`);
+  return imageUrls.length > 0 ? { text, imageUrls, author } : null;
+}
+
+// ============================================================
 // oEmbed（テキスト・author 補完用）
 // ============================================================
 async function fetchOEmbedInfo(url: string): Promise<{
@@ -538,7 +602,7 @@ export async function POST(request: NextRequest) {
 
     const canonicalUrl = `https://www.instagram.com/p/${shortcode}/`;
 
-    // 戦略を順番に試す（成功したら即終了）
+    // 戦略を順番に試す（2枚以上取れたら即終了）
     type Strategy = { name: string; fn: () => Promise<FetchResult | null> };
     const strategies: Strategy[] = [
       { name: "GraphQL GET", fn: () => fetchViaGraphQL(shortcode) },
@@ -551,10 +615,25 @@ export async function POST(request: NextRequest) {
 
     let result: FetchResult | null = null;
     for (const strategy of strategies) {
-      result = await strategy.fn();
-      const count = result?.imageUrls.length ?? 0;
+      const r = await strategy.fn();
+      const count = r?.imageUrls.length ?? 0;
       console.log(`[IG] ${strategy.name}: ${count > 0 ? count + " images" : "failed"}`);
-      if (result && count > 0) break;
+      if (r && count > 1) {
+        result = r;
+        break;
+      }
+      // 1枚だけ取れた場合は保持しつつ次の戦略も試す
+      if (r && count === 1 && !result) {
+        result = r;
+      }
+    }
+
+    // 1枚以下しか取れなかった場合、img_indexで巡回取得を試みる
+    if (!result || result.imageUrls.length <= 1) {
+      const imgIndexResult = await fetchViaImgIndex(shortcode);
+      if (imgIndexResult && imgIndexResult.imageUrls.length > (result?.imageUrls.length ?? 0)) {
+        result = imgIndexResult;
+      }
     }
 
     // テキスト・author を oEmbed で補完
