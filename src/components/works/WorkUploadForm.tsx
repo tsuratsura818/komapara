@@ -513,11 +513,11 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
               className="relative"
             >
               {panel.preview ? (
-                <div className="relative rounded-lg border border-komapara-border bg-gray-50">
+                <div className="relative rounded-lg border border-komapara-border">
                   <img
                     src={panel.preview}
                     alt={`${index + 1}コマ目`}
-                    className={`w-full h-auto max-h-[480px] object-contain rounded-lg transition-opacity ${panel.uploading ? "opacity-50" : ""}`}
+                    className={`w-full h-auto rounded-lg transition-opacity ${panel.uploading ? "opacity-50" : ""}`}
                   />
                   {panel.uploading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30">
