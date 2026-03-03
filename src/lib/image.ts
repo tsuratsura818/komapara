@@ -16,7 +16,7 @@ export async function processImageToWebP(
   uuid: string,
   options?: { maxWidth?: number; quality?: number }
 ): Promise<ProcessedImage> {
-  const { maxWidth = 2000, quality = 85 } = options ?? {};
+  const { maxWidth = 1600, quality = 85 } = options ?? {};
 
   let image = sharp(inputBuffer);
   const metadata = await image.metadata();

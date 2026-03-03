@@ -22,6 +22,14 @@ const nextConfig = {
         protocol: "https",
         hostname: "placehold.co",
       },
+      {
+        protocol: "https",
+        hostname: "*.cdninstagram.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.fbcdn.net",
+      },
     ],
     formats: ["image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200],
