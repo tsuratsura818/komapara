@@ -2,43 +2,43 @@
 
 export function AuroraBlobs() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute inset-0 -z-10 overflow-hidden">
       <div
         className="absolute rounded-full"
         style={{
-          width: "50vw",
-          height: "50vw",
-          maxWidth: "700px",
-          maxHeight: "700px",
-          background: "radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%)",
-          top: "-10%",
-          left: "-5%",
+          width: "60vw",
+          height: "60vw",
+          maxWidth: "900px",
+          maxHeight: "900px",
+          background: "radial-gradient(circle, rgba(139,92,246,0.18) 0%, transparent 60%)",
+          top: "-20%",
+          left: "-10%",
           animation: "blob-move-1 15s ease-in-out infinite",
         }}
       />
       <div
         className="absolute rounded-full"
         style={{
-          width: "40vw",
-          height: "40vw",
-          maxWidth: "600px",
-          maxHeight: "600px",
-          background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%)",
-          top: "10%",
-          right: "-10%",
+          width: "50vw",
+          height: "50vw",
+          maxWidth: "750px",
+          maxHeight: "750px",
+          background: "radial-gradient(circle, rgba(59,130,246,0.14) 0%, transparent 60%)",
+          top: "0%",
+          right: "-15%",
           animation: "blob-move-2 18s ease-in-out infinite",
         }}
       />
       <div
         className="absolute rounded-full"
         style={{
-          width: "45vw",
-          height: "45vw",
-          maxWidth: "650px",
-          maxHeight: "650px",
-          background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%)",
-          bottom: "-15%",
-          left: "25%",
+          width: "55vw",
+          height: "55vw",
+          maxWidth: "800px",
+          maxHeight: "800px",
+          background: "radial-gradient(circle, rgba(236,72,153,0.14) 0%, transparent 60%)",
+          bottom: "-20%",
+          left: "20%",
           animation: "blob-move-3 20s ease-in-out infinite",
         }}
       />

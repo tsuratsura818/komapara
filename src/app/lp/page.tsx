@@ -156,19 +156,19 @@ export default function LpPage() {
         </div>
       </header>
 
-      {/* ===== Hero (Gradient Background) ===== */}
-      <section className="relative h-screen flex items-center justify-center px-4 bg-gradient-main overflow-hidden">
+      {/* ===== Hero (Aurora Background) ===== */}
+      <section className="relative h-screen flex items-center justify-center px-4 overflow-hidden">
         <AuroraBlobs />
         <div className="relative z-10 text-center max-w-3xl mx-auto">
-          <p className="text-base md:text-lg font-semibold text-white/80 tracking-wider mb-6 animate-fade-in">
+          <p className="text-base md:text-lg font-semibold text-purple-600 tracking-wider mb-6 animate-fade-in">
             4コマ漫画に特化したポータルサイト
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] text-white animate-fade-in" style={{ animationDelay: "0.15s" }}>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] text-gray-900 animate-fade-in" style={{ animationDelay: "0.15s" }}>
             4コマの世界を、
             <br />
-            もっと楽しく。
+            <span className="gradient-text">もっと楽しく。</span>
           </h1>
-          <p className="text-white/80 text-lg md:text-xl mt-8 max-w-xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <p className="text-gray-600 text-lg md:text-xl mt-8 max-w-xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
             XやInstagramに散らばる4コマ漫画を一箇所に。
             <br className="hidden md:block" />
             読者には発見を、クリエイターには届ける場所を。
@@ -176,22 +176,22 @@ export default function LpPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 animate-fade-in" style={{ animationDelay: "0.45s" }}>
             <Link
               href="/login"
-              className="w-full sm:w-auto px-10 py-4 text-lg bg-white text-purple-600 font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-10 py-4 text-lg bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/25 hover:shadow-xl hover:scale-105 transition-all duration-300 text-center"
             >
               無料ではじめる
             </Link>
             <a
               href="#features"
-              className="w-full sm:w-auto px-10 py-4 text-lg font-semibold rounded-full border-2 border-white/40 text-white hover:bg-white/10 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-10 py-4 text-lg font-semibold rounded-full border-2 border-gray-300 text-gray-700 hover:border-purple-400 hover:text-purple-600 transition-all duration-300 text-center"
             >
               くわしく見る
             </a>
           </div>
         </div>
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 animate-fade-in" style={{ animationDelay: "1s" }}>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-400 animate-fade-in" style={{ animationDelay: "1s" }}>
           <span className="text-xs tracking-widest">SCROLL</span>
-          <div className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent" />
+          <div className="w-px h-8 bg-gradient-to-b from-gray-300 to-transparent" />
         </div>
       </section>
 
