@@ -15,9 +15,8 @@ body {
   background: var(--background);
 }
 
-/* スクロールバーの調整（モバイル向け） */
+/* モバイル向け調整 */
 html {
-  scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
 }
 
