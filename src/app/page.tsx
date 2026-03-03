@@ -1,9 +1,35 @@
 import { WorkFeed } from "@/components/works/WorkFeed";
+import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
 export const revalidate = 60;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [works, totalCount] = await Promise.all([
+    prisma.work.findMany({
+      where: { isPublished: true },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      include: {
+        author: { select: { id: true, name: true, image: true } },
+        tags: { select: { name: true, slug: true, emoji: true } },
+      },
+    }),
+    prisma.work.count({ where: { isPublished: true } }),
+  ]);
+
+  const initialWorks = works.map((work) => ({
+    id: work.id,
+    title: work.title,
+    panels: work.panels,
+    author: work.author,
+    genres: work.tags,
+    likeCount: work.likeCount,
+    viewCount: work.viewCount,
+    createdAt: work.createdAt.toISOString(),
+    isLiked: false,
+  }));
+
   return (
     <>
       {/* Hero banner */}
@@ -27,7 +53,10 @@ export default function HomePage() {
         <div className="absolute bottom-2 right-16 w-12 h-12 bg-white/10 rounded-lg -rotate-6" />
         <div className="absolute top-4 right-36 w-8 h-8 bg-white/5 rounded-lg rotate-45" />
       </section>
-      <WorkFeed />
+      <WorkFeed
+        initialWorks={initialWorks}
+        initialTotalPages={Math.ceil(totalCount / 20)}
+      />
     </>
   );
 }

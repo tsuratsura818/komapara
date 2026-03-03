@@ -20,15 +20,23 @@ type Work = {
 
 type Tab = "new" | "popular" | "following";
 
-export function WorkFeed() {
+type WorkFeedProps = {
+  initialWorks?: Work[];
+  initialTotalPages?: number;
+};
+
+export function WorkFeed({ initialWorks, initialTotalPages }: WorkFeedProps) {
   const { data: session } = useSession();
   const [tab, setTab] = useState<Tab>("new");
   const [genre, setGenre] = useState<string | null>(null);
-  const [works, setWorks] = useState<Work[]>([]);
+  const [works, setWorks] = useState<Work[]>(initialWorks ?? []);
   const [, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(
+    initialTotalPages ? 1 < initialTotalPages : true
+  );
+  const [loading, setLoading] = useState(!initialWorks);
   const observerRef = useRef<HTMLDivElement>(null);
+  const initialLoadSkipped = useRef(!!initialWorks);
 
   const fetchWorks = useCallback(
     async (pageNum: number, reset = false) => {
@@ -55,8 +63,12 @@ export function WorkFeed() {
     [tab, genre]
   );
 
-  // タブ or カテゴリ変更時にリセット
+  // タブ or カテゴリ変更時にリセット（初回はスキップ）
   useEffect(() => {
+    if (initialLoadSkipped.current) {
+      initialLoadSkipped.current = false;
+      return;
+    }
     setPage(1);
     fetchWorks(1, true);
   }, [tab, genre, fetchWorks]);
