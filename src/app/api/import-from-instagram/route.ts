@@ -474,6 +474,16 @@ async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | nu
 // ============================================================
 // 戦略7: img_index を巡回して OG画像を1枚ずつ取得（最終フォールバック）
 // ============================================================
+
+// OGタグ抽出（property/content の順序が逆のパターンにも対応）
+function extractOgTag(html: string, property: string): string | null {
+  const p = property.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const m1 = html.match(new RegExp(`<meta\\s+(?:property|name)="${p}"\\s+content="([^"]*?)"`, "i"));
+  if (m1) return m1[1];
+  const m2 = html.match(new RegExp(`<meta\\s+content="([^"]*?)"\\s+(?:property|name)="${p}"`, "i"));
+  return m2 ? m2[1] : null;
+}
+
 async function fetchViaImgIndex(shortcode: string): Promise<FetchResult | null> {
   const imageUrls: string[] = [];
   const seen = new Set<string>();
@@ -486,23 +496,36 @@ async function fetchViaImgIndex(shortcode: string): Promise<FetchResult | null> 
       const url = `https://www.instagram.com/p/${shortcode}/?img_index=${idx}`;
       const res = await fetch(url, {
         headers: {
-          "User-Agent":
-            "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-          Accept: "text/html",
+          "User-Agent": BROWSER_UA,
+          Accept: "text/html,application/xhtml+xml",
+          "Accept-Language": "ja-JP,ja;q=0.9,en;q=0.8",
+          "Sec-Fetch-Dest": "document",
+          "Sec-Fetch-Mode": "navigate",
+          "Sec-Fetch-Site": "none",
         },
+        redirect: "follow",
         signal: AbortSignal.timeout(10000),
       });
 
       if (!res.ok) break;
       const html = await res.text();
 
-      const ogImage = html.match(
-        /<meta\s+(?:property|name)="og:image"\s+content="([^"]*?)"/
-      )?.[1];
+      // ページが投稿ページか確認（ログインやフィードへのリダイレクトを除外）
+      if (!html.includes(shortcode) && !html.includes("og:image")) {
+        console.warn(`[IG] img_index=${idx}: page does not contain shortcode`);
+        break;
+      }
 
+      const ogImage = extractOgTag(html, "og:image");
       if (!ogImage) break;
 
       const imgUrl = unescapeUrl(ogImage);
+
+      // Instagram CDN画像でない場合はスキップ
+      if (!imgUrl.includes("cdninstagram") && !imgUrl.includes("fbcdn")) {
+        console.warn(`[IG] img_index=${idx}: og:image is not from Instagram CDN`);
+        break;
+      }
 
       // 同じ画像が返ってきたらカルーセル終端
       if (seen.has(imgUrl)) break;
@@ -511,12 +534,8 @@ async function fetchViaImgIndex(shortcode: string): Promise<FetchResult | null> 
 
       // 1枚目でテキスト・author取得
       if (idx === 1) {
-        const ogDesc = html.match(
-          /<meta\s+(?:property|name)="og:description"\s+content="([^"]*?)"/
-        )?.[1];
-        const ogTitle = html.match(
-          /<meta\s+(?:property|name)="og:title"\s+content="([^"]*?)"/
-        )?.[1];
+        const ogDesc = extractOgTag(html, "og:description");
+        const ogTitle = extractOgTag(html, "og:title");
         text = ogDesc ? unescapeUrl(ogDesc) : "";
         if (ogTitle) {
           const m =
