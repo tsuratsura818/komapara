@@ -139,7 +139,7 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
   const totalReactions = Object.values(reactionCounts).reduce((a, b) => a + b, 0);
 
   return (
-    <div>
+    <div className="max-w-2xl mx-auto">
       {/* 4コマビューワー（没入感のあるダーク背景） */}
       <div className="bg-gray-900">
         {work.panels.map((panel, index) => (
@@ -149,7 +149,7 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
               alt={`${work.title} - ${index + 1}コマ目`}
               width={0}
               height={0}
-              sizes="100vw"
+              sizes="(max-width: 672px) 100vw, 672px"
               style={{ width: '100%', height: 'auto' }}
               priority={index === 0}
             />
