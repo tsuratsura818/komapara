@@ -401,7 +401,7 @@ export function WorkUploadForm({ userSeries = [] }: { userSeries?: SeriesOption[
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="max-w-lg mx-auto px-4 py-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 py-6">
       <h1 className="text-xl font-bold text-komapara-text mb-6">
         作品を投稿する
       </h1>
