@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ScrollAnimations } from "./ScrollAnimations";
+import { AuroraBlobs } from "./AuroraBlobs";
 
 export const metadata: Metadata = {
   title: "コマパラ - 4コマ漫画に特化したポータルサイト",
@@ -155,58 +156,41 @@ export default function LpPage() {
         </div>
       </header>
 
-      {/* ===== Hero (Aurora Background) ===== */}
+      {/* ===== Hero (Animated Aurora Background) ===== */}
       <section className="relative min-h-screen flex items-center justify-center px-4 pt-14">
-        {/* Aurora gradient - same as root layout */}
-        <div
-          className="absolute inset-0 -z-10"
-          style={{
-            background: [
-              "radial-gradient(ellipse 80% 60% at 15% 10%, rgba(139,92,246,0.25) 0%, transparent 60%)",
-              "radial-gradient(ellipse 70% 50% at 85% 20%, rgba(59,130,246,0.18) 0%, transparent 55%)",
-              "radial-gradient(ellipse 90% 70% at 50% 50%, rgba(236,72,153,0.15) 0%, transparent 60%)",
-              "radial-gradient(ellipse 60% 50% at 20% 80%, rgba(59,130,246,0.18) 0%, transparent 55%)",
-              "radial-gradient(ellipse 70% 60% at 80% 90%, rgba(139,92,246,0.2) 0%, transparent 55%)",
-            ].join(", "),
-          }}
-        />
-        <div className="relative z-10 text-center max-w-2xl mx-auto">
-          <p className="text-sm font-semibold text-gradient-purple tracking-wider mb-4 animate-fade-in">
+        <AuroraBlobs />
+        <div className="relative z-10 text-center max-w-3xl mx-auto">
+          <p className="text-base md:text-lg font-semibold text-gradient-purple tracking-wider mb-6 animate-fade-in">
             4コマ漫画に特化したポータルサイト
           </p>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight text-komapara-text animate-fade-in" style={{ animationDelay: "0.15s" }}>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] text-komapara-text animate-fade-in" style={{ animationDelay: "0.15s" }}>
             4コマの世界を、
             <br />
             <span className="gradient-text">もっと楽しく。</span>
           </h1>
-          <p className="text-komapara-muted text-base md:text-lg mt-6 max-w-lg mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <p className="text-komapara-muted text-lg md:text-xl mt-8 max-w-xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
             XやInstagramに散らばる4コマ漫画を一箇所に。
             <br className="hidden md:block" />
             読者には発見を、クリエイターには届ける場所を。
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 animate-fade-in" style={{ animationDelay: "0.45s" }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 animate-fade-in" style={{ animationDelay: "0.45s" }}>
             <Link
               href="/login"
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 hover:scale-105 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-10 py-4 text-lg bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 hover:scale-105 transition-all duration-300 text-center"
             >
               無料ではじめる
             </Link>
             <a
               href="#features"
-              className="w-full sm:w-auto px-8 py-3.5 glass font-semibold rounded-full hover:shadow-md transition-all duration-300 text-center text-komapara-text"
+              className="w-full sm:w-auto px-10 py-4 text-lg glass font-semibold rounded-full hover:shadow-md transition-all duration-300 text-center text-komapara-text"
             >
               くわしく見る
             </a>
           </div>
         </div>
-        {/* Floating decorative panels */}
-        <div className="absolute top-24 right-[8%] w-20 h-28 rounded-xl bg-white/40 shadow-lg rotate-6 animate-float border border-white/60" />
-        <div className="absolute top-40 right-[18%] w-16 h-22 rounded-xl bg-white/30 shadow-md -rotate-3 animate-float border border-white/50" style={{ animationDelay: "1s" }} />
-        <div className="absolute bottom-32 left-[8%] w-18 h-24 rounded-xl bg-white/30 shadow-md rotate-12 animate-float border border-white/50" style={{ animationDelay: "2s" }} />
-        <div className="absolute top-36 left-[12%] w-14 h-20 rounded-xl bg-white/20 shadow-sm -rotate-12 animate-float border border-white/40" style={{ animationDelay: "0.5s" }} />
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-komapara-muted/50 animate-fade-in" style={{ animationDelay: "1s" }}>
-          <span className="text-xs">scroll</span>
+          <span className="text-xs tracking-widest">SCROLL</span>
           <div className="w-px h-8 bg-gradient-to-b from-komapara-muted/30 to-transparent" />
         </div>
       </section>
