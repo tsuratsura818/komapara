@@ -109,8 +109,8 @@ export function ImportFromInstagram({ onImportComplete, onBack, onSwitchToDirect
         Instagramからインポート
       </h1>
 
-      <div className="mb-4 p-3 bg-amber-50 text-amber-800 text-xs rounded-lg border border-amber-200">
-        Instagramの画像は正方形にクロップされている場合があります。元の比率で取得できない場合は「直接アップロード」をお試しください。
+      <div className="mb-4 p-3 bg-blue-50 text-blue-800 text-xs rounded-lg border border-blue-200">
+        元の投稿と同じアスペクト比（4:5、3:4等）で取得します。画像が正しく取得できない場合は「直接アップロード」をお試しください。
       </div>
 
       {error && (

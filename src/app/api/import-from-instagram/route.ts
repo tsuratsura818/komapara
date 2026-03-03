@@ -39,11 +39,17 @@ function shortcodeToMediaPk(shortcode: string): string {
 }
 
 // candidates 配列から最高解像度の画像URLを取得
+// 正方形でない候補（元のアスペクト比を保持）を優先
 function getBestCandidate(
-  candidates: { url: string; width: number }[]
+  candidates: { url: string; width: number; height?: number }[]
 ): string | null {
   if (!candidates || candidates.length === 0) return null;
-  return candidates.reduce((a, b) => (a.width > b.width ? a : b)).url;
+
+  // 正方形でない候補をフィルタ（height情報がある場合）
+  const nonSquare = candidates.filter((c) => c.height && c.width !== c.height);
+  const pool = nonSquare.length > 0 ? nonSquare : candidates;
+
+  return pool.reduce((a, b) => (a.width > b.width ? a : b)).url;
 }
 
 // ============================================================
@@ -189,12 +195,40 @@ function extractItemsMedia(item: any): FetchResult | null {
   if (item.carousel_media && item.carousel_media.length > 0) {
     for (const cm of item.carousel_media) {
       const candidates = cm.image_versions2?.candidates ?? [];
+      // original_width/original_height がある場合、元のアスペクト比に一致する候補を優先
+      const origW = cm.original_width;
+      const origH = cm.original_height;
+      if (origW && origH && origW !== origH) {
+        const origRatio = origW / origH;
+        const matching = candidates.filter((c: { width: number; height?: number }) =>
+          c.height && Math.abs(c.width / c.height - origRatio) < 0.05
+        );
+        if (matching.length > 0) {
+          const best = getBestCandidate(matching);
+          if (best) { imageUrls.push(best); continue; }
+        }
+      }
       const best = getBestCandidate(candidates);
       if (best) imageUrls.push(best);
     }
   } else if (item.image_versions2?.candidates) {
-    const best = getBestCandidate(item.image_versions2.candidates);
-    if (best) imageUrls.push(best);
+    const candidates = item.image_versions2.candidates;
+    const origW = item.original_width;
+    const origH = item.original_height;
+    if (origW && origH && origW !== origH) {
+      const origRatio = origW / origH;
+      const matching = candidates.filter((c: { width: number; height?: number }) =>
+        c.height && Math.abs(c.width / c.height - origRatio) < 0.05
+      );
+      if (matching.length > 0) {
+        const best = getBestCandidate(matching);
+        if (best) { imageUrls.push(best); }
+      }
+    }
+    if (imageUrls.length === 0) {
+      const best = getBestCandidate(candidates);
+      if (best) imageUrls.push(best);
+    }
   }
 
   if (imageUrls.length === 0 && item.display_url) {
