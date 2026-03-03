@@ -46,58 +46,154 @@ function getBestCandidate(
   return candidates.reduce((a, b) => (a.width > b.width ? a : b)).url;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractGraphQLMedia(media: any): FetchResult | null {
+  if (!media) return null;
+  const imageUrls: string[] = [];
+
+  // カルーセル（複数画像）
+  const edges = media.edge_sidecar_to_children?.edges;
+  if (edges && edges.length > 0) {
+    for (const edge of edges) {
+      const node = edge.node;
+      if (node?.display_url) imageUrls.push(node.display_url);
+    }
+  } else if (media.display_url) {
+    imageUrls.push(media.display_url);
+  }
+
+  const caption =
+    media.edge_media_to_caption?.edges?.[0]?.node?.text ?? "";
+  const author = media.owner?.username ?? "";
+
+  return imageUrls.length > 0 ? { text: caption, imageUrls, author } : null;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractItemsMedia(item: any): FetchResult | null {
+  if (!item) return null;
+  const imageUrls: string[] = [];
+
+  if (item.carousel_media && item.carousel_media.length > 0) {
+    for (const cm of item.carousel_media) {
+      const candidates = cm.image_versions2?.candidates ?? [];
+      const best = getBestCandidate(candidates);
+      if (best) imageUrls.push(best);
+    }
+  } else if (item.image_versions2?.candidates) {
+    const best = getBestCandidate(item.image_versions2.candidates);
+    if (best) imageUrls.push(best);
+  }
+
+  if (imageUrls.length === 0 && item.display_url) {
+    imageUrls.push(item.display_url);
+  }
+
+  const caption = item.caption?.text ??
+    item.edge_media_to_caption?.edges?.[0]?.node?.text ?? "";
+  const author = item.user?.username ?? item.owner?.username ?? "";
+
+  return imageUrls.length > 0 ? { text: caption, imageUrls, author } : null;
+}
+
+const BROWSER_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+const IG_APP_ID = "936619743392459";
+
 // ============================================================
-// 戦略1: Instagram GraphQL API（公開投稿の詳細データを返す）
+// 戦略1: GraphQL GET（query_hash）
 // ============================================================
 async function fetchViaGraphQL(shortcode: string): Promise<FetchResult | null> {
   try {
     const variables = JSON.stringify({ shortcode });
-    // Instagram公開GraphQLエンドポイント
     const url = `https://www.instagram.com/graphql/query/?query_hash=b3055c01b4b222b8a47dc12b090e4e64&variables=${encodeURIComponent(variables)}`;
 
     const res = await fetch(url, {
       headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "User-Agent": BROWSER_UA,
         Accept: "application/json",
+        "X-IG-App-ID": IG_APP_ID,
         "X-Requested-With": "XMLHttpRequest",
       },
       signal: AbortSignal.timeout(10000),
     });
 
     if (!res.ok) return null;
-
     const json = await res.json();
-    const media = json?.data?.shortcode_media;
-    if (!media) return null;
-
-    const imageUrls: string[] = [];
-
-    // カルーセル（複数画像）
-    const edges = media.edge_sidecar_to_children?.edges;
-    if (edges && edges.length > 0) {
-      for (const edge of edges) {
-        const node = edge.node;
-        if (node.display_url) imageUrls.push(node.display_url);
-      }
-    } else if (media.display_url) {
-      // 単一画像
-      imageUrls.push(media.display_url);
-    }
-
-    const caption =
-      media.edge_media_to_caption?.edges?.[0]?.node?.text ?? "";
-    const author = media.owner?.username ?? "";
-
-    return { text: caption, imageUrls, author };
+    return extractGraphQLMedia(json?.data?.shortcode_media);
   } catch (e) {
-    console.warn("[IG] GraphQL failed:", e);
+    console.warn("[IG] GraphQL GET failed:", e);
     return null;
   }
 }
 
 // ============================================================
-// 戦略2: Instagram Mobile API（i.instagram.com）
+// 戦略2: GraphQL POST（doc_id、Instagram最新Web形式）
+// ============================================================
+async function fetchViaGraphQLPost(shortcode: string): Promise<FetchResult | null> {
+  // 複数のdoc_idを試す（Instagramが定期的に変更するため）
+  const docIds = [
+    "8845758582119845",
+    "17888483320059182",
+    "9496378587088351",
+  ];
+
+  for (const docId of docIds) {
+    try {
+      const variables = JSON.stringify({
+        shortcode,
+        child_comment_count: 0,
+        fetch_comment_count: 0,
+        parent_comment_count: 0,
+        has_threaded_comments: false,
+      });
+
+      const res = await fetch("https://www.instagram.com/graphql/query/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": BROWSER_UA,
+          "X-IG-App-ID": IG_APP_ID,
+          "X-Requested-With": "XMLHttpRequest",
+          Accept: "application/json",
+          "Accept-Language": "ja-JP,ja;q=0.9,en;q=0.8",
+          Origin: "https://www.instagram.com",
+          Referer: `https://www.instagram.com/p/${shortcode}/`,
+        },
+        body: `variables=${encodeURIComponent(variables)}&doc_id=${docId}`,
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (!res.ok) continue;
+
+      const contentType = res.headers.get("content-type") ?? "";
+      if (!contentType.includes("json")) continue;
+
+      const json = await res.json();
+
+      // レスポンス形式の解析（複数パターン対応）
+      const media =
+        json?.data?.shortcode_media ??
+        json?.data?.xdt_shortcode_media ??
+        json?.data?.xdt_api__v1__media__shortcode__web_info?.items?.[0];
+
+      if (!media) continue;
+
+      // GraphQL形式 or Items形式で抽出
+      const result = media.edge_sidecar_to_children
+        ? extractGraphQLMedia(media)
+        : extractItemsMedia(media);
+
+      if (result && result.imageUrls.length > 0) return result;
+    } catch (e) {
+      console.warn(`[IG] GraphQL POST (doc_id=${docId}) failed:`, e);
+    }
+  }
+  return null;
+}
+
+// ============================================================
+// 戦略3: Instagram Mobile API（i.instagram.com）
 // ============================================================
 async function fetchViaMobileApi(shortcode: string): Promise<FetchResult | null> {
   try {
@@ -109,37 +205,14 @@ async function fetchViaMobileApi(shortcode: string): Promise<FetchResult | null>
         "User-Agent":
           "Instagram 275.0.0.27.98 Android (33/13; 420dpi; 1080x2400; samsung; SM-G991B; o1s; exynos2100; en_US; 458229258)",
         Accept: "*/*",
-        "X-IG-App-ID": "936619743392459",
+        "X-IG-App-ID": IG_APP_ID,
       },
       signal: AbortSignal.timeout(10000),
     });
 
     if (!res.ok) return null;
-
     const json = await res.json();
-    const item = json?.items?.[0];
-    if (!item) return null;
-
-    const imageUrls: string[] = [];
-
-    // カルーセル（複数画像）
-    if (item.carousel_media && item.carousel_media.length > 0) {
-      for (const cm of item.carousel_media) {
-        const candidates = cm.image_versions2?.candidates ?? [];
-        const best = getBestCandidate(candidates);
-        if (best) imageUrls.push(best);
-      }
-    }
-    // 単一画像
-    else if (item.image_versions2?.candidates) {
-      const best = getBestCandidate(item.image_versions2.candidates);
-      if (best) imageUrls.push(best);
-    }
-
-    const caption = item.caption?.text ?? "";
-    const author = item.user?.username ?? "";
-
-    return imageUrls.length > 0 ? { text: caption, imageUrls, author } : null;
+    return extractItemsMedia(json?.items?.[0]);
   } catch (e) {
     console.warn("[IG] Mobile API failed:", e);
     return null;
@@ -147,74 +220,33 @@ async function fetchViaMobileApi(shortcode: string): Promise<FetchResult | null>
 }
 
 // ============================================================
-// 戦略3: Instagram ?__a=1 JSON API
+// 戦略4: Instagram ?__a=1 JSON API
 // ============================================================
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function extractFromItemsFormat(media: any): string[] {
-  const imageUrls: string[] = [];
-  if (media.carousel_media) {
-    for (const cm of media.carousel_media) {
-      const candidates = cm.image_versions2?.candidates ?? [];
-      const best = getBestCandidate(candidates);
-      if (best) imageUrls.push(best);
-    }
-  } else if (media.image_versions2?.candidates?.length > 0) {
-    const best = getBestCandidate(media.image_versions2.candidates);
-    if (best) imageUrls.push(best);
-  }
-  return imageUrls;
-}
-
 async function fetchViaJsonApi(shortcode: string): Promise<FetchResult | null> {
   try {
     const url = `https://www.instagram.com/p/${shortcode}/?__a=1&__d=dis`;
 
     const res = await fetch(url, {
       headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "User-Agent": BROWSER_UA,
         Accept: "application/json, text/javascript, */*; q=0.01",
+        "X-IG-App-ID": IG_APP_ID,
         "X-Requested-With": "XMLHttpRequest",
       },
       signal: AbortSignal.timeout(10000),
     });
 
     if (!res.ok) return null;
-
     const contentType = res.headers.get("content-type") ?? "";
     if (!contentType.includes("json")) return null;
 
     const json = await res.json();
-
-    // graphql 形式
     const media = json?.graphql?.shortcode_media ?? json?.items?.[0];
     if (!media) return null;
 
-    let imageUrls: string[] = [];
-
-    // graphql 形式のカルーセル
-    const edges = media.edge_sidecar_to_children?.edges;
-    if (edges && edges.length > 0) {
-      for (const edge of edges) {
-        if (edge.node?.display_url) imageUrls.push(edge.node.display_url);
-      }
-    }
-    // items 形式のカルーセル / 単一画像
-    else {
-      imageUrls = extractFromItemsFormat(media);
-    }
-    // display_url フォールバック
-    if (imageUrls.length === 0 && media.display_url) {
-      imageUrls.push(media.display_url);
-    }
-
-    const caption =
-      media.edge_media_to_caption?.edges?.[0]?.node?.text ??
-      media.caption?.text ??
-      "";
-    const author = media.owner?.username ?? media.user?.username ?? "";
-
-    return imageUrls.length > 0 ? { text: caption, imageUrls, author } : null;
+    return media.edge_sidecar_to_children
+      ? extractGraphQLMedia(media)
+      : extractItemsMedia(media);
   } catch (e) {
     console.warn("[IG] JSON API failed:", e);
     return null;
@@ -222,136 +254,117 @@ async function fetchViaJsonApi(shortcode: string): Promise<FetchResult | null> {
 }
 
 // ============================================================
-// 戦略4: embed ページからスクレイピング
+// 戦略5: embed ページからスクレイピング
 // ============================================================
 async function fetchViaEmbed(shortcode: string): Promise<FetchResult | null> {
-  try {
-    const url = `https://www.instagram.com/p/${shortcode}/embed/captioned/`;
+  // /embed/ と /embed/captioned/ の両方を試す
+  const embedUrls = [
+    `https://www.instagram.com/p/${shortcode}/embed/`,
+    `https://www.instagram.com/p/${shortcode}/embed/captioned/`,
+  ];
 
-    const res = await fetch(url, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "text/html",
-      },
-      signal: AbortSignal.timeout(10000),
-    });
+  for (const embedUrl of embedUrls) {
+    try {
+      const res = await fetch(embedUrl, {
+        headers: {
+          "User-Agent": BROWSER_UA,
+          Accept: "text/html",
+          "Accept-Language": "ja-JP,ja;q=0.9,en;q=0.8",
+        },
+        signal: AbortSignal.timeout(10000),
+      });
 
-    if (!res.ok) return null;
+      if (!res.ok) continue;
+      const html = await res.text();
+      const imageUrls: string[] = [];
+      const seen = new Set<string>();
 
-    const html = await res.text();
-    const imageUrls: string[] = [];
-
-    // embed ページ内のJSONデータを探す
-    // window.__additionalDataLoaded パターン
-    const addDataMatch = html.match(
-      /window\.__additionalDataLoaded\s*\(\s*['"][^'"]*['"]\s*,\s*({.+?})\s*\)/
-    );
-    if (addDataMatch) {
-      try {
-        const data = JSON.parse(addDataMatch[1]);
-        const media = data?.shortcode_media ?? data?.graphql?.shortcode_media;
-        if (media) {
-          const edges = media.edge_sidecar_to_children?.edges;
-          if (edges?.length > 0) {
-            for (const edge of edges) {
-              if (edge.node?.display_url) imageUrls.push(edge.node.display_url);
-            }
-          } else if (media.display_url) {
-            imageUrls.push(media.display_url);
-          }
-          const caption =
-            media.edge_media_to_caption?.edges?.[0]?.node?.text ?? "";
-          const author = media.owner?.username ?? "";
-          if (imageUrls.length > 0) {
-            return { text: caption, imageUrls, author };
-          }
-        }
-      } catch {
-        // JSON parse failed
-      }
-    }
-
-    // display_url パターン（カルーセル全画像を含むことが多い）
-    const seen = new Set<string>();
-    let match;
-    const displayRegex = /"display_url"\s*:\s*"(https?:[^"]+)"/g;
-    while ((match = displayRegex.exec(html)) !== null) {
-      const imgUrl = unescapeUrl(match[1]);
-      if (!seen.has(imgUrl)) {
-        seen.add(imgUrl);
-        imageUrls.push(imgUrl);
-      }
-    }
-
-    // display_resources パターン（高解像度版を取得）
-    if (imageUrls.length === 0) {
-      const resourceRegex = /"display_resources"\s*:\s*\[([^\]]+)\]/g;
-      while ((match = resourceRegex.exec(html)) !== null) {
-        const srcMatch = match[1].match(/"src"\s*:\s*"(https?:[^"]+)"/g);
-        if (srcMatch) {
-          // 最後のsrc（最高解像度）を取得
-          const last = srcMatch[srcMatch.length - 1];
-          const urlMatch = last.match(/"src"\s*:\s*"(https?:[^"]+)"/);
-          if (urlMatch) {
-            const imgUrl = unescapeUrl(urlMatch[1]);
-            if (!seen.has(imgUrl)) {
-              seen.add(imgUrl);
-              imageUrls.push(imgUrl);
+      // 1) window.__additionalDataLoaded パターン
+      const addDataMatch = html.match(
+        /window\.__additionalDataLoaded\s*\(\s*['"][^'"]*['"]\s*,\s*({.+?})\s*\)/
+      );
+      if (addDataMatch) {
+        try {
+          const data = JSON.parse(addDataMatch[1]);
+          const media = data?.shortcode_media ?? data?.graphql?.shortcode_media;
+          const result = extractGraphQLMedia(media);
+          if (result && result.imageUrls.length > 1) return result;
+          if (result) {
+            for (const u of result.imageUrls) {
+              if (!seen.has(u)) { seen.add(u); imageUrls.push(u); }
             }
           }
-        }
+        } catch { /* ignore */ }
       }
-    }
 
-    // embed ページの <img> タグから画像URLを抽出
-    if (imageUrls.length === 0) {
-      const imgRegex =
-        /<img[^>]+(?:class="[^"]*EmbeddedMedia[^"]*"|data-src)[^>]*\s+src="([^"]+)"/g;
-      while ((match = imgRegex.exec(html)) !== null) {
-        const imgUrl = unescapeUrl(match[1]);
-        if (imgUrl.includes("instagram") || imgUrl.includes("cdninstagram") || imgUrl.includes("fbcdn")) {
+      // 2) gql_data パターン（新しいembed形式）
+      const gqlMatch = html.match(/"gql_data"\s*:\s*({[\s\S]*?"shortcode_media"[\s\S]*?})\s*[,}]/);
+      if (gqlMatch) {
+        try {
+          const data = JSON.parse(gqlMatch[1]);
+          const result = extractGraphQLMedia(data?.shortcode_media);
+          if (result && result.imageUrls.length > 1) return result;
+          if (result) {
+            for (const u of result.imageUrls) {
+              if (!seen.has(u)) { seen.add(u); imageUrls.push(u); }
+            }
+          }
+        } catch { /* ignore */ }
+      }
+
+      // 3) 全 <script> タグ内のJSONから display_url を全て抽出
+      const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/g;
+      let scriptMatch;
+      while ((scriptMatch = scriptRegex.exec(html)) !== null) {
+        const content = scriptMatch[1];
+        // display_url パターン
+        const displayRegex = /"display_url"\s*:\s*"(https?:[^"]+)"/g;
+        let dm;
+        while ((dm = displayRegex.exec(content)) !== null) {
+          const imgUrl = unescapeUrl(dm[1]);
           if (!seen.has(imgUrl)) {
             seen.add(imgUrl);
             imageUrls.push(imgUrl);
           }
         }
       }
-    }
 
-    // 汎用 img src パターン（Instagram CDN の画像のみ）
-    if (imageUrls.length === 0) {
-      const genericImgRegex = /src="(https:\/\/[^"]*(?:cdninstagram|fbcdn)[^"]*\.(?:jpg|webp)[^"]*)"/g;
-      while ((match = genericImgRegex.exec(html)) !== null) {
-        const imgUrl = unescapeUrl(match[1]);
-        if (!seen.has(imgUrl)) {
-          seen.add(imgUrl);
-          imageUrls.push(imgUrl);
+      // 4) HTML全体からInstagram CDN画像URLを抽出
+      if (imageUrls.length === 0) {
+        const cdnRegex = /(?:src|data-src)="(https:\/\/[^"]*(?:cdninstagram|fbcdn\.net)[^"]*\.(?:jpg|jpeg|webp|png)[^"]*)"/g;
+        let cm;
+        while ((cm = cdnRegex.exec(html)) !== null) {
+          const imgUrl = unescapeUrl(cm[1]);
+          // プロフィール画像やアイコンを除外（150x150以下）
+          if (imgUrl.includes("150x150") || imgUrl.includes("s150x150")) continue;
+          if (!seen.has(imgUrl)) {
+            seen.add(imgUrl);
+            imageUrls.push(imgUrl);
+          }
         }
       }
+
+      if (imageUrls.length > 0) {
+        // キャプション取得
+        const captionMatch = html.match(
+          /<div\s+class="[^"]*Caption[^"]*"[^>]*>[\s\S]*?<span[^>]*>([\s\S]*?)<\/span>/
+        );
+        const text = captionMatch
+          ? captionMatch[1].replace(/<[^>]+>/g, "").trim()
+          : "";
+        return { text, imageUrls, author: "" };
+      }
+    } catch (e) {
+      console.warn(`[IG] Embed fetch failed (${embedUrl}):`, e);
     }
-
-    // キャプション取得
-    const captionMatch = html.match(
-      /<div\s+class="[^"]*Caption[^"]*"[^>]*>[\s\S]*?<span[^>]*>([\s\S]*?)<\/span>/
-    );
-    const text = captionMatch
-      ? captionMatch[1].replace(/<[^>]+>/g, "").trim()
-      : "";
-
-    return imageUrls.length > 0
-      ? { text, imageUrls, author: "" }
-      : null;
-  } catch (e) {
-    console.warn("[IG] Embed fetch failed:", e);
-    return null;
   }
+  return null;
 }
 
 // ============================================================
-// 戦略5: 通常ページの OG タグ（フォールバック、1枚のみ）
+// 戦略6: 通常ページからスクレイピング（Googlebotヘッダ）
 // ============================================================
-async function fetchViaOgTags(shortcode: string): Promise<FetchResult | null> {
+async function fetchViaPageScraping(shortcode: string): Promise<FetchResult | null> {
   try {
     const url = `https://www.instagram.com/p/${shortcode}/`;
     const res = await fetch(url, {
@@ -360,23 +373,84 @@ async function fetchViaOgTags(shortcode: string): Promise<FetchResult | null> {
           "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
         Accept: "text/html",
       },
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(15000),
     });
 
     if (!res.ok) return null;
     const html = await res.text();
+    const imageUrls: string[] = [];
+    const seen = new Set<string>();
 
-    const ogImage = html.match(
-      /<meta\s+(?:property|name)="og:image"\s+content="([^"]*?)"/
+    // 1) <script type="application/ld+json"> から画像取得
+    const ldJsonRegex = /<script\s+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g;
+    let ldMatch;
+    while ((ldMatch = ldJsonRegex.exec(html)) !== null) {
+      try {
+        const ld = JSON.parse(ldMatch[1]);
+        const images = ld.image ?? ld.contentUrl ?? ld.thumbnailUrl;
+        if (Array.isArray(images)) {
+          for (const img of images) {
+            const u = typeof img === "string" ? img : img?.url;
+            if (u && !seen.has(u)) { seen.add(u); imageUrls.push(u); }
+          }
+        } else if (typeof images === "string" && !seen.has(images)) {
+          seen.add(images); imageUrls.push(images);
+        }
+      } catch { /* ignore */ }
+    }
+
+    // 2) ページソース内の全 display_url を抽出
+    const displayRegex = /"display_url"\s*:\s*"(https?:[^"]+)"/g;
+    let dm;
+    while ((dm = displayRegex.exec(html)) !== null) {
+      const imgUrl = unescapeUrl(dm[1]);
+      if (!seen.has(imgUrl)) { seen.add(imgUrl); imageUrls.push(imgUrl); }
+    }
+
+    // 3) carousel_media内のimage_versions2から抽出
+    const carouselRegex = /"carousel_media"\s*:\s*\[([\s\S]*?)\]/g;
+    let carMatch;
+    while ((carMatch = carouselRegex.exec(html)) !== null) {
+      const candidateRegex = /"url"\s*:\s*"(https?:[^"]+)"/g;
+      const widthRegex = /"width"\s*:\s*(\d+)/g;
+      // 各候補URLとwidthを抽出し、最大幅のものを選ぶ
+      let bestUrl = "";
+      let bestWidth = 0;
+      let cr;
+      while ((cr = candidateRegex.exec(carMatch[1])) !== null) {
+        const wr = widthRegex.exec(carMatch[1]);
+        const w = wr ? parseInt(wr[1]) : 0;
+        if (w > bestWidth) {
+          bestWidth = w;
+          bestUrl = unescapeUrl(cr[1]);
+        }
+      }
+      if (bestUrl && !seen.has(bestUrl)) {
+        seen.add(bestUrl);
+        imageUrls.push(bestUrl);
+      }
+    }
+
+    // 4) OGイメージ（最低1枚のフォールバック）
+    if (imageUrls.length === 0) {
+      const ogImage = html.match(
+        /<meta\s+(?:property|name)="og:image"\s+content="([^"]*?)"/
+      )?.[1];
+      if (ogImage) {
+        const u = unescapeUrl(ogImage);
+        if (!seen.has(u)) { seen.add(u); imageUrls.push(u); }
+      }
+    }
+
+    if (imageUrls.length === 0) return null;
+
+    // author / text
+    const ogTitle = html.match(
+      /<meta\s+(?:property|name)="og:title"\s+content="([^"]*?)"/
     )?.[1];
     const ogDesc = html.match(
       /<meta\s+(?:property|name)="og:description"\s+content="([^"]*?)"/
     )?.[1];
-    const ogTitle = html.match(
-      /<meta\s+(?:property|name)="og:title"\s+content="([^"]*?)"/
-    )?.[1];
-
-    if (!ogImage) return null;
 
     let author = "";
     if (ogTitle) {
@@ -388,11 +462,11 @@ async function fetchViaOgTags(shortcode: string): Promise<FetchResult | null> {
 
     return {
       text: ogDesc ? unescapeUrl(ogDesc) : "",
-      imageUrls: [unescapeUrl(ogImage)],
+      imageUrls,
       author,
     };
   } catch (e) {
-    console.warn("[IG] OG tags fetch failed:", e);
+    console.warn("[IG] Page scraping failed:", e);
     return null;
   }
 }
@@ -464,30 +538,23 @@ export async function POST(request: NextRequest) {
 
     const canonicalUrl = `https://www.instagram.com/p/${shortcode}/`;
 
-    // 順番に試す: GraphQL → Mobile API → JSON API → Embed → OG tags
+    // 戦略を順番に試す（成功したら即終了）
+    type Strategy = { name: string; fn: () => Promise<FetchResult | null> };
+    const strategies: Strategy[] = [
+      { name: "GraphQL GET", fn: () => fetchViaGraphQL(shortcode) },
+      { name: "GraphQL POST", fn: () => fetchViaGraphQLPost(shortcode) },
+      { name: "Mobile API", fn: () => fetchViaMobileApi(shortcode) },
+      { name: "JSON API", fn: () => fetchViaJsonApi(shortcode) },
+      { name: "Embed", fn: () => fetchViaEmbed(shortcode) },
+      { name: "Page Scraping", fn: () => fetchViaPageScraping(shortcode) },
+    ];
+
     let result: FetchResult | null = null;
-
-    result = await fetchViaGraphQL(shortcode);
-    console.log(`[IG] GraphQL: ${result ? result.imageUrls.length + " images" : "failed"}`);
-
-    if (!result || result.imageUrls.length === 0) {
-      result = await fetchViaMobileApi(shortcode);
-      console.log(`[IG] Mobile API: ${result ? result.imageUrls.length + " images" : "failed"}`);
-    }
-
-    if (!result || result.imageUrls.length === 0) {
-      result = await fetchViaJsonApi(shortcode);
-      console.log(`[IG] JSON API: ${result ? result.imageUrls.length + " images" : "failed"}`);
-    }
-
-    if (!result || result.imageUrls.length === 0) {
-      result = await fetchViaEmbed(shortcode);
-      console.log(`[IG] Embed: ${result ? result.imageUrls.length + " images" : "failed"}`);
-    }
-
-    if (!result || result.imageUrls.length === 0) {
-      result = await fetchViaOgTags(shortcode);
-      console.log(`[IG] OG tags: ${result ? result.imageUrls.length + " images" : "failed"}`);
+    for (const strategy of strategies) {
+      result = await strategy.fn();
+      const count = result?.imageUrls.length ?? 0;
+      console.log(`[IG] ${strategy.name}: ${count > 0 ? count + " images" : "failed"}`);
+      if (result && count > 0) break;
     }
 
     // テキスト・author を oEmbed で補完
@@ -515,14 +582,13 @@ export async function POST(request: NextRequest) {
       try {
         const imgRes = await fetch(imageUrl, {
           headers: {
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "User-Agent": BROWSER_UA,
             Referer: "https://www.instagram.com/",
           },
           signal: AbortSignal.timeout(15000),
         });
         if (!imgRes.ok) {
-          console.error(`[IG] Image download failed: ${imgRes.status}`);
+          console.error(`[IG] Image download failed: ${imgRes.status} for ${imageUrl.slice(0, 80)}`);
           continue;
         }
         buffer = Buffer.from(await imgRes.arrayBuffer());
