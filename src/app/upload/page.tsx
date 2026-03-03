@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { WorkUploadForm } from "@/components/works/WorkUploadForm";
+import { UploadWizard } from "@/components/works/upload/UploadWizard";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -19,5 +19,5 @@ export default async function UploadPage() {
     select: { id: true, title: true },
   }).catch(() => []);
 
-  return <WorkUploadForm userSeries={userSeries} />;
+  return <UploadWizard userSeries={userSeries} />;
 }
