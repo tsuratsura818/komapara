@@ -13,5 +13,12 @@ export const metadata: Metadata = {
 };
 
 export default function LpLayout({ children }: { children: React.ReactNode }) {
-  return <div className="min-h-screen">{children}</div>;
+  return (
+    <div
+      className="min-h-screen"
+      style={{ width: "100vw", marginLeft: "calc(-50vw + 50%)", paddingBottom: 0 }}
+    >
+      {children}
+    </div>
+  );
 }
