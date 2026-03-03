@@ -19,7 +19,7 @@ const config: Config = {
           700: "#1D4ED8",
         },
         komapara: {
-          bg: "#FAFAFA",
+          bg: "#fafbff",
           card: "#FFFFFF",
           border: "#E5E7EB",
           text: "#1F2937",

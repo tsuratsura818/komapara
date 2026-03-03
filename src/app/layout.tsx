@@ -45,8 +45,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} font-sans antialiased bg-komapara-bg text-komapara-text`}
       >
-        {/* Lightweight gradient background (CSS only, no blur/blend) */}
-        <div className="fixed inset-0 -z-10 pointer-events-none bg-gradient-to-br from-purple-50/40 via-transparent to-blue-50/30" />
+        {/* Aurora gradient background */}
+        <div
+          className="fixed inset-0 -z-10 pointer-events-none"
+          style={{
+            backgroundImage: [
+              'radial-gradient(ellipse at 15% 10%, rgba(139,92,246,0.08) 0%, transparent 50%)',
+              'radial-gradient(ellipse at 85% 20%, rgba(59,130,246,0.06) 0%, transparent 45%)',
+              'radial-gradient(ellipse at 50% 50%, rgba(236,72,153,0.05) 0%, transparent 50%)',
+              'radial-gradient(ellipse at 20% 80%, rgba(59,130,246,0.06) 0%, transparent 45%)',
+              'radial-gradient(ellipse at 80% 90%, rgba(139,92,246,0.07) 0%, transparent 50%)',
+            ].join(', '),
+          }}
+        />
         <Providers>
           <a
             href="#main-content"
