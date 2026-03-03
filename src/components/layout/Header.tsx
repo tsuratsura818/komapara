@@ -8,7 +8,7 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 export function Header() {
   const pathname = usePathname();
 
-  if (pathname.startsWith("/admin")) return null;
+  if (pathname.startsWith("/admin") || pathname.startsWith("/lp")) return null;
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-white/20">
