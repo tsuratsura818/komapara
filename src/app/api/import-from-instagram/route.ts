@@ -534,7 +534,7 @@ export async function POST(request: NextRequest) {
       let processed;
       try {
         const uuid = randomUUID();
-        processed = await processImageToWebP(buffer, uuid);
+        processed = await processImageToWebP(buffer, uuid, { trim: true });
       } catch (e) {
         console.error("[IG] WebP conversion error:", e);
         savedUrls.push(imageUrl);

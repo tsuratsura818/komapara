@@ -14,11 +14,21 @@ export interface ProcessedImage {
 export async function processImageToWebP(
   inputBuffer: Buffer,
   uuid: string,
-  options?: { maxWidth?: number; quality?: number }
+  options?: { maxWidth?: number; quality?: number; trim?: boolean }
 ): Promise<ProcessedImage> {
-  const { maxWidth = 1600, quality = 85 } = options ?? {};
+  const { maxWidth = 1600, quality = 85, trim = false } = options ?? {};
 
   let image = sharp(inputBuffer);
+
+  // 白い余白を自動トリミング（Instagram等の正方形パディング除去）
+  if (trim) {
+    try {
+      image = image.trim({ background: "#FFFFFF", threshold: 30 });
+    } catch {
+      // trim失敗時はそのまま続行
+    }
+  }
+
   const metadata = await image.metadata();
 
   if (metadata.width && metadata.width > maxWidth) {
