@@ -157,9 +157,9 @@ export default function LpPage() {
       </header>
 
       {/* ===== Hero (Aurora Background) ===== */}
-      <section className="relative h-screen flex items-center justify-center px-4 overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden py-24">
         <AuroraBlobs />
-        <div className="relative z-10 text-center max-w-3xl mx-auto">
+        <div className="relative z-10 text-center max-w-5xl mx-auto">
           <p className="text-base md:text-lg font-semibold text-purple-600 tracking-wider mb-6 animate-fade-in">
             4コマ漫画に特化したポータルサイト
           </p>
@@ -169,9 +169,9 @@ export default function LpPage() {
             <span className="gradient-text">もっと楽しく。</span>
           </h1>
           <p className="text-gray-600 text-lg md:text-xl mt-8 max-w-xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            XやInstagramに散らばる4コマ漫画を一箇所に。
+            笑える、泣ける、共感できる。
             <br className="hidden md:block" />
-            読者には発見を、クリエイターには届ける場所を。
+            あなたの「好き」が、きっと見つかる。
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 animate-fade-in" style={{ animationDelay: "0.45s" }}>
             <Link
@@ -187,11 +187,92 @@ export default function LpPage() {
               くわしく見る
             </a>
           </div>
+
+          {/* プロダクトモックアップ */}
+          <div className="mt-16 animate-fade-in" style={{ animationDelay: "0.6s" }}>
+            <div className="mx-auto max-w-3xl rounded-2xl shadow-2xl shadow-purple-500/10 border border-gray-200/80 bg-white overflow-hidden">
+              {/* ブラウザ風ヘッダー */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 border-b border-gray-200">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-400" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                  <div className="w-3 h-3 rounded-full bg-green-400" />
+                </div>
+                <div className="flex-1 mx-4">
+                  <div className="bg-white rounded-md px-3 py-1 text-xs text-gray-400 text-center border border-gray-200">
+                    komapara.com
+                  </div>
+                </div>
+              </div>
+              {/* サイトUI */}
+              <div className="p-4 md:p-6">
+                {/* ナビ */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm font-bold gradient-text">コマパラ</span>
+                  <div className="flex gap-2">
+                    <div className="h-6 w-14 rounded-full bg-gray-100" />
+                    <div className="h-6 w-6 rounded-full bg-gray-100" />
+                  </div>
+                </div>
+                {/* ジャンルタブ */}
+                <div className="flex gap-2 mb-4 overflow-hidden">
+                  {["おすすめ", "日常", "恋愛", "ギャグ", "ファンタジー"].map((tag, i) => (
+                    <span key={tag} className={`text-xs px-3 py-1 rounded-full whitespace-nowrap ${i === 0 ? "bg-purple-100 text-purple-700 font-semibold" : "bg-gray-100 text-gray-500"}`}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                {/* フィードカード */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {[
+                    { color: "from-purple-200 to-blue-200", title: "今日のひとコマ", author: "まる子" },
+                    { color: "from-pink-200 to-purple-200", title: "ねこ日和", author: "にゃん太" },
+                    { color: "from-blue-200 to-cyan-200", title: "OLあるある", author: "さくら" },
+                  ].map((card) => (
+                    <div key={card.title} className="rounded-lg overflow-hidden border border-gray-100">
+                      <div className={`aspect-square bg-gradient-to-br ${card.color} flex items-center justify-center`}>
+                        <div className="grid grid-cols-2 gap-0.5 w-3/4 aspect-square">
+                          {[0, 1, 2, 3].map((n) => (
+                            <div key={n} className="bg-white/60 rounded-sm" />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        <p className="text-xs font-semibold text-gray-800 truncate">{card.title}</p>
+                        <p className="text-[10px] text-gray-400">{card.author}</p>
+                        <div className="flex gap-1 mt-1">
+                          <span className="text-[10px]">😆 12</span>
+                          <span className="text-[10px]">❤️ 8</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-400 animate-fade-in" style={{ animationDelay: "1s" }}>
           <span className="text-xs tracking-widest">SCROLL</span>
           <div className="w-px h-8 bg-gradient-to-b from-gray-300 to-transparent" />
+        </div>
+      </section>
+
+      {/* ===== Numbers ===== */}
+      <section className="py-16 px-4 bg-white border-b border-gray-100">
+        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            { value: "500+", label: "投稿作品数" },
+            { value: "100+", label: "クリエイター" },
+            { value: "15", label: "ジャンル" },
+            { value: "無料", label: "基本利用料" },
+          ].map((stat, i) => (
+            <div key={stat.label} className={`lp-animate lp-animate-delay-${Math.min(i + 1, 3)}`}>
+              <p className="text-3xl md:text-4xl font-bold gradient-text">{stat.value}</p>
+              <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
+            </div>
+          ))}
         </div>
       </section>
 
