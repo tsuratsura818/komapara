@@ -188,65 +188,125 @@ export default function LpPage() {
             </a>
           </div>
 
-          {/* プロダクトモックアップ */}
+          {/* スマホモックアップ */}
           <div className="mt-16 animate-fade-in" style={{ animationDelay: "0.6s" }}>
-            <div className="mx-auto max-w-3xl rounded-2xl shadow-2xl shadow-purple-500/10 border border-gray-200/80 bg-white overflow-hidden">
-              {/* ブラウザ風ヘッダー */}
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 border-b border-gray-200">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                  <div className="w-3 h-3 rounded-full bg-green-400" />
-                </div>
-                <div className="flex-1 mx-4">
-                  <div className="bg-white rounded-md px-3 py-1 text-xs text-gray-400 text-center border border-gray-200">
-                    komapara.com
+            <div className="relative mx-auto max-w-4xl h-[340px] md:h-[480px]" style={{ perspective: "1200px" }}>
+              {/* 左のスマホ — ランキング画面 */}
+              <div
+                className="absolute left-[2%] md:left-[8%] top-[8%] w-[140px] md:w-[200px]"
+                style={{ transform: "rotateY(8deg) rotateZ(-3deg)" }}
+              >
+                <div className="rounded-[24px] md:rounded-[32px] border-[3px] md:border-4 border-gray-800 bg-white shadow-2xl overflow-hidden">
+                  {/* ノッチ */}
+                  <div className="mx-auto mt-1.5 w-16 md:w-20 h-1 md:h-1.5 rounded-full bg-gray-800" />
+                  <div className="p-2 md:p-3">
+                    <p className="text-[8px] md:text-[10px] font-bold text-gray-800 mb-1.5 md:mb-2">ランキング</p>
+                    {["今日のひとコマ", "ねこ日和", "OLあるある", "放課後4コマ"].map((title, i) => (
+                      <div key={title} className="flex items-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
+                        <span className="text-[8px] md:text-[10px] font-bold text-purple-600 w-3 md:w-4">{i + 1}</span>
+                        <div className={`w-6 h-6 md:w-8 md:h-8 rounded bg-gradient-to-br ${["from-purple-200 to-blue-200", "from-pink-200 to-purple-200", "from-blue-200 to-cyan-200", "from-yellow-200 to-orange-200"][i]} flex-shrink-0`} />
+                        <div className="min-w-0">
+                          <p className="text-[7px] md:text-[9px] font-semibold text-gray-800 truncate">{title}</p>
+                          <p className="text-[6px] md:text-[8px] text-gray-400">❤️ {[128, 96, 84, 71][i]}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                  {/* ホームバー */}
+                  <div className="mx-auto mb-1 w-10 md:w-12 h-0.5 md:h-1 rounded-full bg-gray-300" />
                 </div>
               </div>
-              {/* サイトUI */}
-              <div className="p-4 md:p-6">
-                {/* ナビ */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-bold gradient-text">コマパラ</span>
-                  <div className="flex gap-2">
-                    <div className="h-6 w-14 rounded-full bg-gray-100" />
-                    <div className="h-6 w-6 rounded-full bg-gray-100" />
+
+              {/* 中央のスマホ（メイン） — フィード画面 */}
+              <div
+                className="absolute left-1/2 -translate-x-1/2 top-0 w-[170px] md:w-[240px] z-10"
+              >
+                <div className="rounded-[28px] md:rounded-[36px] border-[3px] md:border-4 border-gray-800 bg-white shadow-2xl overflow-hidden ring-1 ring-purple-500/20">
+                  {/* ノッチ */}
+                  <div className="mx-auto mt-1.5 md:mt-2 w-16 md:w-20 h-1 md:h-1.5 rounded-full bg-gray-800" />
+                  <div className="p-2 md:p-3">
+                    {/* ナビ */}
+                    <div className="flex items-center justify-between mb-2 md:mb-3">
+                      <span className="text-[9px] md:text-xs font-bold gradient-text">コマパラ</span>
+                      <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gray-100" />
+                    </div>
+                    {/* ジャンルタブ */}
+                    <div className="flex gap-1 mb-2 md:mb-3">
+                      {["おすすめ", "日常", "恋愛"].map((tag, i) => (
+                        <span key={tag} className={`text-[6px] md:text-[8px] px-1.5 md:px-2 py-0.5 rounded-full ${i === 0 ? "bg-purple-100 text-purple-700 font-semibold" : "bg-gray-100 text-gray-400"}`}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    {/* フィードカード */}
+                    <div className="grid grid-cols-2 gap-1.5 md:gap-2">
+                      {[
+                        { color: "from-purple-200 to-blue-200", title: "今日のひとコマ" },
+                        { color: "from-pink-200 to-purple-200", title: "ねこ日和" },
+                        { color: "from-blue-200 to-cyan-200", title: "OLあるある" },
+                        { color: "from-yellow-200 to-orange-200", title: "放課後4コマ" },
+                      ].map((card) => (
+                        <div key={card.title} className="rounded-md overflow-hidden border border-gray-100">
+                          <div className={`aspect-square bg-gradient-to-br ${card.color} flex items-center justify-center`}>
+                            <div className="grid grid-cols-2 gap-px w-3/4 aspect-square">
+                              {[0, 1, 2, 3].map((n) => (
+                                <div key={n} className="bg-white/50 rounded-[1px]" />
+                              ))}
+                            </div>
+                          </div>
+                          <div className="p-1 md:p-1.5">
+                            <p className="text-[6px] md:text-[8px] font-semibold text-gray-800 truncate">{card.title}</p>
+                            <div className="flex gap-1 mt-0.5">
+                              <span className="text-[5px] md:text-[7px] text-gray-400">😆 12</span>
+                              <span className="text-[5px] md:text-[7px] text-gray-400">❤️ 8</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+                  {/* ホームバー */}
+                  <div className="mx-auto mb-1.5 w-12 md:w-14 h-0.5 md:h-1 rounded-full bg-gray-300" />
                 </div>
-                {/* ジャンルタブ */}
-                <div className="flex gap-2 mb-4 overflow-hidden">
-                  {["おすすめ", "日常", "恋愛", "ギャグ", "ファンタジー"].map((tag, i) => (
-                    <span key={tag} className={`text-xs px-3 py-1 rounded-full whitespace-nowrap ${i === 0 ? "bg-purple-100 text-purple-700 font-semibold" : "bg-gray-100 text-gray-500"}`}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                {/* フィードカード */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {[
-                    { color: "from-purple-200 to-blue-200", title: "今日のひとコマ", author: "まる子" },
-                    { color: "from-pink-200 to-purple-200", title: "ねこ日和", author: "にゃん太" },
-                    { color: "from-blue-200 to-cyan-200", title: "OLあるある", author: "さくら" },
-                  ].map((card) => (
-                    <div key={card.title} className="rounded-lg overflow-hidden border border-gray-100">
-                      <div className={`aspect-square bg-gradient-to-br ${card.color} flex items-center justify-center`}>
-                        <div className="grid grid-cols-2 gap-0.5 w-3/4 aspect-square">
-                          {[0, 1, 2, 3].map((n) => (
-                            <div key={n} className="bg-white/60 rounded-sm" />
-                          ))}
-                        </div>
-                      </div>
-                      <div className="p-2">
-                        <p className="text-xs font-semibold text-gray-800 truncate">{card.title}</p>
-                        <p className="text-[10px] text-gray-400">{card.author}</p>
-                        <div className="flex gap-1 mt-1">
-                          <span className="text-[10px]">😆 12</span>
-                          <span className="text-[10px]">❤️ 8</span>
-                        </div>
+              </div>
+
+              {/* 右のスマホ — 作品詳細画面 */}
+              <div
+                className="absolute right-[2%] md:right-[8%] top-[8%] w-[140px] md:w-[200px]"
+                style={{ transform: "rotateY(-8deg) rotateZ(3deg)" }}
+              >
+                <div className="rounded-[24px] md:rounded-[32px] border-[3px] md:border-4 border-gray-800 bg-white shadow-2xl overflow-hidden">
+                  {/* ノッチ */}
+                  <div className="mx-auto mt-1.5 w-16 md:w-20 h-1 md:h-1.5 rounded-full bg-gray-800" />
+                  <div className="p-2 md:p-3">
+                    {/* 作品ヘッダー */}
+                    <div className="flex items-center gap-1.5 mb-2 md:mb-3">
+                      <div className="w-5 h-5 md:w-7 md:h-7 rounded-full bg-gradient-to-br from-purple-300 to-pink-300 flex-shrink-0" />
+                      <div>
+                        <p className="text-[7px] md:text-[9px] font-bold text-gray-800">まる子</p>
+                        <p className="text-[6px] md:text-[7px] text-gray-400">2時間前</p>
                       </div>
                     </div>
-                  ))}
+                    {/* 4コマ表示 */}
+                    <div className="rounded-md overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100 mb-2 md:mb-3">
+                      <div className="grid grid-cols-1 gap-px p-1.5 md:p-2">
+                        {[0, 1, 2, 3].map((n) => (
+                          <div key={n} className="bg-white/70 rounded-[2px] h-5 md:h-7" />
+                        ))}
+                      </div>
+                    </div>
+                    {/* リアクション */}
+                    <div className="flex gap-1.5 md:gap-2">
+                      {[{ emoji: "😆", count: 18 }, { emoji: "❤️", count: 12 }, { emoji: "😢", count: 5 }, { emoji: "👏", count: 9 }, { emoji: "🔥", count: 7 }].map((r) => (
+                        <div key={r.emoji} className="flex items-center gap-0.5 bg-gray-50 rounded-full px-1.5 md:px-2 py-0.5">
+                          <span className="text-[8px] md:text-[10px]">{r.emoji}</span>
+                          <span className="text-[6px] md:text-[8px] text-gray-400">{r.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  {/* ホームバー */}
+                  <div className="mx-auto mb-1 w-10 md:w-12 h-0.5 md:h-1 rounded-full bg-gray-300" />
                 </div>
               </div>
             </div>
