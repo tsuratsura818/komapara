@@ -307,7 +307,7 @@ export default function LpPage() {
                 {i < STEPS.length - 1 && (
                   <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-px bg-gradient-to-r from-purple-300 to-pink-300" />
                 )}
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-main text-white font-bold text-lg mb-4 shadow-lg shadow-purple-500/20">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 text-purple-600 font-bold text-lg mb-4 shadow-sm border border-purple-200">
                   {s.step}
                 </div>
                 <h3 className="font-bold text-base text-gray-900">{s.title}</h3>
@@ -378,37 +378,36 @@ export default function LpPage() {
       </section>
 
       {/* ===== Final CTA ===== */}
-      <section className="relative py-24 px-4 text-center bg-gradient-main overflow-hidden">
+      <section className="relative py-24 px-4 text-center overflow-hidden">
+        <AuroraBlobs />
         <div className="relative z-10 max-w-lg mx-auto lp-animate">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
-            さあ、はじめよう
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            さあ、<span className="gradient-text">はじめよう</span>
           </h2>
-          <p className="text-white/80 mt-4">
+          <p className="text-gray-600 mt-4">
             登録は無料。今すぐお気に入りの4コマを探しに行こう。
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
             <Link
               href="/login"
-              className="w-full sm:w-auto px-8 py-3.5 bg-white text-purple-600 font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-main text-white font-bold rounded-full shadow-lg shadow-purple-500/25 hover:shadow-xl hover:scale-105 transition-all duration-300 text-center"
             >
               無料ではじめる
             </Link>
             <Link
               href="/"
-              className="w-full sm:w-auto px-8 py-3.5 font-semibold rounded-full border-2 border-white/40 text-white hover:bg-white/10 transition-all duration-300 text-center"
+              className="w-full sm:w-auto px-8 py-3.5 font-semibold rounded-full border-2 border-gray-300 text-gray-700 hover:border-purple-400 hover:text-purple-600 transition-all duration-300 text-center"
             >
               作品を見てみる
             </Link>
           </div>
         </div>
-        {/* Decorative */}
-        <div className="absolute top-10 right-[10%] w-20 h-20 bg-white/10 rounded-xl rotate-12 animate-float" />
-        <div className="absolute bottom-10 left-[10%] w-16 h-16 bg-white/5 rounded-xl -rotate-6 animate-float" style={{ animationDelay: "1.5s" }} />
       </section>
 
       {/* ===== Footer ===== */}
-      <footer className="py-8 px-4 bg-white border-t border-gray-200">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+      <footer className="relative py-8 px-4 border-t border-purple-100 overflow-hidden">
+        <AuroraBlobs />
+        <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
           <Link href="/" className="font-bold gradient-text text-base">
             コマパラ
           </Link>
