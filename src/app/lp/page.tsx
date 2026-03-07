@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ScrollAnimations } from "./ScrollAnimations";
 import { AuroraBlobs } from "./AuroraBlobs";
-import { IPhoneMockup } from "./IPhoneMockup";
 
 export const metadata: Metadata = {
   title: "コマパラ - 4コマ漫画に特化したポータルサイト",
@@ -263,120 +262,25 @@ export default function LpPage() {
           </div>
 
           {/* 右側：スマホモックアップ */}
-          <div className="relative h-[480px] md:h-[580px] animate-fade-in" style={{ animationDelay: "0.5s" }}>
-
-            {/* 背面左 — ランキング画面 */}
-            <div className="absolute left-[0%] top-[10%] z-10" style={{ transform: "rotate(-7deg) scale(0.82)", transformOrigin: "center top" }}>
-              <IPhoneMockup tilt={0}>
-                {/* ランキング画面 */}
-                <div style={{ background: "#fff", height: "100%", padding: "0 12px" }}>
-                  <div style={{ fontSize: "13px", fontWeight: 700, color: "#1f2937", marginBottom: "10px" }}>週間ランキング 🏆</div>
-                  {[
-                    { rank: 1, title: "今日のひとコマ", author: "まるまる", likes: 128, rankColor: "#F59E0B" },
-                    { rank: 2, title: "ねこ日和", author: "にゃん太", likes: 96, rankColor: "#9CA3AF" },
-                    { rank: 3, title: "OLあるある", author: "りえ", likes: 84, rankColor: "#F97316" },
-                    { rank: 4, title: "放課後4コマ", author: "たけし", likes: 71, rankColor: "#8B5CF6" },
-                    { rank: 5, title: "猫と私の話", author: "ミコ", likes: 63, rankColor: "#8B5CF6" },
-                  ].map((item) => (
-                    <div key={item.rank} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", padding: "6px 8px", background: "#fafafa", borderRadius: "8px" }}>
-                      <span style={{ fontSize: "11px", fontWeight: 800, color: item.rankColor, width: "14px", textAlign: "center", flexShrink: 0 }}>{item.rank}</span>
-                      <div style={{
-                        width: "32px", height: "32px", borderRadius: "6px", flexShrink: 0,
-                        background: `linear-gradient(135deg, ${["#e9d5ff,#bfdbfe", "#fce7f3,#e9d5ff", "#dbeafe,#a5f3fc", "#fef3c7,#fed7aa", "#d1fae5,#a7f3d0"][item.rank - 1]})`,
-                        display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px",
-                      }}>
-                        {["📖", "🐱", "💼", "🎒", "🐈"][item.rank - 1]}
-                      </div>
-                      <div style={{ minWidth: 0 }}>
-                        <div style={{ fontSize: "9px", fontWeight: 600, color: "#1f2937", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.title}</div>
-                        <div style={{ fontSize: "8px", color: "#9ca3af" }}>@{item.author} · ❤️ {item.likes}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </IPhoneMockup>
-            </div>
-
-            {/* 前面中央 — フィード画面（メイン） */}
-            <div className="absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[8%] top-0 z-20">
-              <IPhoneMockup tilt={0}>
-                {/* フィード画面 */}
-                <div style={{ background: "#fafbff", height: "100%", overflowY: "hidden" }}>
-                  {/* ヘッダー */}
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 12px 8px", borderBottom: "1px solid #f0f0f5" }}>
-                    <span style={{ fontSize: "14px", fontWeight: 800, background: "linear-gradient(135deg, #8B5CF6, #3B82F6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>コマパラ</span>
-                    <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: "linear-gradient(135deg, #c4b5fd, #93c5fd)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px" }}>👤</div>
-                  </div>
-                  {/* タブ */}
-                  <div style={{ display: "flex", gap: "6px", padding: "6px 12px 8px" }}>
-                    {["おすすめ", "新着", "フォロー中"].map((tab, i) => (
-                      <span key={tab} style={{
-                        fontSize: "8px", padding: "2px 8px", borderRadius: "20px", fontWeight: i === 0 ? 700 : 400,
-                        background: i === 0 ? "linear-gradient(135deg, #8B5CF6, #3B82F6)" : "#f0f0f5",
-                        color: i === 0 ? "#fff" : "#9ca3af",
-                      }}>{tab}</span>
-                    ))}
-                  </div>
-                  {/* カード */}
-                  {[
-                    { title: "今日のひとコマ", author: "まるまる", emoji: "📖", bg: "#ede9fe", reactions: "😆28 ❤️41" },
-                    { title: "ねこ日和 #12", author: "にゃん太", emoji: "🐱", bg: "#fce7f3", reactions: "😂19 ❤️36" },
-                    { title: "OLあるある", author: "りえ", emoji: "💼", bg: "#dbeafe", reactions: "🤝22 ❤️31" },
-                  ].map((card) => (
-                    <div key={card.title} style={{ margin: "0 10px 8px", background: "#fff", borderRadius: "10px", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
-                      <div style={{ height: "72px", background: card.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px" }}>
-                        {card.emoji}
-                      </div>
-                      <div style={{ padding: "5px 8px 6px" }}>
-                        <div style={{ fontSize: "9px", fontWeight: 600, color: "#1f2937" }}>{card.title}</div>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2px" }}>
-                          <span style={{ fontSize: "7.5px", color: "#9ca3af" }}>@{card.author}</span>
-                          <span style={{ fontSize: "7.5px", color: "#6b7280" }}>{card.reactions}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </IPhoneMockup>
-            </div>
-
-            {/* 背面右 — 作品詳細画面 */}
-            <div className="absolute right-[-2%] top-[28%] z-10" style={{ transform: "rotate(6deg) scale(0.78)", transformOrigin: "center top" }}>
-              <IPhoneMockup tilt={0}>
-                {/* 作品詳細画面（ダーク） */}
-                <div style={{ background: "#0a0a0f", height: "100%", padding: "0 10px" }}>
-                  {/* 作者情報 */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "8px" }}>
-                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "linear-gradient(135deg, #a78bfa, #f9a8d4)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px" }}>🐱</div>
-                    <div>
-                      <div style={{ fontSize: "9px", fontWeight: 600, color: "#f9fafb" }}>まるまる</div>
-                      <div style={{ fontSize: "7.5px", color: "#6b7280" }}>1時間前</div>
-                    </div>
-                    <div style={{ marginLeft: "auto", fontSize: "7.5px", color: "#8b5cf6", fontWeight: 600, padding: "2px 7px", border: "1px solid #8b5cf6", borderRadius: "20px" }}>フォロー</div>
-                  </div>
-                  {/* 4コマパネル */}
-                  {[0, 1, 2, 3].map((n) => (
-                    <div key={n} style={{
-                      marginBottom: "3px", height: "52px", borderRadius: "5px", overflow: "hidden",
-                      background: `linear-gradient(135deg, ${["#2e1065,#1e3a5f", "#1e3a5f,#164e63", "#164e63,#14532d", "#14532d,#3b0764"][n]})`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "18px",
-                    }}>
-                      {["😊", "😱", "😭", "😆"][n]}
-                    </div>
-                  ))}
-                  {/* リアクション */}
-                  <div style={{ display: "flex", gap: "4px", marginTop: "8px", flexWrap: "wrap" }}>
-                    {[{ e: "😆", n: 28 }, { e: "❤️", n: 41 }, { e: "😢", n: 7 }, { e: "🤝", n: 15 }, { e: "✨", n: 9 }].map((r) => (
-                      <div key={r.e} style={{ display: "flex", alignItems: "center", gap: "2px", background: "rgba(255,255,255,0.08)", borderRadius: "20px", padding: "2px 6px" }}>
-                        <span style={{ fontSize: "9px" }}>{r.e}</span>
-                        <span style={{ fontSize: "8px", color: "#d1d5db" }}>{r.n}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </IPhoneMockup>
-            </div>
+          <div
+            className="relative flex items-center justify-center animate-fade-in"
+            style={{ animationDelay: "0.5s", minHeight: "320px" }}
+          >
+            {/* mix-blend-mode: multiply で白背景を透過、金属フレームだけ残す */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/phone-mockup.png"
+              alt="コマパラ アプリ画面 スマートフォンモックアップ"
+              style={{
+                width: "130%",
+                maxWidth: "none",
+                mixBlendMode: "multiply",
+                display: "block",
+                transform: "translateX(5%)",
+                pointerEvents: "none",
+                userSelect: "none",
+              }}
+            />
           </div>
         </div>
         {/* Scroll indicator */}
