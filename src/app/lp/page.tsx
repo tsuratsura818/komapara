@@ -109,6 +109,76 @@ const COMPARISONS = [
   { feature: "プッシュ通知", komapara: true, pixiv: true, x: true },
 ];
 
+const TESTIMONIALS = [
+  {
+    name: "まるまる🐾",
+    role: "クリエイター・ねこ日和 作者",
+    avatar: "🐱",
+    text: "XとInstagramにバラバラに上げていた4コマを、コマパラに集約したら新しい読者さんが増えました。1タップインポートが本当に楽！",
+    gradient: "from-purple-200 to-blue-200",
+    color: "purple",
+  },
+  {
+    name: "OL漫画家 りえ",
+    role: "クリエイター・OLあるある 作者",
+    avatar: "💼",
+    text: "投げ銭で初めて応援をもらった時は感動しました。創作を続けるモチベーションが全然違います。ダッシュボードで数字が見えるのも嬉しい。",
+    gradient: "from-pink-200 to-purple-200",
+    color: "pink",
+  },
+  {
+    name: "たけし@通勤読書派",
+    role: "読者",
+    avatar: "🚃",
+    text: "通勤時間に毎日5作品は読んでいます。ジャンルで絞れるから好みの4コマがすぐ見つかる。プッシュ通知で新作も見逃さない！",
+    gradient: "from-blue-200 to-cyan-200",
+    color: "blue",
+  },
+  {
+    name: "ねこ好きママ",
+    role: "読者",
+    avatar: "🐈",
+    text: "育児系の4コマを探していたら、ジャンルを選ぶだけで大量に出てきて感動。シリーズ機能で最初から全部追えるのが最高です！",
+    gradient: "from-yellow-200 to-orange-200",
+    color: "orange",
+  },
+];
+
+const PRICING_PLANS = [
+  {
+    name: "フリー",
+    price: "¥0",
+    period: "",
+    description: "読者もクリエイターも、基本機能はすべて無料",
+    features: [
+      "フィード・ランキング・ジャンル閲覧",
+      "作品投稿・シリーズ管理",
+      "いいね・コメント・フォロー",
+      "5種リアクションスタンプ",
+      "クリエイターダッシュボード",
+      "投げ銭・サブスク受取",
+    ],
+    cta: "無料ではじめる",
+    featured: false,
+    gradient: "from-gray-100 to-gray-50",
+  },
+  {
+    name: "プレミアム",
+    price: "¥300",
+    period: "/ 月",
+    description: "広告なしの快適な読書体験を",
+    features: [
+      "フリープランの全機能",
+      "広告完全非表示",
+      "プレミアムバッジ表示",
+      "優先サポート",
+    ],
+    cta: "プレミアムへ",
+    featured: true,
+    gradient: "from-purple-500 to-blue-500",
+  },
+];
+
 const FAQS = [
   {
     q: "利用料金はかかりますか？",
@@ -422,6 +492,39 @@ export default function LpPage() {
         </div>
       </section>
 
+      {/* ===== Testimonials ===== */}
+      <section className="py-20 px-4 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12 lp-animate">
+            <p className="text-sm font-bold text-purple-600 tracking-wider mb-2">VOICES</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+              ユーザーの声
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {TESTIMONIALS.map((t, i) => (
+              <div
+                key={t.name}
+                className={`lp-animate lp-animate-delay-${Math.min(i + 1, 3)} bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300`}
+              >
+                <p className="text-gray-700 text-sm leading-relaxed mb-5">
+                  &ldquo;{t.text}&rdquo;
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center text-lg flex-shrink-0`}>
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm text-gray-900">{t.name}</p>
+                    <p className="text-xs text-gray-500">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ===== How It Works ===== */}
       <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-4xl mx-auto">
@@ -471,13 +574,90 @@ export default function LpPage() {
                 {COMPARISONS.map((row) => (
                   <tr key={row.feature} className="border-b border-gray-100 last:border-0">
                     <td className="p-4 font-medium text-gray-900">{row.feature}</td>
-                    <td className="p-4 text-center">{row.komapara ? "✅" : "—"}</td>
-                    <td className="p-4 text-center text-gray-400">{row.pixiv ? "⚪" : "—"}</td>
-                    <td className="p-4 text-center text-gray-400">{row.x ? "⚪" : "—"}</td>
+                    <td className="p-4 text-center">
+                      {row.komapara
+                        ? <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-xs font-bold">✓</span>
+                        : <span className="text-gray-300">—</span>}
+                    </td>
+                    <td className="p-4 text-center">
+                      {row.pixiv
+                        ? <span className="text-gray-400 text-sm">△</span>
+                        : <span className="text-gray-300">—</span>}
+                    </td>
+                    <td className="p-4 text-center">
+                      {row.x
+                        ? <span className="text-gray-400 text-sm">△</span>
+                        : <span className="text-gray-300">—</span>}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Pricing ===== */}
+      <section className="py-20 px-4 bg-gray-50">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12 lp-animate">
+            <p className="text-sm font-bold text-purple-600 tracking-wider mb-2">PRICING</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+              シンプルな料金体系
+            </h2>
+            <p className="text-gray-600 text-base mt-3">
+              基本機能はすべて無料。いつでも始められます。
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {PRICING_PLANS.map((plan, i) => (
+              <div
+                key={plan.name}
+                className={`lp-animate lp-animate-delay-${i + 1} rounded-2xl overflow-hidden border transition-all duration-300 ${
+                  plan.featured
+                    ? "border-purple-300 shadow-lg shadow-purple-500/10"
+                    : "border-gray-200 shadow-sm"
+                }`}
+              >
+                {plan.featured && (
+                  <div className="bg-gradient-main text-white text-xs font-bold text-center py-1.5 tracking-wider">
+                    おすすめ
+                  </div>
+                )}
+                <div className="bg-white p-6">
+                  <h3 className={`font-bold text-lg ${plan.featured ? "gradient-text" : "text-gray-900"}`}>
+                    {plan.name}
+                  </h3>
+                  <div className="flex items-baseline gap-1 mt-2 mb-1">
+                    <span className={`text-4xl font-bold ${plan.featured ? "gradient-text" : "text-gray-900"}`}>
+                      {plan.price}
+                    </span>
+                    {plan.period && (
+                      <span className="text-gray-500 text-sm">{plan.period}</span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-500 mb-5">{plan.description}</p>
+                  <ul className="space-y-2 mb-6">
+                    {plan.features.map((f) => (
+                      <li key={f} className="flex items-center gap-2 text-sm text-gray-700">
+                        <span className={plan.featured ? "text-purple-500" : "text-gray-400"}>✓</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/login"
+                    className={`block text-center py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
+                      plan.featured
+                        ? "bg-gradient-main text-white hover:shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02]"
+                        : "border-2 border-gray-300 text-gray-700 hover:border-purple-400 hover:text-purple-600"
+                    }`}
+                  >
+                    {plan.cta}
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
