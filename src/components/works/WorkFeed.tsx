@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { WorkCard } from "./WorkCard";
 import { AdSlot } from "@/components/ui/AdSlot";
+import { GenreIcon } from "@/components/ui/GenreIcons";
 import { cn, GENRES } from "@/lib/utils";
 
 type Work = {
@@ -153,13 +154,14 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
             key={g.slug}
             onClick={() => setGenre(genre === g.slug ? null : g.slug)}
             className={cn(
-              "px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-all shrink-0",
+              "inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-all shrink-0",
               genre === g.slug
                 ? "bg-gradient-main text-white shadow-md shadow-purple-500/25"
                 : "glass text-komapara-muted hover:text-komapara-text"
             )}
           >
-            {g.emoji} {g.name}
+            <GenreIcon slug={g.slug} className="w-3.5 h-3.5" />
+            {g.name}
           </button>
         ))}
       </div>
