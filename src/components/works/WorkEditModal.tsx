@@ -22,12 +22,33 @@ export function WorkEditModal({ work, onClose }: WorkEditModalProps) {
     work.genres.map((g) => g.slug)
   );
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [error, setError] = useState("");
 
   const toggleGenre = (slug: string) => {
     setSelectedGenres((prev) =>
       prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
     );
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/works/${work.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "削除に失敗しました");
+      }
+      router.push("/dashboard");
+      router.refresh();
+      onClose();
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "削除に失敗しました");
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
   };
 
   const handleSave = async () => {
@@ -118,21 +139,52 @@ export function WorkEditModal({ work, onClose }: WorkEditModalProps) {
           </div>
         </div>
 
-        <div className="flex gap-3 pt-2">
-          <button
-            onClick={onClose}
-            className="flex-1 px-4 py-2 text-sm glass rounded-xl text-komapara-muted hover:text-komapara-text transition-colors"
-          >
-            キャンセル
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="flex-1 px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-xl hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 transition-all"
-          >
-            {saving ? "保存中..." : "保存"}
-          </button>
-        </div>
+        {confirmDelete ? (
+          <div className="space-y-3 pt-2">
+            <p className="text-sm text-center text-red-600 font-medium">
+              本当に削除しますか？この操作は取り消せません。
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="flex-1 px-4 py-2 text-sm glass rounded-xl text-komapara-muted hover:text-komapara-text transition-colors"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-xl disabled:opacity-50 transition-all"
+              >
+                {deleting ? "削除中..." : "削除する"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3 pt-2">
+            <div className="flex gap-3">
+              <button
+                onClick={onClose}
+                className="flex-1 px-4 py-2 text-sm glass rounded-xl text-komapara-muted hover:text-komapara-text transition-colors"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-xl hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 transition-all"
+              >
+                {saving ? "保存中..." : "保存"}
+              </button>
+            </div>
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="w-full px-4 py-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+            >
+              この作品を削除する
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
