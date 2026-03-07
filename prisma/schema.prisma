@@ -331,3 +331,24 @@ model Notification {
   @@index([userId, isRead])
   @@index([createdAt])
 }
+
+model Advertisement {
+  id          String    @id @default(cuid())
+  title       String
+  company     String
+  imageUrl    String
+  linkUrl     String
+  description String?
+  placement   String    @default("feed") // "feed" | "work" | "all"
+  isActive    Boolean   @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+  sortOrder   Int       @default(0)
+  impressions Int       @default(0)
+  clicks      Int       @default(0)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isActive, placement])
+}

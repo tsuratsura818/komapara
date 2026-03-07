@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { WorkViewer } from "@/components/works/WorkViewer";
 import { WorkCard } from "@/components/works/WorkCard";
 import { SeriesNav } from "@/components/series/SeriesNav";
+import { AdSlot } from "@/components/ui/AdSlot";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -177,6 +178,21 @@ export default async function WorkDetailPage({ params }: Props) {
     }
   }
 
+  // 作品詳細ページ用広告
+  const now = new Date();
+  const workAds = await prisma.advertisement.findMany({
+    where: {
+      isActive: true,
+      placement: { in: ["work", "all"] },
+      OR: [{ startDate: null }, { startDate: { lte: now } }],
+      AND: [{ OR: [{ endDate: null }, { endDate: { gte: now } }] }],
+    },
+    orderBy: { sortOrder: "desc" },
+    select: { id: true, company: true, imageUrl: true, linkUrl: true, description: true },
+    take: 1,
+  });
+  const workAd = workAds[0] ?? null;
+
   // 関連作品（同ジャンル）
   const tagSlugs = work.tags.map((t) => t.slug);
   const relatedWorks = tagSlugs.length
@@ -219,6 +235,11 @@ export default async function WorkDetailPage({ params }: Props) {
   return (
     <div>
       <WorkViewer work={workData} tipsEnabled={tipsEnabled} isPremium={isPremium} />
+
+      {/* 広告（シリーズナビの前） */}
+      <div className="px-4 pt-4">
+        <AdSlot isPremium={isPremium} ad={workAd} slot="work-detail" />
+      </div>
 
       {/* シリーズナビ */}
       {seriesNav && <SeriesNav nav={seriesNav} />}

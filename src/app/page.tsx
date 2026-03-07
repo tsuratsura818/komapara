@@ -5,7 +5,8 @@ import Link from "next/link";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [works, totalCount] = await Promise.all([
+  const now = new Date();
+  const [works, totalCount, adsResult] = await Promise.all([
     prisma.work.findMany({
       where: { isPublished: true },
       orderBy: { createdAt: "desc" },
@@ -16,6 +17,16 @@ export default async function HomePage() {
       },
     }),
     prisma.work.count({ where: { isPublished: true } }),
+    prisma.advertisement.findMany({
+      where: {
+        isActive: true,
+        placement: { in: ["feed", "all"] },
+        OR: [{ startDate: null }, { startDate: { lte: now } }],
+        AND: [{ OR: [{ endDate: null }, { endDate: { gte: now } }] }],
+      },
+      orderBy: { sortOrder: "desc" },
+      select: { id: true, company: true, imageUrl: true, linkUrl: true, description: true },
+    }),
   ]);
 
   const initialWorks = works.map((work) => ({
@@ -56,6 +67,7 @@ export default async function HomePage() {
       <WorkFeed
         initialWorks={initialWorks}
         initialTotalPages={Math.ceil(totalCount / 20)}
+        feedAds={adsResult}
       />
     </>
   );

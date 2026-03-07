@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { WorkCard } from "./WorkCard";
-import { AdsenseUnit } from "@/components/ui/AdsenseUnit";
+import { AdSlot } from "@/components/ui/AdSlot";
 import { cn, GENRES } from "@/lib/utils";
 
 type Work = {
@@ -20,12 +20,21 @@ type Work = {
 
 type Tab = "new" | "popular" | "following";
 
+type Ad = {
+  id: string;
+  company: string;
+  imageUrl: string;
+  linkUrl: string;
+  description: string | null;
+};
+
 type WorkFeedProps = {
   initialWorks?: Work[];
   initialTotalPages?: number;
+  feedAds?: Ad[];
 };
 
-export function WorkFeed({ initialWorks, initialTotalPages }: WorkFeedProps) {
+export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: WorkFeedProps) {
   const { data: session } = useSession();
   const [tab, setTab] = useState<Tab>("new");
   const [genre, setGenre] = useState<string | null>(null);
@@ -173,7 +182,11 @@ export function WorkFeed({ initialWorks, initialTotalPages }: WorkFeedProps) {
             {/* 5件ごとに広告挿入 */}
             {(index + 1) % 5 === 0 && (
               <div className="mt-4">
-                <AdsenseUnit slot={`feed-${index}`} isPremium={session?.user?.isPremium ?? false} />
+                <AdSlot
+                  isPremium={session?.user?.isPremium ?? false}
+                  ad={feedAds.length > 0 ? feedAds[Math.floor(index / 5) % feedAds.length] : null}
+                  slot={`feed-${index}`}
+                />
               </div>
             )}
           </div>
