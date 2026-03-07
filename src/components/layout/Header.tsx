@@ -12,12 +12,8 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-white/20">
-      <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between relative">
-        <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-xl font-bold gradient-text" aria-label="コマパラ ホーム">
-          コマパラ
-        </Link>
-
-        {/* Desktop navigation */}
+      <div className="max-w-7xl mx-auto px-4 h-14 grid grid-cols-3 items-center">
+        {/* Left: Desktop navigation */}
         <nav className="hidden md:flex items-center gap-6" aria-label="メインナビゲーション">
           <Link href="/ranking" className="text-sm text-komapara-muted hover:text-komapara-text transition-colors">
             ランキング
@@ -29,8 +25,17 @@ export function Header() {
             About
           </Link>
         </nav>
+        <div className="md:hidden" />
 
-        <div className="flex items-center gap-3">
+        {/* Center: Logo */}
+        <div className="flex justify-center">
+          <Link href="/" className="text-xl font-bold gradient-text" aria-label="コマパラ ホーム">
+            コマパラ
+          </Link>
+        </div>
+
+        {/* Right: Actions */}
+        <div className="flex items-center gap-3 justify-end">
           <NotificationBell />
           <Link
             href="/search"
