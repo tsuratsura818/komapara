@@ -12,8 +12,8 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-white/20">
-      <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold gradient-text" aria-label="コマパラ ホーム">
+      <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between relative">
+        <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-xl font-bold gradient-text" aria-label="コマパラ ホーム">
           コマパラ
         </Link>
 
