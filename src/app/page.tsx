@@ -44,8 +44,8 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero banner */}
-      <section className="relative overflow-hidden bg-gradient-main px-4 py-8 text-white">
-        <div className="relative z-10">
+      <section className="relative overflow-hidden bg-gradient-main py-8 text-white">
+        <div className="relative z-10 flex flex-col items-center text-center">
           <h1 className="text-2xl font-bold">
             4コマの世界を、もっと楽しく
           </h1>
