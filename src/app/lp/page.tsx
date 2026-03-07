@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ScrollAnimations } from "./ScrollAnimations";
 import { AuroraBlobs } from "./AuroraBlobs";
+import { IPhoneMockup } from "./IPhoneMockup";
 
 export const metadata: Metadata = {
   title: "コマパラ - 4コマ漫画に特化したポータルサイト",
@@ -262,112 +263,119 @@ export default function LpPage() {
           </div>
 
           {/* 右側：スマホモックアップ */}
-          <div className="relative h-[420px] md:h-[540px] animate-fade-in" style={{ animationDelay: "0.5s" }}>
+          <div className="relative h-[480px] md:h-[580px] animate-fade-in" style={{ animationDelay: "0.5s" }}>
+
             {/* 背面左 — ランキング画面 */}
-            <div
-              className="absolute left-[5%] top-[12%] w-[160px] md:w-[200px]"
-              style={{ transform: "rotate(-6deg)" }}
-            >
-              <div className="rounded-[28px] md:rounded-[32px] border-4 border-gray-900 bg-white shadow-2xl overflow-hidden">
-                <div className="mx-auto mt-2 w-16 md:w-20 h-1.5 rounded-full bg-gray-900" />
-                <div className="p-2.5 md:p-3">
-                  <p className="text-[9px] md:text-[10px] font-bold text-gray-800 mb-2">ランキング</p>
-                  {["今日のひとコマ", "ねこ日和", "OLあるある", "放課後4コマ"].map((title, i) => (
-                    <div key={title} className="flex items-center gap-2 mb-2">
-                      <span className="text-[9px] md:text-[10px] font-bold text-purple-600 w-4">{i + 1}</span>
-                      <div className={`w-7 h-7 md:w-8 md:h-8 rounded-md bg-gradient-to-br ${["from-purple-200 to-blue-200", "from-pink-200 to-purple-200", "from-blue-200 to-cyan-200", "from-yellow-200 to-orange-200"][i]} flex-shrink-0`} />
-                      <div className="min-w-0">
-                        <p className="text-[8px] md:text-[9px] font-semibold text-gray-800 truncate">{title}</p>
-                        <p className="text-[7px] md:text-[8px] text-gray-400">❤️ {[128, 96, 84, 71][i]}</p>
+            <div className="absolute left-[0%] top-[10%] z-10" style={{ transform: "rotate(-7deg) scale(0.82)", transformOrigin: "center top" }}>
+              <IPhoneMockup tilt={0}>
+                {/* ランキング画面 */}
+                <div style={{ background: "#fff", height: "100%", padding: "0 12px" }}>
+                  <div style={{ fontSize: "13px", fontWeight: 700, color: "#1f2937", marginBottom: "10px" }}>週間ランキング 🏆</div>
+                  {[
+                    { rank: 1, title: "今日のひとコマ", author: "まるまる", likes: 128, rankColor: "#F59E0B" },
+                    { rank: 2, title: "ねこ日和", author: "にゃん太", likes: 96, rankColor: "#9CA3AF" },
+                    { rank: 3, title: "OLあるある", author: "りえ", likes: 84, rankColor: "#F97316" },
+                    { rank: 4, title: "放課後4コマ", author: "たけし", likes: 71, rankColor: "#8B5CF6" },
+                    { rank: 5, title: "猫と私の話", author: "ミコ", likes: 63, rankColor: "#8B5CF6" },
+                  ].map((item) => (
+                    <div key={item.rank} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", padding: "6px 8px", background: "#fafafa", borderRadius: "8px" }}>
+                      <span style={{ fontSize: "11px", fontWeight: 800, color: item.rankColor, width: "14px", textAlign: "center", flexShrink: 0 }}>{item.rank}</span>
+                      <div style={{
+                        width: "32px", height: "32px", borderRadius: "6px", flexShrink: 0,
+                        background: `linear-gradient(135deg, ${["#e9d5ff,#bfdbfe", "#fce7f3,#e9d5ff", "#dbeafe,#a5f3fc", "#fef3c7,#fed7aa", "#d1fae5,#a7f3d0"][item.rank - 1]})`,
+                        display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px",
+                      }}>
+                        {["📖", "🐱", "💼", "🎒", "🐈"][item.rank - 1]}
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: "9px", fontWeight: 600, color: "#1f2937", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.title}</div>
+                        <div style={{ fontSize: "8px", color: "#9ca3af" }}>@{item.author} · ❤️ {item.likes}</div>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="mx-auto mb-1.5 w-12 h-1 rounded-full bg-gray-300" />
-              </div>
+              </IPhoneMockup>
             </div>
 
             {/* 前面中央 — フィード画面（メイン） */}
-            <div
-              className="absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[15%] top-0 w-[190px] md:w-[230px] z-20"
-            >
-              <div className="rounded-[32px] md:rounded-[36px] border-4 border-gray-900 bg-white shadow-2xl overflow-hidden ring-1 ring-purple-400/30">
-                <div className="mx-auto mt-2 w-20 h-1.5 rounded-full bg-gray-900" />
-                <div className="p-3 md:p-3.5">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] md:text-xs font-bold gradient-text">コマパラ</span>
-                    <div className="w-6 h-6 rounded-full bg-gray-100" />
+            <div className="absolute left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-[8%] top-0 z-20">
+              <IPhoneMockup tilt={0}>
+                {/* フィード画面 */}
+                <div style={{ background: "#fafbff", height: "100%", overflowY: "hidden" }}>
+                  {/* ヘッダー */}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 12px 8px", borderBottom: "1px solid #f0f0f5" }}>
+                    <span style={{ fontSize: "14px", fontWeight: 800, background: "linear-gradient(135deg, #8B5CF6, #3B82F6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>コマパラ</span>
+                    <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: "linear-gradient(135deg, #c4b5fd, #93c5fd)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px" }}>👤</div>
                   </div>
-                  <div className="flex gap-1.5 mb-3">
-                    {["おすすめ", "日常", "恋愛"].map((tag, i) => (
-                      <span key={tag} className={`text-[7px] md:text-[8px] px-2 py-0.5 rounded-full ${i === 0 ? "bg-purple-100 text-purple-700 font-semibold" : "bg-gray-100 text-gray-400"}`}>
-                        {tag}
-                      </span>
+                  {/* タブ */}
+                  <div style={{ display: "flex", gap: "6px", padding: "6px 12px 8px" }}>
+                    {["おすすめ", "新着", "フォロー中"].map((tab, i) => (
+                      <span key={tab} style={{
+                        fontSize: "8px", padding: "2px 8px", borderRadius: "20px", fontWeight: i === 0 ? 700 : 400,
+                        background: i === 0 ? "linear-gradient(135deg, #8B5CF6, #3B82F6)" : "#f0f0f5",
+                        color: i === 0 ? "#fff" : "#9ca3af",
+                      }}>{tab}</span>
                     ))}
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {[
-                      { color: "from-purple-200 to-blue-200", title: "今日のひとコマ" },
-                      { color: "from-pink-200 to-purple-200", title: "ねこ日和" },
-                      { color: "from-blue-200 to-cyan-200", title: "OLあるある" },
-                      { color: "from-yellow-200 to-orange-200", title: "放課後4コマ" },
-                    ].map((card) => (
-                      <div key={card.title} className="rounded-lg overflow-hidden border border-gray-100">
-                        <div className={`aspect-square bg-gradient-to-br ${card.color} flex items-center justify-center`}>
-                          <div className="grid grid-cols-2 gap-0.5 w-3/4 aspect-square">
-                            {[0, 1, 2, 3].map((n) => (
-                              <div key={n} className="bg-white/50 rounded-sm" />
-                            ))}
-                          </div>
-                        </div>
-                        <div className="p-1.5">
-                          <p className="text-[7px] md:text-[8px] font-semibold text-gray-800 truncate">{card.title}</p>
-                          <div className="flex gap-1 mt-0.5">
-                            <span className="text-[6px] md:text-[7px] text-gray-400">😆 12</span>
-                            <span className="text-[6px] md:text-[7px] text-gray-400">❤️ 8</span>
-                          </div>
+                  {/* カード */}
+                  {[
+                    { title: "今日のひとコマ", author: "まるまる", emoji: "📖", bg: "#ede9fe", reactions: "😆28 ❤️41" },
+                    { title: "ねこ日和 #12", author: "にゃん太", emoji: "🐱", bg: "#fce7f3", reactions: "😂19 ❤️36" },
+                    { title: "OLあるある", author: "りえ", emoji: "💼", bg: "#dbeafe", reactions: "🤝22 ❤️31" },
+                  ].map((card) => (
+                    <div key={card.title} style={{ margin: "0 10px 8px", background: "#fff", borderRadius: "10px", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
+                      <div style={{ height: "72px", background: card.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px" }}>
+                        {card.emoji}
+                      </div>
+                      <div style={{ padding: "5px 8px 6px" }}>
+                        <div style={{ fontSize: "9px", fontWeight: 600, color: "#1f2937" }}>{card.title}</div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2px" }}>
+                          <span style={{ fontSize: "7.5px", color: "#9ca3af" }}>@{card.author}</span>
+                          <span style={{ fontSize: "7.5px", color: "#6b7280" }}>{card.reactions}</span>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="mx-auto mb-1.5 w-14 h-1 rounded-full bg-gray-300" />
-              </div>
+              </IPhoneMockup>
             </div>
 
             {/* 背面右 — 作品詳細画面 */}
-            <div
-              className="absolute right-[0%] md:right-[2%] top-[30%] w-[150px] md:w-[190px] z-10"
-              style={{ transform: "rotate(5deg)" }}
-            >
-              <div className="rounded-[28px] md:rounded-[32px] border-4 border-gray-900 bg-white shadow-2xl overflow-hidden">
-                <div className="mx-auto mt-2 w-16 md:w-20 h-1.5 rounded-full bg-gray-900" />
-                <div className="p-2.5 md:p-3">
-                  <div className="flex items-center gap-2 mb-2.5">
-                    <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-gradient-to-br from-purple-300 to-pink-300 flex-shrink-0" />
+            <div className="absolute right-[-2%] top-[28%] z-10" style={{ transform: "rotate(6deg) scale(0.78)", transformOrigin: "center top" }}>
+              <IPhoneMockup tilt={0}>
+                {/* 作品詳細画面（ダーク） */}
+                <div style={{ background: "#0a0a0f", height: "100%", padding: "0 10px" }}>
+                  {/* 作者情報 */}
+                  <div style={{ display: "flex", alignItems: "center", gap: "7px", marginBottom: "8px" }}>
+                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "linear-gradient(135deg, #a78bfa, #f9a8d4)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px" }}>🐱</div>
                     <div>
-                      <p className="text-[8px] md:text-[9px] font-bold text-gray-800">まる子</p>
-                      <p className="text-[7px] md:text-[8px] text-gray-400">2時間前</p>
+                      <div style={{ fontSize: "9px", fontWeight: 600, color: "#f9fafb" }}>まるまる</div>
+                      <div style={{ fontSize: "7.5px", color: "#6b7280" }}>1時間前</div>
                     </div>
+                    <div style={{ marginLeft: "auto", fontSize: "7.5px", color: "#8b5cf6", fontWeight: 600, padding: "2px 7px", border: "1px solid #8b5cf6", borderRadius: "20px" }}>フォロー</div>
                   </div>
-                  <div className="rounded-lg overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100 mb-2.5">
-                    <div className="grid grid-cols-1 gap-0.5 p-2">
-                      {[0, 1, 2, 3].map((n) => (
-                        <div key={n} className="bg-white/70 rounded-sm h-6 md:h-8" />
-                      ))}
+                  {/* 4コマパネル */}
+                  {[0, 1, 2, 3].map((n) => (
+                    <div key={n} style={{
+                      marginBottom: "3px", height: "52px", borderRadius: "5px", overflow: "hidden",
+                      background: `linear-gradient(135deg, ${["#2e1065,#1e3a5f", "#1e3a5f,#164e63", "#164e63,#14532d", "#14532d,#3b0764"][n]})`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "18px",
+                    }}>
+                      {["😊", "😱", "😭", "😆"][n]}
                     </div>
-                  </div>
-                  <div className="flex gap-1.5">
-                    {[{ emoji: "😆", count: 18 }, { emoji: "❤️", count: 12 }, { emoji: "😢", count: 5 }, { emoji: "👏", count: 9 }].map((r) => (
-                      <div key={r.emoji} className="flex items-center gap-0.5 bg-gray-50 rounded-full px-1.5 py-0.5">
-                        <span className="text-[8px] md:text-[9px]">{r.emoji}</span>
-                        <span className="text-[7px] md:text-[8px] text-gray-400">{r.count}</span>
+                  ))}
+                  {/* リアクション */}
+                  <div style={{ display: "flex", gap: "4px", marginTop: "8px", flexWrap: "wrap" }}>
+                    {[{ e: "😆", n: 28 }, { e: "❤️", n: 41 }, { e: "😢", n: 7 }, { e: "🤝", n: 15 }, { e: "✨", n: 9 }].map((r) => (
+                      <div key={r.e} style={{ display: "flex", alignItems: "center", gap: "2px", background: "rgba(255,255,255,0.08)", borderRadius: "20px", padding: "2px 6px" }}>
+                        <span style={{ fontSize: "9px" }}>{r.e}</span>
+                        <span style={{ fontSize: "8px", color: "#d1d5db" }}>{r.n}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="mx-auto mb-1.5 w-12 h-1 rounded-full bg-gray-300" />
-              </div>
+              </IPhoneMockup>
             </div>
           </div>
         </div>
