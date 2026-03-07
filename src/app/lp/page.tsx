@@ -2,6 +2,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ScrollAnimations } from "./ScrollAnimations";
 import { AuroraBlobs } from "./AuroraBlobs";
+import {
+  BookOpenIcon, PencilSquareIcon, UsersIcon,
+  MagnifyingGlassIcon, RectangleStackIcon, BookmarkIcon, ListBulletIcon,
+  BoltIcon, ChartBarIcon, BanknotesIcon, TicketIcon,
+  FaceSmileIcon, TrophyIcon, TagIcon, SparklesIcon,
+} from "./Icons";
 
 export const metadata: Metadata = {
   title: "コマパラ — 4コマ漫画ポータルサイト",
@@ -10,21 +16,21 @@ export const metadata: Metadata = {
 
 const PILLARS = [
   {
-    emoji: "📖",
+    Icon: BookOpenIcon,
     title: "読む",
     description: "ジャンル別・ランキング・フォローで、好みの4コマがすぐ見つかる",
     features: ["ジャンル別閲覧", "週間ランキング", "無限スクロールフィード"],
     gradient: "from-purple-500 to-blue-500",
   },
   {
-    emoji: "✏️",
+    Icon: PencilSquareIcon,
     title: "描く",
     description: "画像をアップロードするだけ。X/Instagramからの1タップ連携も",
     features: ["かんたん投稿", "X/Instagram連携", "シリーズ管理"],
     gradient: "from-blue-500 to-cyan-500",
   },
   {
-    emoji: "🤝",
+    Icon: UsersIcon,
     title: "つながる",
     description: "5種リアクション・コメント・フォローで作家と読者がつながる",
     features: ["5種リアクション", "投げ銭・サブスク", "プッシュ通知"],
@@ -33,17 +39,17 @@ const PILLARS = [
 ];
 
 const READER_PROBLEMS = [
-  { problem: "4コマが見つけにくい", before: "XのTLに流れて消える", after: "ジャンル別・ランキングで発見", icon: "🔍" },
-  { problem: "まとめて読めない", before: "作家のアカウントを巡回", after: "フォロー機能で自動集約", icon: "📚" },
-  { problem: "読み返せない", before: "TLを遡るしかない", after: "ライブラリで一元管理", icon: "🔖" },
-  { problem: "シリーズが追えない", before: "投稿が時系列で埋もれる", after: "前後ナビ付き連載管理", icon: "📋" },
+  { problem: "4コマが見つけにくい", before: "XのTLに流れて消える", after: "ジャンル別・ランキングで発見", Icon: MagnifyingGlassIcon },
+  { problem: "まとめて読めない", before: "作家のアカウントを巡回", after: "フォロー機能で自動集約", Icon: RectangleStackIcon },
+  { problem: "読み返せない", before: "TLを遡るしかない", after: "ライブラリで一元管理", Icon: BookmarkIcon },
+  { problem: "シリーズが追えない", before: "投稿が時系列で埋もれる", after: "前後ナビ付き連載管理", Icon: ListBulletIcon },
 ];
 
 const CREATOR_FEATURES = [
-  { title: "かんたん投稿", description: "画像ドラッグ&ドロップで最短30秒。X/Instagramからの1タップインポートも。", icon: "⚡" },
-  { title: "ダッシュボード", description: "閲覧数・いいね・フォロワー・収益をリアルタイムで把握。", icon: "📊" },
-  { title: "投げ銭", description: "読者からの応援金をメッセージ付きで受け取れる。", icon: "💰" },
-  { title: "サブスクリプション", description: "月額課金プランを自由に設定。安定した収益基盤を構築。", icon: "🎫" },
+  { title: "かんたん投稿", description: "画像ドラッグ&ドロップで最短30秒。X/Instagramからの1タップインポートも。", Icon: BoltIcon },
+  { title: "ダッシュボード", description: "閲覧数・いいね・フォロワー・収益をリアルタイムで把握。", Icon: ChartBarIcon },
+  { title: "投げ銭", description: "読者からの応援金をメッセージ付きで受け取れる。", Icon: BanknotesIcon },
+  { title: "サブスクリプション", description: "月額課金プランを自由に設定。安定した収益基盤を構築。", Icon: TicketIcon },
 ];
 
 const STEPS = [
@@ -202,16 +208,16 @@ export default function LpPage() {
 
             <div className="flex flex-wrap gap-2 mt-7 animate-fade-in" style={{ animationDelay: "0.36s" }}>
               {[
-                { label: "無限スクロールフィード", icon: "📖" },
-                { label: "SNS 1タップ連携", icon: "⚡" },
-                { label: "5種リアクション", icon: "😆" },
-                { label: "投げ銭・収益化", icon: "💰" },
+                { label: "無限スクロールフィード", Icon: BookOpenIcon },
+                { label: "SNS 1タップ連携", Icon: BoltIcon },
+                { label: "5種リアクション", Icon: FaceSmileIcon },
+                { label: "投げ銭・収益化", Icon: BanknotesIcon },
               ].map((chip) => (
                 <span
                   key={chip.label}
                   className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-white/90 border border-gray-200 rounded-full text-gray-600 shadow-sm font-medium backdrop-blur-sm"
                 >
-                  <span>{chip.icon}</span>{chip.label}
+                  <chip.Icon className="w-3.5 h-3.5" />{chip.label}
                 </span>
               ))}
             </div>
@@ -246,7 +252,9 @@ export default function LpPage() {
           >
             <div className="absolute -top-4 left-[6%] z-20 glass-card rounded-2xl px-4 py-3 animate-float hidden sm:block">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-base flex-shrink-0">🏆</div>
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center flex-shrink-0">
+                  <TrophyIcon className="w-4 h-4 text-white" />
+                </div>
                 <div>
                   <div className="font-bold text-gray-900 text-xs">週間1位獲得</div>
                   <div className="text-gray-400 text-[10px]">今日のひとコマ</div>
@@ -258,7 +266,9 @@ export default function LpPage() {
               style={{ animation: "float 5s ease-in-out infinite 1.5s" }}
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-base flex-shrink-0">😆</div>
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0">
+                  <FaceSmileIcon className="w-4 h-4 text-white" />
+                </div>
                 <div>
                   <div className="font-bold text-gray-900 text-xs">+128 リアクション</div>
                   <div className="text-gray-400 text-[10px]">ねこ日和 #12</div>
@@ -292,16 +302,18 @@ export default function LpPage() {
       <section className="py-14 px-6 bg-white border-y border-gray-100/80">
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { value: "500+", label: "投稿作品数", icon: "📚", gradient: "from-purple-500 to-blue-500" },
-            { value: "100+", label: "クリエイター", icon: "✏️", gradient: "from-blue-500 to-cyan-500" },
-            { value: "15", label: "ジャンル", icon: "🏷️", gradient: "from-pink-500 to-purple-500" },
-            { value: "¥0", label: "基本利用料", icon: "🎉", gradient: "from-green-400 to-teal-500" },
+            { value: "500+", label: "投稿作品数", Icon: RectangleStackIcon, gradient: "from-purple-500 to-blue-500" },
+            { value: "100+", label: "クリエイター", Icon: PencilSquareIcon, gradient: "from-blue-500 to-cyan-500" },
+            { value: "15", label: "ジャンル", Icon: TagIcon, gradient: "from-pink-500 to-purple-500" },
+            { value: "¥0", label: "基本利用料", Icon: SparklesIcon, gradient: "from-green-400 to-teal-500" },
           ].map((stat, i) => (
             <div
               key={stat.label}
               className={`feature-card p-5 md:p-6 text-center lp-animate lp-animate-delay-${Math.min(i + 1, 3)}`}
             >
-              <div className="text-2xl mb-2">{stat.icon}</div>
+              <div className={`w-8 h-8 mx-auto mb-3 bg-gradient-to-r ${stat.gradient} rounded-lg flex items-center justify-center`}>
+                <stat.Icon className="w-4 h-4 text-white" />
+              </div>
               <div className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
                 {stat.value}
               </div>
@@ -324,8 +336,8 @@ export default function LpPage() {
                 key={item.problem}
                 className={`feature-card p-7 lp-animate lp-animate-delay-${Math.min(i + 1, 3)}`}
               >
-                <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-xl mb-4">
-                  {item.icon}
+                <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center mb-4">
+                  <item.Icon className="w-5 h-5 text-purple-600" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-3">{item.problem}</h3>
                 <div className="space-y-2">
@@ -361,7 +373,9 @@ export default function LpPage() {
                 className={`feature-card p-8 lp-animate lp-animate-delay-${i + 1} group hover:-translate-y-1`}
               >
                 <div className={`h-0.5 w-14 rounded-full bg-gradient-to-r ${pillar.gradient} mb-7`} />
-                <div className="text-4xl mb-4">{pillar.emoji}</div>
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-r ${pillar.gradient} flex items-center justify-center mb-4`}>
+                  <pillar.Icon className="w-6 h-6 text-white" />
+                </div>
                 <h3 className={`text-2xl font-black bg-gradient-to-r ${pillar.gradient} bg-clip-text text-transparent mb-3`}>
                   {pillar.title}
                 </h3>
@@ -398,8 +412,8 @@ export default function LpPage() {
                 key={feature.title}
                 className={`feature-card p-7 lp-animate lp-animate-delay-${Math.min(i + 1, 3)} flex items-start gap-5`}
               >
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-100/50 flex items-center justify-center text-2xl flex-shrink-0">
-                  {feature.icon}
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-100/50 flex items-center justify-center flex-shrink-0">
+                  <feature.Icon className="w-6 h-6 text-purple-600" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1.5">{feature.title}</h3>
