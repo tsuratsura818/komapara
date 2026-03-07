@@ -54,7 +54,7 @@ export function Header() {
 
           <Link
             href="/upload"
-            className="px-3 py-1.5 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
+            className="px-4 py-1.5 text-sm font-bold text-white bg-gradient-main rounded-xl shadow-sm shadow-purple-500/20 hover:shadow-md hover:shadow-purple-500/30 hover:-translate-y-px transition-all duration-150"
           >
             + 投稿
           </Link>
