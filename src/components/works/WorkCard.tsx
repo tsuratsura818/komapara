@@ -58,7 +58,7 @@ export function WorkCard({
                   key={genre.slug}
                   className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-100/60 font-medium"
                 >
-                  {genre.emoji} {genre.name}
+                  {genre.name}
                 </span>
               ))}
             </div>
