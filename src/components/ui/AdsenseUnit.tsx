@@ -9,14 +9,7 @@ export function AdsenseUnit({
   if (isPremium) return null;
 
   if (!process.env.NEXT_PUBLIC_ADSENSE_ID) {
-    return (
-      <div
-        className="w-full glass rounded-xl border border-dashed border-purple-200/50 flex items-center justify-center text-komapara-muted text-sm"
-        style={{ minHeight: 100 }}
-      >
-        広告スペース（{slot}）
-      </div>
-    );
+    return null;
   }
 
   return (
