@@ -32,16 +32,10 @@ export function WorkCard({
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </>
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-              <svg viewBox="0 0 80 32" className="w-20 h-auto" aria-label="コマパラ">
-                <defs>
-                  <linearGradient id="logo-grad-empty" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#8b5cf6" />
-                    <stop offset="100%" stopColor="#6366f1" />
-                  </linearGradient>
-                </defs>
-                <text x="40" y="22" textAnchor="middle" fontFamily="sans-serif" fontWeight="700" fontSize="18" fill="url(#logo-grad-empty)">コマパラ</text>
-              </svg>
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+              <span className="text-lg font-bold bg-gradient-to-r from-violet-500 to-indigo-500 bg-clip-text text-transparent select-none">
+                コマパラ
+              </span>
             </div>
           )}
         </div>
