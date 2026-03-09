@@ -3,9 +3,11 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/auth/Providers";
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { PushPermission } from "@/components/notifications/PushPermission";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,6 +27,18 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "default",
     title: "コマパラ",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "コマパラ",
+    title: "コマパラ - 4コマ漫画ポータル",
+    description: "4コマ漫画に特化した読者向けポータルサイト。お気に入りの4コマを見つけよう！",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "コマパラ - 4コマ漫画ポータル",
+    description: "4コマ漫画に特化した読者向けポータルサイト。お気に入りの4コマを見つけよう！",
   },
 };
 
@@ -68,8 +82,10 @@ export default function RootLayout({
           <Header />
           <PushPermission />
           <main id="main-content" className="max-w-7xl mx-auto pb-16 md:pb-0">{children}</main>
+          <Footer />
           <BottomNav />
           <ServiceWorkerRegister />
+          <Analytics />
         </Providers>
       </body>
     </html>
