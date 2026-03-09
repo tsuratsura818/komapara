@@ -49,7 +49,7 @@ export async function POST(
     if (process.env.RESEND_API_KEY && process.env.ADMIN_EMAIL) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: "noreply@komapara.jp",
+        from: "コマパラ通知 <onboarding@resend.dev>",
         to: process.env.ADMIN_EMAIL,
         subject: `【コマパラ】通報が届きました: ${work.title}`,
         html: `
