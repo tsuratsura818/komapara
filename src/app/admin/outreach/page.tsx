@@ -2,6 +2,7 @@ import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 import { OutreachManager } from "@/components/admin/OutreachManager";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "クリエイター招待管理" };
@@ -25,7 +26,15 @@ export default async function OutreachPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold gradient-text mb-4">クリエイター招待管理</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-xl font-bold gradient-text">クリエイター招待管理</h1>
+        <Link
+          href="/admin/outreach/messages"
+          className="px-4 py-2 text-xs font-bold text-white bg-gradient-main rounded-xl hover:opacity-90 transition-opacity"
+        >
+          DM提案文一覧
+        </Link>
+      </div>
 
       {/* 統計サマリー */}
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2 mb-6">
