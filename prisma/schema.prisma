@@ -369,3 +369,20 @@ model Advertisement {
 
   @@index([isActive, placement])
 }
+
+model CreatorOutreach {
+  id         String   @id @default(cuid())
+  xHandle    String   @unique
+  name       String
+  genre      String   // 日常, 育児, 猫, ギャグ, エッセイ, その他
+  followers  Int      @default(0)
+  status     String   @default("候補") // 候補, いいね中, DM送信済, 返信あり, 登録済み, 見送り
+  note       String?
+  dmSentAt   DateTime?
+  repliedAt  DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([status])
+  @@index([genre])
+}
