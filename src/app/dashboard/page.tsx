@@ -94,7 +94,7 @@ export default async function DashboardPage() {
       <h1 className="text-xl font-bold gradient-text mb-6">ダッシュボード</h1>
 
       {/* 統計 */}
-      <div className={`grid grid-cols-2 md:grid-cols-${Math.min(stats.length, 7)} gap-3 mb-6`}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
         {stats.map((stat, i) => (
           <div
             key={stat.label}

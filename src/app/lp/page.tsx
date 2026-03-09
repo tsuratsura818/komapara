@@ -190,7 +190,7 @@ export default function LpPage() {
             </div>
 
             <h1
-              className="text-6xl md:text-7xl lg:text-[5.5rem] font-black leading-[0.93] tracking-tight text-gray-900 animate-fade-in"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[0.93] tracking-tight text-gray-900 animate-fade-in"
               style={{ animationDelay: "0.12s" }}
             >
               4コマの世界を、
@@ -279,12 +279,10 @@ export default function LpPage() {
             <img
               src="/images/phone-mockup.png"
               alt="コマパラ アプリ画面"
+              className="w-full sm:w-[130%] sm:max-w-none sm:translate-x-[5%]"
               style={{
-                width: "130%",
-                maxWidth: "none",
                 mixBlendMode: "multiply",
                 display: "block",
-                transform: "translateX(5%)",
                 pointerEvents: "none",
                 userSelect: "none",
               }}
@@ -485,22 +483,22 @@ export default function LpPage() {
             <span className="badge-glass inline-flex mb-5">COMPARISON</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900">なぜコマパラ？</h2>
           </div>
-          <div className="feature-card overflow-hidden lp-animate">
-            <table className="w-full text-sm">
+          <div className="feature-card overflow-x-auto lp-animate">
+            <table className="w-full text-sm min-w-[360px]">
               <thead>
                 <tr className="border-b border-gray-100">
-                  <th className="text-left p-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">機能</th>
-                  <th className="p-5 text-center">
-                    <span className="gradient-text font-black text-base">コマパラ</span>
+                  <th className="text-left p-3 sm:p-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">機能</th>
+                  <th className="p-3 sm:p-5 text-center">
+                    <span className="gradient-text font-black text-sm sm:text-base">コマパラ</span>
                   </th>
-                  <th className="p-5 text-center font-medium text-gray-400 text-xs">pixiv</th>
-                  <th className="p-5 text-center font-medium text-gray-400 text-xs">X</th>
+                  <th className="p-3 sm:p-5 text-center font-medium text-gray-400 text-xs">pixiv</th>
+                  <th className="p-3 sm:p-5 text-center font-medium text-gray-400 text-xs">X</th>
                 </tr>
               </thead>
               <tbody>
                 {COMPARISONS.map((row, i) => (
                   <tr key={row.feature} className={`border-b border-gray-50 last:border-0 ${i % 2 !== 0 ? "bg-[#fafbff]" : ""}`}>
-                    <td className="p-4 font-medium text-gray-700 text-sm">{row.feature}</td>
+                    <td className="p-3 sm:p-4 font-medium text-gray-700 text-sm">{row.feature}</td>
                     <td className="p-4 text-center">
                       {row.komapara
                         ? <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-600"><CheckIcon className="w-3 h-3" /></span>
@@ -618,7 +616,7 @@ export default function LpPage() {
         />
         <div className="relative z-10 max-w-2xl mx-auto lp-animate">
           <span className="badge-dark inline-flex mb-8">✦ 今すぐはじめよう</span>
-          <h2 className="text-4xl md:text-6xl font-black text-white leading-[1.05] mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-[1.05] mb-6">
             4コマの世界へ、<br />
             <span className="gradient-text">ようこそ。</span>
           </h2>
@@ -649,7 +647,7 @@ export default function LpPage() {
           <Link href="/" className="font-black gradient-text text-lg tracking-tight">
             コマパラ
           </Link>
-          <div className="flex items-center gap-8 text-sm text-gray-500">
+          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 text-sm text-gray-500">
             <Link href="/about" className="hover:text-gray-300 transition-colors">コマパラについて</Link>
             <Link href="/" className="hover:text-gray-300 transition-colors">作品を見る</Link>
             <Link href="/login" className="hover:text-gray-300 transition-colors">ログイン</Link>

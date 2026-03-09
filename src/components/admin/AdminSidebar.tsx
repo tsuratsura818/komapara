@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const ADMIN_NAV = [
@@ -42,6 +43,15 @@ const ADMIN_NAV = [
     ),
   },
   {
+    href: "/admin/reports",
+    label: "通報管理",
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+      </svg>
+    ),
+  },
+  {
     href: "/admin/advertise",
     label: "広告管理",
     icon: (
@@ -73,43 +83,105 @@ const ADMIN_NAV = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const currentPage = ADMIN_NAV.find((item) =>
+    item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href)
+  );
 
   return (
-    <aside className="hidden md:flex flex-col w-56 shrink-0 glass border-r border-komapara-border p-4 gap-1">
-      <h2 className="text-sm font-bold gradient-text mb-4 px-3">管理画面</h2>
-      {ADMIN_NAV.map((item) => {
-        const isActive =
-          item.href === "/admin"
-            ? pathname === "/admin"
-            : pathname.startsWith(item.href);
-
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-              isActive
-                ? "bg-gradient-main text-white font-medium"
-                : "text-komapara-muted hover:text-komapara-text hover:bg-gray-100"
-            )}
-          >
-            {item.icon}
-            {item.label}
-          </Link>
-        );
-      })}
-      <div className="mt-auto pt-4 border-t border-komapara-border">
-        <Link
-          href="/"
-          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-komapara-muted hover:text-komapara-text hover:bg-gray-100 transition-colors"
+    <>
+      {/* モバイル: ドロップダウンナビ */}
+      <div className="md:hidden sticky top-14 z-40 glass border-b border-komapara-border">
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="w-full flex items-center justify-between px-4 py-3"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <div className="flex items-center gap-2 text-sm font-medium">
+            {currentPage?.icon}
+            <span>{currentPage?.label || "管理画面"}</span>
+          </div>
+          <svg
+            className={cn("w-4 h-4 transition-transform", mobileOpen && "rotate-180")}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-          サイトに戻る
-        </Link>
+        </button>
+        {mobileOpen && (
+          <div className="border-t border-komapara-border/50 py-1">
+            {ADMIN_NAV.map((item) => {
+              const isActive =
+                item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-2.5 text-sm transition-colors",
+                    isActive
+                      ? "gradient-text font-medium bg-purple-50/50"
+                      : "text-komapara-muted hover:text-komapara-text hover:bg-gray-50"
+                  )}
+                >
+                  {item.icon}
+                  {item.label}
+                </Link>
+              );
+            })}
+            <Link
+              href="/"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-komapara-muted hover:text-komapara-text hover:bg-gray-50 border-t border-komapara-border/50 mt-1"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              サイトに戻る
+            </Link>
+          </div>
+        )}
       </div>
-    </aside>
+
+      {/* デスクトップ: サイドバー */}
+      <aside className="hidden md:flex flex-col w-56 shrink-0 glass border-r border-komapara-border p-4 gap-1">
+        <h2 className="text-sm font-bold gradient-text mb-4 px-3">管理画面</h2>
+        {ADMIN_NAV.map((item) => {
+          const isActive =
+            item.href === "/admin"
+              ? pathname === "/admin"
+              : pathname.startsWith(item.href);
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
+                isActive
+                  ? "bg-gradient-main text-white font-medium"
+                  : "text-komapara-muted hover:text-komapara-text hover:bg-gray-100"
+              )}
+            >
+              {item.icon}
+              {item.label}
+            </Link>
+          );
+        })}
+        <div className="mt-auto pt-4 border-t border-komapara-border">
+          <Link
+            href="/"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-komapara-muted hover:text-komapara-text hover:bg-gray-100 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            サイトに戻る
+          </Link>
+        </div>
+      </aside>
+    </>
   );
 }

@@ -12,9 +12,9 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 glass border-b border-white/20">
-      <div className="max-w-7xl mx-auto px-4 h-14 grid grid-cols-3 items-center">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 h-14 flex items-center justify-between">
         {/* Left: Desktop navigation */}
-        <nav className="hidden md:flex items-center gap-6" aria-label="メインナビゲーション">
+        <nav className="hidden md:flex items-center gap-6 flex-1" aria-label="メインナビゲーション">
           <Link href="/ranking" className="text-sm text-komapara-muted hover:text-komapara-text transition-colors">
             ランキング
           </Link>
@@ -25,17 +25,14 @@ export function Header() {
             About
           </Link>
         </nav>
-        <div className="md:hidden" />
 
         {/* Center: Logo */}
-        <div className="flex justify-center">
-          <Link href="/" className="text-xl font-bold gradient-text" aria-label="コマパラ ホーム">
-            コマパラ
-          </Link>
-        </div>
+        <Link href="/" className="text-xl font-bold gradient-text md:absolute md:left-1/2 md:-translate-x-1/2" aria-label="コマパラ ホーム">
+          コマパラ
+        </Link>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-3 justify-end">
+        <div className="flex items-center gap-1.5 sm:gap-3 justify-end flex-1">
           <NotificationBell />
           <Link
             href="/search"
@@ -59,7 +56,7 @@ export function Header() {
 
           <Link
             href="/upload"
-            className="px-4 py-1.5 text-sm font-bold text-white bg-gradient-main rounded-xl shadow-sm shadow-purple-500/20 hover:shadow-md hover:shadow-purple-500/30 hover:-translate-y-px transition-all duration-150"
+            className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-white bg-gradient-main rounded-xl shadow-sm shadow-purple-500/20 hover:shadow-md hover:shadow-purple-500/30 hover:-translate-y-px transition-all duration-150"
           >
             + 投稿
           </Link>

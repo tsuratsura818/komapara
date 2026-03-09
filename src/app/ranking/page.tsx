@@ -49,10 +49,10 @@ export default async function RankingPage() {
         <>
           {/* Top 3 Podium */}
           {top3.length >= 3 && (
-            <div className="flex justify-center items-end gap-3 px-4 pt-6 pb-4">
+            <div className="flex justify-center items-end gap-2 sm:gap-3 px-3 sm:px-4 pt-6 pb-4">
               {/* 2nd place */}
-              <div className="flex-1 text-center">
-                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-ranking-silver shadow-lg mb-2 overflow-hidden">
+              <div className="flex-1 min-w-0 text-center">
+                <div className="w-14 sm:w-16 h-14 sm:h-16 mx-auto rounded-full bg-gradient-ranking-silver shadow-lg mb-2 overflow-hidden">
                   {top3[1].work.panels[0] && (
                     <img
                       src={top3[1].work.panels[0]}
@@ -78,8 +78,8 @@ export default async function RankingPage() {
               </div>
 
               {/* 1st place */}
-              <div className="flex-1 text-center -mt-4">
-                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-ranking-gold shadow-lg shadow-yellow-500/30 mb-2 overflow-hidden ring-4 ring-yellow-300/50">
+              <div className="flex-1 min-w-0 text-center -mt-4">
+                <div className="w-16 sm:w-20 h-16 sm:h-20 mx-auto rounded-full bg-gradient-ranking-gold shadow-lg shadow-yellow-500/30 mb-2 overflow-hidden ring-4 ring-yellow-300/50">
                   {top3[0].work.panels[0] && (
                     <img
                       src={top3[0].work.panels[0]}
@@ -105,8 +105,8 @@ export default async function RankingPage() {
               </div>
 
               {/* 3rd place */}
-              <div className="flex-1 text-center mt-2">
-                <div className="w-14 h-14 mx-auto rounded-full bg-gradient-ranking-bronze shadow-lg mb-2 overflow-hidden">
+              <div className="flex-1 min-w-0 text-center mt-2">
+                <div className="w-12 sm:w-14 h-12 sm:h-14 mx-auto rounded-full bg-gradient-ranking-bronze shadow-lg mb-2 overflow-hidden">
                   {top3[2].work.panels[0] && (
                     <img
                       src={top3[2].work.panels[0]}
