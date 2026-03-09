@@ -52,7 +52,7 @@ export async function POST(
         from: "コマパラ通知 <onboarding@resend.dev>",
         to: process.env.ADMIN_EMAIL,
         subject: `【コマパラ】通報が届きました: ${work.title}`,
-        html: `
+        html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
           <h2>新しい通報が届きました</h2>
           <ul>
             <li><strong>作品:</strong> ${work.title}</li>
@@ -60,7 +60,7 @@ export async function POST(
             ${detail ? `<li><strong>詳細:</strong> ${detail}</li>` : ""}
           </ul>
           <p><a href="${process.env.NEXTAUTH_URL}/admin/reports">管理画面で確認する →</a></p>
-        `.trim(),
+        </body></html>`.trim(),
       }).catch(() => {}); // メール失敗してもAPIは成功扱い
     }
 

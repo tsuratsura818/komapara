@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     to: process.env.ADMIN_EMAIL,
     replyTo: email,
     subject: `【コマパラ】${categoryLabel}: ${name}様より`,
-    html: `
+    html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
       <h2>お問い合わせが届きました</h2>
       <table style="border-collapse:collapse;width:100%;max-width:500px;">
         <tr><td style="padding:8px;font-weight:bold;vertical-align:top;">お名前</td><td style="padding:8px;">${escapeHtml(name)}</td></tr>
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
         <tr><td style="padding:8px;font-weight:bold;vertical-align:top;">カテゴリ</td><td style="padding:8px;">${categoryLabel}</td></tr>
         <tr><td style="padding:8px;font-weight:bold;vertical-align:top;">内容</td><td style="padding:8px;white-space:pre-wrap;">${escapeHtml(message)}</td></tr>
       </table>
-    `.trim(),
+    </body></html>`.trim(),
   });
 
   if (error) {
