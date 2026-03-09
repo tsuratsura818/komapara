@@ -4,6 +4,7 @@ import { WorkViewer } from "@/components/works/WorkViewer";
 import { WorkCard } from "@/components/works/WorkCard";
 import { SeriesNav } from "@/components/series/SeriesNav";
 import { AdSlot } from "@/components/ui/AdSlot";
+import { ReportButton } from "@/components/works/ReportButton";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -232,9 +233,18 @@ export default async function WorkDetailPage({ params }: Props) {
     })),
   };
 
+  const isOwnWork = session?.user?.id === work.authorId;
+
   return (
     <div>
       <WorkViewer work={workData} tipsEnabled={tipsEnabled} isPremium={isPremium} />
+
+      {/* 通報ボタン（自分の作品以外・ログイン時） */}
+      {session?.user?.id && !isOwnWork && (
+        <div className="px-4 flex justify-end">
+          <ReportButton workId={work.id} />
+        </div>
+      )}
 
       {/* 広告（シリーズナビの前） */}
       <div className="px-4 pt-4">

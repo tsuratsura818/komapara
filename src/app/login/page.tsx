@@ -21,13 +21,13 @@ export default function LoginPage() {
           <LoginButtons />
           <p className="mt-4 text-xs text-komapara-muted text-center">
             ログインすると
-            <a href="#" className="gradient-text font-medium hover:underline">
+            <Link href="/terms" className="gradient-text font-medium hover:underline">
               利用規約
-            </a>
+            </Link>
             と
-            <a href="#" className="gradient-text font-medium hover:underline">
+            <Link href="/privacy" className="gradient-text font-medium hover:underline">
               プライバシーポリシー
-            </a>
+            </Link>
             に同意したとみなされます
           </p>
         </div>

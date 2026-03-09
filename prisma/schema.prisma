@@ -76,6 +76,7 @@ model User {
   notifications        Notification[]
   series               Series[]
   readHistory          ReadHistory[]
+  reports              Report[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -95,6 +96,7 @@ model Work {
   rankings    WeeklyRanking[]
   tips        Tip[]
   readHistory ReadHistory[]
+  reports     Report[]
 
   seriesId    String?
   seriesOrder Int?
@@ -330,6 +332,21 @@ model Notification {
 
   @@index([userId, isRead])
   @@index([createdAt])
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  workId     String
+  reporterId String
+  reason     String   // spam | inappropriate | copyright | other
+  detail     String?
+  status     String   @default("pending") // pending | reviewed | dismissed
+  work       Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
+  reporter   User     @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([workId, reporterId])
+  @@index([status])
 }
 
 model Advertisement {
