@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
   title: "お問い合わせ",
@@ -13,20 +14,10 @@ export default function ContactPage() {
         ご不明な点・ご要望・不具合のご報告はこちらからお気軽にご連絡ください。
       </p>
 
-      <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
-        <div>
-          <p className="text-sm font-medium text-gray-700 mb-1">メールでのお問い合わせ</p>
-          <a
-            href="mailto:【メールアドレスを記入】"
-            className="text-sm text-violet-600 hover:underline break-all"
-          >
-            【メールアドレスを記入】
-          </a>
-        </div>
+      <ContactForm />
 
-        <hr className="border-gray-100" />
-
-        <div>
+      <div className="mt-10">
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
           <p className="text-sm font-medium text-gray-700 mb-3">よくあるご質問</p>
           <ul className="space-y-2 text-sm text-gray-600">
             <li>
@@ -39,16 +30,10 @@ export default function ContactPage() {
             </li>
             <li className="pt-2">
               <span className="font-medium">Q. 不適切なコンテンツを見つけた</span>
-              <p className="mt-0.5 text-gray-500">上記メールアドレスまでご報告ください。確認の上、対応いたします。</p>
+              <p className="mt-0.5 text-gray-500">作品ページの通報ボタン、またはこちらのフォームよりご連絡ください。</p>
             </li>
           </ul>
         </div>
-
-        <hr className="border-gray-100" />
-
-        <p className="text-xs text-gray-400">
-          返信までに数日かかる場合があります。あらかじめご了承ください。
-        </p>
       </div>
 
       <div className="mt-6 flex gap-4 text-xs text-gray-400">
