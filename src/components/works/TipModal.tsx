@@ -34,21 +34,27 @@ export function TipModal({
     setErrorMessage("");
 
     try {
-      const res = await fetch("/api/tips", {
+      const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          type: "tip",
           workId,
           amount: currentAmount,
           message: message.trim() || undefined,
         }),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        setStep("success");
-        onSuccess?.();
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        } else {
+          setStep("success");
+          onSuccess?.();
+        }
       } else {
-        const data = await res.json();
         setErrorMessage(data.error || "投げ銭に失敗しました");
         setStep("error");
       }
@@ -152,9 +158,6 @@ export function TipModal({
               {isValidAmount ? `${currentAmount.toLocaleString()}円を送る` : "金額を選択してください"}
             </button>
 
-            <p className="text-xs text-komapara-muted text-center mt-2">
-              ※ 現在はモック決済です（実際の課金は発生しません）
-            </p>
           </>
         )}
 
@@ -184,7 +187,7 @@ export function TipModal({
                 disabled={submitting}
                 className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg shadow-orange-500/25 disabled:opacity-50 transition-all"
               >
-                {submitting ? "送信中..." : "確定する"}
+                {submitting ? "送信中..." : "お支払いへ進む"}
               </button>
             </div>
           </div>

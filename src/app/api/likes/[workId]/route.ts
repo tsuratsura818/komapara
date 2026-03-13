@@ -27,7 +27,7 @@ export async function POST(
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
     }
 
-    const { success } = rateLimit(`likes:${session.user.id}`, { limit: 120, windowMs: 60 * 60 * 1000 });
+    const { success } = await rateLimit(`likes:${session.user.id}`, { limit: 120, windowMs: 60 * 60 * 1000 });
     if (!success) {
       return NextResponse.json({ error: "リアクション制限に達しました" }, { status: 429 });
     }

@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { PremiumCard } from "@/components/premium/PremiumCard";
+import { StripeConnectCard } from "@/components/settings/StripeConnectCard";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -13,11 +14,15 @@ export default async function SettingsPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  // プレミアム情報を取得
   const [user, premiumSub, premiumSetting] = await Promise.all([
     prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { isPremium: true, premiumExpiry: true },
+      select: {
+        isPremium: true,
+        premiumExpiry: true,
+        isCreator: true,
+        stripeConnectOnboarded: true,
+      },
     }),
     prisma.premiumSubscription.findFirst({
       where: {
@@ -84,6 +89,14 @@ export default async function SettingsPage() {
         isPremium={isPremium}
         premiumEnabled={premiumEnabled}
       />
+
+      {/* Stripe Connect（クリエイターのみ） */}
+      {user?.isCreator && (
+        <StripeConnectCard
+          isConnected={user.stripeConnectOnboarded ?? false}
+          chargesEnabled={user.stripeConnectOnboarded ?? false}
+        />
+      )}
     </div>
   );
 }

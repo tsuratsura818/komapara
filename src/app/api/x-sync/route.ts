@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
     }
 
-    const { success } = rateLimit(`x-sync:${session.user.id}`, {
+    const { success } = await rateLimit(`x-sync:${session.user.id}`, {
       limit: 10,
       windowMs: 60 * 60 * 1000,
     });

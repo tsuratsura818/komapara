@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "サブスク機能は現在無効です" }, { status: 403 });
     }
 
-    const { success } = rateLimit(`sub-plan:create:${session.user.id}`, {
+    const { success } = await rateLimit(`sub-plan:create:${session.user.id}`, {
       limit: 20,
       windowMs: 24 * 60 * 60 * 1000,
     });

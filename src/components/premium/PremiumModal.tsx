@@ -19,15 +19,22 @@ export function PremiumModal({
     setErrorMessage("");
 
     try {
-      const res = await fetch("/api/premium", {
+      const res = await fetch("/api/stripe/checkout", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "premium" }),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        setStep("success");
-        onSuccess?.();
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        } else {
+          setStep("success");
+          onSuccess?.();
+        }
       } else {
-        const data = await res.json();
         setErrorMessage(data.error || "購読の開始に失敗しました");
         setStep("error");
       }
@@ -92,12 +99,9 @@ export function PremiumModal({
                 onClick={handleSubmit}
                 className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-yellow-500 to-orange-500 shadow-lg shadow-orange-500/25 hover:shadow-xl transition-all"
               >
-                購読する
+                お支払いへ進む
               </button>
             </div>
-            <p className="text-xs text-komapara-muted text-center mt-2">
-              ※ 現在はモック決済です（実際の課金は発生しません）
-            </p>
           </div>
         )}
 

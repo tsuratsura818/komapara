@@ -14,7 +14,7 @@ export async function POST(
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
     }
 
-    const { success } = rateLimit(`follows:${session.user.id}`, { limit: 60, windowMs: 60 * 60 * 1000 });
+    const { success } = await rateLimit(`follows:${session.user.id}`, { limit: 60, windowMs: 60 * 60 * 1000 });
     if (!success) {
       return NextResponse.json({ error: "フォロー制限に達しました" }, { status: 429 });
     }

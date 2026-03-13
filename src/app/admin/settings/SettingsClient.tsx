@@ -33,6 +33,13 @@ export function SettingsClient({
   const [loading, setLoading] = useState<string | null>(null);
   const [newTag, setNewTag] = useState({ name: "", slug: "", emoji: "" });
   const [editingTag, setEditingTag] = useState<Tag | null>(null);
+  const [tokusho, setTokusho] = useState({
+    tokusho_vendor: initialSettings.tokusho_vendor ?? "",
+    tokusho_representative: initialSettings.tokusho_representative ?? "",
+    tokusho_address: initialSettings.tokusho_address ?? "",
+    tokusho_phone: initialSettings.tokusho_phone ?? "",
+    tokusho_email: initialSettings.tokusho_email ?? "",
+  });
   const router = useRouter();
 
   async function toggleSetting(key: string) {
@@ -125,6 +132,31 @@ export function SettingsClient({
         const data = await res.json();
         alert(data.error || "エラーが発生しました");
       }
+    } catch {
+      alert("通信エラーが発生しました");
+    } finally {
+      setLoading(null);
+    }
+  }
+
+  async function saveTokusho() {
+    setLoading("tokusho");
+    try {
+      const entries = Object.entries(tokusho) as [string, string][];
+      for (const [key, value] of entries) {
+        const res = await fetch("/api/admin/settings", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key, value }),
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          alert(data.error || `${key} の保存に失敗しました`);
+          return;
+        }
+        setSettings((prev) => ({ ...prev, [key]: value }));
+      }
+      alert("特商法表記を保存しました");
     } catch {
       alert("通信エラーが発生しました");
     } finally {
@@ -316,6 +348,49 @@ export function SettingsClient({
               タグがありません
             </p>
           )}
+        </div>
+      </div>
+
+      {/* 特商法表記 */}
+      <div className="glass rounded-xl p-4 mb-6">
+        <h2 className="text-sm font-semibold gradient-text mb-4">
+          特定商取引法に基づく表記
+        </h2>
+        <div className="space-y-3">
+          {([
+            { key: "tokusho_vendor" as const, label: "販売業者名" },
+            { key: "tokusho_representative" as const, label: "代表者名" },
+            { key: "tokusho_address" as const, label: "所在地" },
+            { key: "tokusho_phone" as const, label: "電話番号" },
+            { key: "tokusho_email" as const, label: "メールアドレス" },
+          ]).map((field) => (
+            <div key={field.key}>
+              <label className="block text-xs font-medium text-komapara-muted mb-1">
+                {field.label}
+              </label>
+              <input
+                type="text"
+                value={tokusho[field.key]}
+                onChange={(e) =>
+                  setTokusho((prev) => ({
+                    ...prev,
+                    [field.key]: e.target.value,
+                  }))
+                }
+                placeholder={`${field.label}を入力`}
+                className="w-full px-3 py-2 text-sm rounded-lg border border-komapara-border focus:outline-none focus:ring-2 focus:ring-gradient-purple/30"
+              />
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={saveTokusho}
+            disabled={loading === "tokusho"}
+            className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all disabled:opacity-50"
+          >
+            {loading === "tokusho" ? "保存中..." : "保存"}
+          </button>
         </div>
       </div>
 

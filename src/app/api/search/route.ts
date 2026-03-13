@@ -5,7 +5,7 @@ import { rateLimit, getClientIp } from "@/lib/rate-limit";
 export async function GET(request: NextRequest) {
   try {
     const ip = getClientIp(request);
-    const { success } = rateLimit(`search:${ip}`, {
+    const { success } = await rateLimit(`search:${ip}`, {
       limit: 60,
       windowMs: 60 * 1000,
     });

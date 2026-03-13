@@ -58,6 +58,9 @@ model User {
   isBanned      Boolean   @default(false)
   isPremium     Boolean   @default(false)
   premiumExpiry DateTime?
+  stripeConnectAccountId  String?  // Stripe Connect アカウントID
+  stripeConnectOnboarded  Boolean  @default(false) // オンボーディング完了
+  stripeCustomerId        String?  // Stripe顧客ID（読者側の決済用）
 
   accounts     Account[]
   sessions     Session[]
@@ -210,6 +213,9 @@ model SubscriptionPlan {
   price       Int      // 月額（円）100〜10000
   description String?
   isActive    Boolean  @default(true)
+
+  stripePriceId   String?  // Stripe Price ID
+  stripeProductId String?  // Stripe Product ID
 
   subscriptions Subscription[]
 

@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
     }
 
-    const { success } = rateLimit(`push-sub:${session.user.id}`, { limit: 10, windowMs: 60 * 60 * 1000 });
+    const { success } = await rateLimit(`push-sub:${session.user.id}`, { limit: 10, windowMs: 60 * 60 * 1000 });
     if (!success) {
       return NextResponse.json({ error: "登録制限に達しました" }, { status: 429 });
     }

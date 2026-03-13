@@ -13,6 +13,11 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   subscriptions_enabled: "true",
   premium_enabled: "false",
   push_notifications_enabled: "true",
+  tokusho_vendor: "",
+  tokusho_representative: "",
+  tokusho_address: "",
+  tokusho_phone: "",
+  tokusho_email: "",
 };
 
 export default async function AdminSettingsPage() {

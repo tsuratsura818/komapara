@@ -34,22 +34,26 @@ export function SubscribeModal({
     setErrorMessage("");
 
     try {
-      const res = await fetch("/api/subscriptions", {
+      const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId: selectedPlan.id }),
+        body: JSON.stringify({ type: "subscription", planId: selectedPlan.id }),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        const data = await res.json();
-        setStep("success");
-        onSuccess?.({
-          id: data.id,
-          status: data.status,
-          plan: { name: selectedPlan.name, price: selectedPlan.price },
-        });
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        } else {
+          setStep("success");
+          onSuccess?.({
+            id: data.id,
+            status: data.status,
+            plan: { name: selectedPlan.name, price: selectedPlan.price },
+          });
+        }
       } else {
-        const data = await res.json();
         setErrorMessage(data.error || "購読の開始に失敗しました");
         setStep("error");
       }
@@ -118,9 +122,6 @@ export function SubscribeModal({
               {selectedPlan ? `${selectedPlan.price.toLocaleString()}円/月で購読する` : "プランを選択してください"}
             </button>
 
-            <p className="text-xs text-komapara-muted text-center mt-2">
-              ※ 現在はモック決済です（実際の課金は発生しません）
-            </p>
           </>
         )}
 
@@ -148,7 +149,7 @@ export function SubscribeModal({
                 disabled={submitting}
                 className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/25 disabled:opacity-50 transition-all"
               >
-                {submitting ? "処理中..." : "確定する"}
+                {submitting ? "処理中..." : "お支払いへ進む"}
               </button>
             </div>
           </div>

@@ -64,7 +64,7 @@ export async function POST() {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
     }
 
-    const { success } = rateLimit(`premium:create:${session.user.id}`, {
+    const { success } = await rateLimit(`premium:create:${session.user.id}`, {
       limit: 10,
       windowMs: 24 * 60 * 60 * 1000,
     });
