@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { generateDM } from "@/lib/dm-templates";
 
 type OutreachItem = {
   id: string;
@@ -35,6 +36,10 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
   const [filterGenre, setFilterGenre] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [dmCopiedId, setDmCopiedId] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<string | null>(null);
 
   // 追加フォーム
   const [newHandle, setNewHandle] = useState("");
@@ -134,6 +139,88 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
     }
   };
 
+  // DM送信ワンクリック: コピー → X DM画面を開く → ステータス更新
+  const handleSendDM = async (item: OutreachItem) => {
+    const dmText = generateDM({
+      xHandle: item.xHandle,
+      name: item.name,
+      genre: item.genre,
+      followers: item.followers,
+      note: item.note,
+    });
+    await navigator.clipboard.writeText(dmText);
+    setDmCopiedId(item.id);
+    setTimeout(() => setDmCopiedId(null), 3000);
+
+    // X DM画面を開く（プロフィールページ経由）
+    window.open(`https://x.com/${item.xHandle}`, "_blank");
+
+    // ステータスをDM送信済に更新
+    if (item.status !== "DM送信済" && item.status !== "返信あり" && item.status !== "登録済み") {
+      await handleStatusChange(item.id, "DM送信済");
+    }
+  };
+
+  // 登録状況を同期
+  const handleSync = async () => {
+    setSyncing(true);
+    setSyncResult(null);
+    try {
+      const res = await fetch("/api/admin/outreach/sync", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        setSyncResult(`${data.checked}件チェック → ${data.updated}件を「登録済み」に更新`);
+        if (data.updated > 0) {
+          // リロードしてリスト更新
+          window.location.reload();
+        }
+      }
+    } catch {
+      setSyncResult("同期に失敗しました");
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncResult(null), 5000);
+    }
+  };
+
+  // 選択トグル
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filtered.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered.map((i) => i.id)));
+    }
+  };
+
+  // 一括: Xプロフィールを開く（いいね用）
+  const handleBatchOpenX = () => {
+    const selected = filtered.filter((i) => selectedIds.has(i.id));
+    selected.slice(0, 10).forEach((item) => {
+      window.open(`https://x.com/${item.xHandle}`, "_blank");
+    });
+    if (selected.length > 10) {
+      alert(`上限10件までブラウザで開きました（${selected.length}件中）。残りは次のバッチで開いてください。`);
+    }
+  };
+
+  // 一括: ステータス変更
+  const handleBatchStatusChange = async (newStatus: string) => {
+    const selected = filtered.filter((i) => selectedIds.has(i.id));
+    await Promise.all(
+      selected.map((item) => handleStatusChange(item.id, newStatus))
+    );
+    setSelectedIds(new Set());
+  };
+
   return (
     <div>
       {/* フィルター + 追加ボタン */}
@@ -170,12 +257,27 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
           ))}
         </select>
         <button
+          onClick={handleSync}
+          disabled={syncing}
+          className="px-4 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors disabled:opacity-50"
+          title="登録済みユーザーとxHandleを突合"
+        >
+          {syncing ? "同期中..." : "登録同期"}
+        </button>
+        <button
           onClick={() => setShowAddForm(!showAddForm)}
           className="px-4 py-1.5 text-xs font-bold text-white bg-gradient-main rounded-xl"
         >
           + 追加
         </button>
       </div>
+
+      {/* 同期結果 */}
+      {syncResult && (
+        <div className="glass rounded-xl p-3 mb-3 text-xs text-komapara-text bg-green-50/50 border border-green-200/50">
+          {syncResult}
+        </div>
+      )}
 
       {/* 追加フォーム */}
       {showAddForm && (
@@ -250,11 +352,71 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
         </form>
       )}
 
+      {/* 一括アクションバー */}
+      {selectedIds.size > 0 && (
+        <div className="glass rounded-xl p-3 mb-3 flex flex-wrap items-center gap-2 sticky top-0 z-10 border border-purple-200/50">
+          <span className="text-xs font-medium text-komapara-text">
+            {selectedIds.size}件選択中
+          </span>
+          <button
+            onClick={handleBatchOpenX}
+            className="px-3 py-1.5 text-xs rounded-lg bg-black text-white hover:bg-gray-800 transition-colors"
+          >
+            Xを開く（いいね用）
+          </button>
+          <button
+            onClick={() => handleBatchStatusChange("いいね中")}
+            className="px-3 py-1.5 text-xs rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+          >
+            → いいね中
+          </button>
+          <button
+            onClick={() => handleBatchStatusChange("DM送信済")}
+            className="px-3 py-1.5 text-xs rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition-colors"
+          >
+            → DM送信済
+          </button>
+          <button
+            onClick={() => handleBatchStatusChange("見送り")}
+            className="px-3 py-1.5 text-xs rounded-lg bg-red-400 text-white hover:bg-red-500 transition-colors"
+          >
+            → 見送り
+          </button>
+          <button
+            onClick={() => setSelectedIds(new Set())}
+            className="ml-auto px-3 py-1.5 text-xs text-komapara-muted hover:text-komapara-text"
+          >
+            選択解除
+          </button>
+        </div>
+      )}
+
       {/* リスト */}
       <div className="space-y-2">
+        {filtered.length > 0 && (
+          <div className="flex items-center gap-2 px-1 mb-1">
+            <input
+              type="checkbox"
+              checked={selectedIds.size === filtered.length && filtered.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+            />
+            <span className="text-[10px] text-komapara-muted">すべて選択</span>
+          </div>
+        )}
         {filtered.map((item) => (
-          <div key={item.id} className="glass rounded-xl p-4">
+          <div key={item.id} className={cn(
+            "glass rounded-xl p-4 transition-all",
+            selectedIds.has(item.id) && "ring-2 ring-purple-300"
+          )}>
             <div className="flex flex-wrap items-start gap-3">
+              {/* チェックボックス */}
+              <input
+                type="checkbox"
+                checked={selectedIds.has(item.id)}
+                onChange={() => toggleSelect(item.id)}
+                className="w-4 h-4 mt-1 rounded border-gray-300 text-purple-600 focus:ring-purple-500 flex-shrink-0"
+              />
               {/* 左: プロフィール */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -338,6 +500,21 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
                     >
                       {item.status}
                     </button>
+                    {/* DM送信ボタン（候補・いいね中のみ表示） */}
+                    {(item.status === "候補" || item.status === "いいね中") && (
+                      <button
+                        onClick={() => handleSendDM(item)}
+                        className={cn(
+                          "px-3 py-1 text-xs rounded-lg font-medium transition-all",
+                          dmCopiedId === item.id
+                            ? "bg-green-500 text-white"
+                            : "bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90"
+                        )}
+                        title="DM文をコピーしてXプロフィールを開く"
+                      >
+                        {dmCopiedId === item.id ? "コピー済!" : "DM送信"}
+                      </button>
+                    )}
                     <button
                       onClick={() => handleDelete(item.id)}
                       className="p-1 text-gray-300 hover:text-red-400 transition-colors"
