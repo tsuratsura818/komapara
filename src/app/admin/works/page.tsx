@@ -144,6 +144,7 @@ export default async function AdminWorksPage(
                     <WorkActions
                       workId={work.id}
                       isPublished={work.isPublished}
+                      isPickup={work.isPickup}
                     />
                   </td>
                 </tr>

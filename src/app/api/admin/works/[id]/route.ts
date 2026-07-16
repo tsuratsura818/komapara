@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdminApi } from "@/lib/admin";
 
@@ -9,21 +10,42 @@ export async function PATCH(request: NextRequest, props: { params: Promise<{ id:
 
   try {
     const body = await request.json();
-    const { isPublished } = body;
+    const { isPublished, isPickup } = body;
 
-    if (typeof isPublished !== "boolean") {
+    if (typeof isPublished !== "boolean" && typeof isPickup !== "boolean") {
       return NextResponse.json(
-        { error: "isPublished は boolean で指定してください" },
+        { error: "isPublished か isPickup を boolean で指定してください" },
         { status: 400 }
       );
     }
 
+    // 「今週のピックアップ」は常に1作品だけ。立てる時は他を全て下ろす
+    if (isPickup === true) {
+      const [, work] = await prisma.$transaction([
+        prisma.work.updateMany({
+          where: { isPickup: true, NOT: { id: params.id } },
+          data: { isPickup: false },
+        }),
+        prisma.work.update({
+          where: { id: params.id },
+          data: { isPickup: true },
+          select: { id: true, title: true, isPublished: true, isPickup: true },
+        }),
+      ]);
+      revalidatePath("/");
+      return NextResponse.json(work);
+    }
+
     const work = await prisma.work.update({
       where: { id: params.id },
-      data: { isPublished },
-      select: { id: true, title: true, isPublished: true },
+      data: {
+        ...(typeof isPublished === "boolean" ? { isPublished } : {}),
+        ...(typeof isPickup === "boolean" ? { isPickup } : {}),
+      },
+      select: { id: true, title: true, isPublished: true, isPickup: true },
     });
 
+    revalidatePath("/");
     return NextResponse.json(work);
   } catch (err) {
     console.error("PATCH /api/admin/works/[id] error:", err);

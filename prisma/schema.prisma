@@ -125,9 +125,13 @@ model Work {
   isPublished Boolean @default(true)
   xPostUrl    String?
 
+  // 「今週のピックアップ」。編集判断で1作品だけ立てる（設定時に他は自動で下ろす）
+  isPickup    Boolean @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([isPickup])
   @@index([authorId])
   @@index([createdAt])
   @@index([likeCount])

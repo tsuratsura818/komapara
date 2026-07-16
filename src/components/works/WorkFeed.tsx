@@ -6,6 +6,7 @@ import { WorkCard } from "./WorkCard";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { GenreIcon } from "@/components/ui/GenreIcons";
 import { cn, GENRES } from "@/lib/utils";
+import { useSearch } from "@/components/search/SearchContext";
 
 type Work = {
   id: string;
@@ -39,7 +40,8 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
   const { data: session } = useSession();
   const [tab, setTab] = useState<Tab>("new");
   const [genre, setGenre] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
+  // 検索語はヘッダーの入力と共有する（画面遷移なしで絞り込む）
+  const { query, setQuery } = useSearch();
   // 打鍵ごとに叩かないよう、入力が落ち着いてから検索語を確定させる
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [works, setWorks] = useState<Work[]>(initialWorks ?? []);
@@ -149,7 +151,7 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
         </div>
 
         {/* 検索は画面遷移させず、この場でフィードを絞り込む */}
-        <div className="relative flex-1 min-w-0 max-w-xs">
+        <div className="relative flex-1 min-w-0 max-w-xs md:hidden">
           <svg
             className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
             fill="none"

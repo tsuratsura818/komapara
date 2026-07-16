@@ -1,11 +1,12 @@
 import { WorkFeed } from "@/components/works/WorkFeed";
+import { WeeklyPickup } from "@/components/works/WeeklyPickup";
 import { prisma } from "@/lib/prisma";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
   const now = new Date();
-  const [works, totalCount, adsResult] = await Promise.all([
+  const [works, totalCount, adsResult, pickup] = await Promise.all([
     prisma.work.findMany({
       where: { isPublished: true },
       orderBy: { createdAt: "desc" },
@@ -26,6 +27,14 @@ export default async function HomePage() {
       orderBy: { sortOrder: "desc" },
       select: { id: true, company: true, imageUrl: true, linkUrl: true, description: true },
     }),
+    // 今週のピックアップ（管理画面で1作品だけ立てる。未設定なら出さない）
+    prisma.work.findFirst({
+      where: { isPickup: true, isPublished: true },
+      include: {
+        author: { select: { id: true, name: true, image: true } },
+        tags: { select: { name: true, slug: true, emoji: true } },
+      },
+    }),
   ]);
 
   const initialWorks = works.map((work) => ({
@@ -40,12 +49,16 @@ export default async function HomePage() {
     isLiked: false,
   }));
 
-  // ヒーローは置かない。読者の仕事は「読む」こと。開いた瞬間に4コマが並ぶ（§6 跡地は余白）
+  // 巨大ヒーローは置かない。読者の仕事は「読む」こと（§6 跡地は余白）。
+  // ピックアップは編集判断の1作品のみ、4コマ自体を見せる形で最小限に。
   return (
-    <WorkFeed
-      initialWorks={initialWorks}
-      initialTotalPages={Math.ceil(totalCount / 20)}
-      feedAds={adsResult}
-    />
+    <>
+      {pickup && <WeeklyPickup work={pickup} />}
+      <WorkFeed
+        initialWorks={initialWorks}
+        initialTotalPages={Math.ceil(totalCount / 20)}
+        feedAds={adsResult}
+      />
+    </>
   );
 }
