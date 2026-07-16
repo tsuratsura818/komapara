@@ -14,45 +14,34 @@ export async function calculateWeeklyRanking() {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-  // 直近7日間の作品をスコア順に取得
-  const works = await prisma.work.findMany({
-    where: {
-      isPublished: true,
-      createdAt: { gte: sevenDaysAgo },
-    },
-    select: {
-      id: true,
-      likeCount: true,
-      viewCount: true,
-    },
-    orderBy: { likeCount: "desc" },
-    take: 100,
-  });
+  // スコア = いいね×2 + 閲覧数。DB側でスコア順に上位20件を取得する。
+  // （likeCountで事前に絞ると、高PV・低いいねの作品がランキングから漏れるため）
+  const rows = await prisma.$queryRaw<Array<{ id: string; score: number | bigint }>>`
+    SELECT "id", ("likeCount" * 2 + "viewCount") AS score
+    FROM "Work"
+    WHERE "isPublished" = true AND "createdAt" >= ${sevenDaysAgo}
+    ORDER BY score DESC
+    LIMIT 20
+  `;
 
-  // スコア計算: いいね × 2 + 閲覧数
-  const scored = works
-    .map((work) => ({
-      workId: work.id,
-      score: work.likeCount * 2 + work.viewCount,
-    }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 20);
+  const scored = rows.map((r, i) => ({
+    workId: r.id,
+    score: Number(r.score),
+    rank: i + 1,
+  }));
 
-  // 既存のランキングを削除して再作成
-  await prisma.weeklyRanking.deleteMany({
-    where: { weekStart },
-  });
-
-  for (let i = 0; i < scored.length; i++) {
-    await prisma.weeklyRanking.create({
-      data: {
-        workId: scored[i].workId,
-        score: scored[i].score,
-        rank: i + 1,
+  // 既存週の削除と再作成を原子的に（途中失敗で週が中途半端に壊れないように）
+  await prisma.$transaction([
+    prisma.weeklyRanking.deleteMany({ where: { weekStart } }),
+    prisma.weeklyRanking.createMany({
+      data: scored.map((s) => ({
+        workId: s.workId,
+        score: s.score,
+        rank: s.rank,
         weekStart,
-      },
-    });
-  }
+      })),
+    }),
+  ]);
 
-  return scored;
+  return scored.map((s) => ({ workId: s.workId, score: s.score }));
 }

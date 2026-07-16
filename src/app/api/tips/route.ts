@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
+import { PLATFORM_TIP_FEE_RATE } from "@/lib/fees";
 
 const MIN_AMOUNT = 100;
 const MAX_AMOUNT = 10000;
-const PLATFORM_FEE_RATE = 0.1;
 
 export async function POST(request: NextRequest) {
   try {
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const platformFee = Math.floor(amount * PLATFORM_FEE_RATE);
+    const platformFee = Math.floor(amount * PLATFORM_TIP_FEE_RATE);
     const netAmount = amount - platformFee;
 
     const [tip] = await prisma.$transaction([

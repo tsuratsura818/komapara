@@ -44,13 +44,15 @@ export async function POST(request: NextRequest, props: { params: Promise<{ work
 
     if (existing) {
       if (existing.reaction === reaction) {
-        // 同じリアクション → トグルOFF（削除）
-        await prisma.like.delete({ where: { id: existing.id } });
-        const work = await prisma.work.update({
-          where: { id: params.workId },
-          data: { likeCount: { decrement: 1 } },
-          select: { likeCount: true },
-        });
+        // 同じリアクション → トグルOFF（削除）。削除とカウンター減算を原子的に
+        const [, work] = await prisma.$transaction([
+          prisma.like.delete({ where: { id: existing.id } }),
+          prisma.work.update({
+            where: { id: params.workId },
+            data: { likeCount: { decrement: 1 } },
+            select: { likeCount: true },
+          }),
+        ]);
         const reactionCounts = await getReactionCounts(params.workId);
         return NextResponse.json({
           likeCount: Math.max(0, work.likeCount),
@@ -76,20 +78,21 @@ export async function POST(request: NextRequest, props: { params: Promise<{ work
       }
     }
 
-    // 新規リアクション
-    await prisma.like.create({
-      data: {
-        userId: session.user.id,
-        workId: params.workId,
-        reaction,
-      },
-    });
-
-    const work = await prisma.work.update({
-      where: { id: params.workId },
-      data: { likeCount: { increment: 1 } },
-      select: { likeCount: true, authorId: true, title: true },
-    });
+    // 新規リアクション。作成とカウンター増加を原子的に
+    const [, work] = await prisma.$transaction([
+      prisma.like.create({
+        data: {
+          userId: session.user.id,
+          workId: params.workId,
+          reaction,
+        },
+      }),
+      prisma.work.update({
+        where: { id: params.workId },
+        data: { likeCount: { increment: 1 } },
+        select: { likeCount: true, authorId: true, title: true },
+      }),
+    ]);
 
     const reactionCounts = await getReactionCounts(params.workId);
 
@@ -126,25 +129,30 @@ export async function DELETE(request: NextRequest, props: { params: Promise<{ wo
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
     }
 
-    await prisma.like.delete({
-      where: {
-        userId_workId: {
-          userId: session.user.id,
-          workId: params.workId,
-        },
-      },
-    });
-
-    const work = await prisma.work.update({
-      where: { id: params.workId },
-      data: { likeCount: { decrement: 1 } },
-      select: { likeCount: true },
+    // 冪等: 実際に削除された時のみカウンター減算（二重解除でも壊れない）
+    const likeCount = await prisma.$transaction(async (tx) => {
+      const del = await tx.like.deleteMany({
+        where: { userId: session.user.id, workId: params.workId },
+      });
+      if (del.count === 0) {
+        const w = await tx.work.findUnique({
+          where: { id: params.workId },
+          select: { likeCount: true },
+        });
+        return w?.likeCount ?? 0;
+      }
+      const w = await tx.work.update({
+        where: { id: params.workId },
+        data: { likeCount: { decrement: del.count } },
+        select: { likeCount: true },
+      });
+      return w.likeCount;
     });
 
     const reactionCounts = await getReactionCounts(params.workId);
 
     return NextResponse.json({
-      likeCount: Math.max(0, work.likeCount),
+      likeCount: Math.max(0, likeCount),
       reactionCounts,
       userReaction: null,
     });

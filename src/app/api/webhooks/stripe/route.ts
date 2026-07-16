@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
+import {
+  PLATFORM_TIP_FEE_RATE,
+  PLATFORM_SUB_FEE_RATE,
+  PREMIUM_PRICE,
+} from "@/lib/fees";
 import type Stripe from "stripe";
 
 export const dynamic = "force-dynamic";
-
-const PLATFORM_TIP_FEE_RATE = 0.1;
-const PLATFORM_SUB_FEE_RATE = 0.15;
 
 export async function POST(request: NextRequest) {
   const stripe = getStripe();
@@ -211,7 +213,7 @@ async function handlePremiumCompleted(
       data: {
         userId,
         status: "active",
-        amount: 300,
+        amount: PREMIUM_PRICE,
         currentPeriodEnd,
         paymentStatus: "completed",
         stripeSubscriptionId,

@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { getStripe, isStripeEnabled } from "@/lib/stripe";
+import {
+  PLATFORM_TIP_FEE_RATE,
+  PLATFORM_SUB_FEE_RATE,
+  PREMIUM_PRICE,
+} from "@/lib/fees";
 import type Stripe from "stripe";
 
 export const dynamic = "force-dynamic";
-
-const PLATFORM_TIP_FEE_RATE = 0.1; // 投げ銭手数料10%
-const PLATFORM_SUB_FEE_RATE = 0.15; // サブスク手数料15%
-const PREMIUM_PRICE = 300; // プレミアム月額（円）
 
 interface TipParams {
   type: "tip";

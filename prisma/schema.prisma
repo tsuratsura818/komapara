@@ -118,6 +118,10 @@ model Work {
   @@index([createdAt])
   @@index([likeCount])
   @@index([seriesId, seriesOrder])
+  // フィード（isPublished絞り込み + 並び替え）用の複合index
+  @@index([isPublished, createdAt])
+  @@index([isPublished, likeCount])
+  @@index([authorId, createdAt])
 }
 
 model Tag {
@@ -190,9 +194,10 @@ model Tip {
   senderId    String
   receiverId  String
   workId      String
-  sender      User     @relation("tipsSent", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver    User     @relation("tipsReceived", fields: [receiverId], references: [id], onDelete: Cascade)
-  work        Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
+  // 財務レコードはユーザー/作品削除で消さない（会計・税務・係争対応のため保持）
+  sender      User     @relation("tipsSent", fields: [senderId], references: [id], onDelete: Restrict)
+  receiver    User     @relation("tipsReceived", fields: [receiverId], references: [id], onDelete: Restrict)
+  work        Work     @relation(fields: [workId], references: [id], onDelete: Restrict)
 
   paymentStatus         String  @default("completed")
   stripePaymentIntentId String?
@@ -228,9 +233,9 @@ model SubscriptionPlan {
 model Subscription {
   id               String   @id @default(cuid())
   subscriberId     String
-  subscriber       User     @relation("subscriptions", fields: [subscriberId], references: [id], onDelete: Cascade)
+  subscriber       User     @relation("subscriptions", fields: [subscriberId], references: [id], onDelete: Restrict)
   creatorId        String
-  creator          User     @relation("subscribers", fields: [creatorId], references: [id], onDelete: Cascade)
+  creator          User     @relation("subscribers", fields: [creatorId], references: [id], onDelete: Restrict)
   planId           String
   plan             SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
 
@@ -256,7 +261,8 @@ model Subscription {
 model PremiumSubscription {
   id               String   @id @default(cuid())
   userId           String
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // 財務レコードはユーザー削除で消さない（保持）
+  user             User     @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   status           String   @default("active") // active | cancelled | expired
   amount           Int      @default(300)       // 300円/月

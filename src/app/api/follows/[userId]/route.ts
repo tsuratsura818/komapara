@@ -65,12 +65,11 @@ export async function DELETE(request: NextRequest, props: { params: Promise<{ us
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
     }
 
-    await prisma.follow.delete({
+    // 冪等: 存在しなくてもエラーにしない（二重フォロー解除でも204）
+    await prisma.follow.deleteMany({
       where: {
-        followerId_followingId: {
-          followerId: session.user.id,
-          followingId: params.userId,
-        },
+        followerId: session.user.id,
+        followingId: params.userId,
       },
     });
 
