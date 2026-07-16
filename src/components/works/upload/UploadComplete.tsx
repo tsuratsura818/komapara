@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { buildWorkShareText } from "@/lib/utils";
 
 type Props = {
   workId: string;
@@ -13,7 +14,8 @@ export function UploadComplete({ workId, workTitle, coverImage }: Props) {
 
   const handleShareToX = () => {
     const workUrl = `${window.location.origin}/work/${workId}`;
-    const text = `${workTitle}\n\nコマパラで読む`;
+    // 自分の作品の投稿直後なので作家クレジット(@自分)は付けない
+    const text = buildWorkShareText({ title: workTitle });
     const intentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(workUrl)}`;
     window.open(intentUrl, "_blank", "noopener,noreferrer");
   };

@@ -53,3 +53,32 @@ export function cleanCaptionForShare(text: string | null | undefined): string {
     .replace(/\s+/g, " ")
     .trim();
 }
+
+/**
+ * Xシェア用の文面を自動生成する。
+ * タイトルとURLだけでは流れてきた人に何の作品か伝わらないため、
+ * 作家クレジット（Xアカウントがあれば@メンションして通知/導線にする）と
+ * ジャンルのハッシュタグまで組み立てる。
+ * 説明文はOGカード側が表示するので本文には入れない（取り込みキャプションは
+ * 誘導文が大半で、本文に出すとノイズになるため）。
+ */
+export function buildWorkShareText(work: {
+  title: string;
+  authorName?: string | null;
+  authorXHandle?: string | null;
+  genres?: { name: string }[];
+}): string {
+  const handle = work.authorXHandle?.trim().replace(/^@/, "");
+  const credit = handle ? `@${handle}` : work.authorName?.trim();
+
+  const tags = [
+    "#4コマ漫画",
+    ...(work.genres ?? []).slice(0, 2).map((g) => `#${g.name.replace(/\s+/g, "")}`),
+    "#コマパラ",
+  ].join(" ");
+
+  const lines = [`「${work.title}」`];
+  if (credit) lines.push(`${credit}の4コマ漫画`);
+  lines.push("", tags);
+  return lines.join("\n");
+}

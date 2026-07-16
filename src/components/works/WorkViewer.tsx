@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import { formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime, buildWorkShareText } from "@/lib/utils";
 import { AdsenseUnit } from "@/components/ui/AdsenseUnit";
 import { TipButton } from "./TipButton";
 import { ReportButton } from "./ReportButton";
@@ -150,21 +150,27 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
     }
   };
 
+  const shareText = () =>
+    buildWorkShareText({
+      title: work.title,
+      authorName: work.author.name,
+      authorXHandle: work.author.xHandle,
+      genres: work.genres,
+    });
+
   const handleShare = async () => {
     const url = `${window.location.origin}/work/${work.id}`;
-    const text = `${work.title} - コマパラ`;
     if (navigator.share) {
-      await navigator.share({ title: text, url });
+      await navigator.share({ title: `${work.title} - コマパラ`, text: shareText(), url });
     } else {
-      await navigator.clipboard.writeText(url);
-      alert("URLをコピーしました");
+      await navigator.clipboard.writeText(`${shareText()}\n${url}`);
+      alert("シェア用の文章をコピーしました");
     }
   };
 
   const handleShareToX = () => {
     const url = `${window.location.origin}/work/${work.id}`;
-    const text = `${work.title}\n\nコマパラで読む`;
-    const intentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    const intentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText())}&url=${encodeURIComponent(url)}`;
     window.open(intentUrl, "_blank", "noopener,noreferrer");
   };
 
