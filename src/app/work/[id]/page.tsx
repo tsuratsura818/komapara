@@ -200,16 +200,23 @@ export default async function WorkDetailPage(props: Props) {
 
   return (
     <div>
+      {/* 読書面の外側に敷く柄。main が max-w-7xl で幅を持てないため、
+          fixed で画面全体の背面に敷き、白い誌面をその上に乗せる */}
+      <div className="fixed inset-0 -z-10 reading-bg" aria-hidden="true" />
+
       {/* 通報ボタンは WorkViewer 内でクライアント判定して表示 */}
       <WorkViewer work={workData} tipsEnabled={tipsEnabled} />
 
-      {/* 広告（シリーズナビの前）。プレミアム非表示はAdSlotがセッションで判定 */}
-      <div className="px-4 pt-4">
-        <AdSlot ad={workAd} slot="work-detail" />
-      </div>
+      {/* 以降も誌面の続きとして白地に乗せる（柄の上に素で置くと浮くため） */}
+      <div className="max-w-2xl mx-auto bg-white sm:shadow-sm sm:ring-1 sm:ring-black/5 sm:mt-px">
+        {/* 広告（シリーズナビの前）。プレミアム非表示はAdSlotがセッションで判定 */}
+        <div className="px-4 pt-4">
+          <AdSlot ad={workAd} slot="work-detail" />
+        </div>
 
-      {/* シリーズナビ */}
-      {seriesNav && <SeriesNav nav={seriesNav} />}
+        {/* シリーズナビ */}
+        {seriesNav && <SeriesNav nav={seriesNav} />}
+      </div>
 
       {/* 関連作品 */}
       {relatedWorks.length > 0 && (

@@ -178,7 +178,8 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
   const totalReactions = Object.values(reactionCounts).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="max-w-2xl mx-auto">
+    // 柄の地の上に置く「誌面」。読む場所を1枚の紙として締める
+    <div className="max-w-2xl mx-auto bg-white sm:shadow-sm sm:ring-1 sm:ring-black/5">
       {/* 見出し。パネルより先に置き、開いた瞬間に「何の作品か」が分かるようにする */}
       <div className="px-4 pt-5 pb-3">
         <h1 className="text-xl sm:text-2xl font-bold text-komapara-text leading-tight">
@@ -199,8 +200,8 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
         )}
       </div>
 
-      {/* 4コマビューワー（没入感のあるダーク背景） */}
-      <div className="bg-gray-900">
+      {/* 4コマビューワー。誌面と同じ白地に置き、作品の白余白と地続きにする */}
+      <div className="bg-white">
         {work.panels.map((panel, index) => (
           <div key={index} className="relative">
             <Image
@@ -212,8 +213,9 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               style={{ width: '100%', height: 'auto' }}
               priority={index === 0}
             />
+            {/* ページの切れ目。白地に白の作品が続くので、淡い罫線で区切りだけ示す */}
             {index < work.panels.length - 1 && (
-              <div className="h-0.5 bg-gradient-main opacity-30" />
+              <div className="mx-4 h-px bg-gray-100" />
             )}
           </div>
         ))}
