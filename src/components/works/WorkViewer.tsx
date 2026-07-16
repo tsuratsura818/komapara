@@ -239,8 +239,9 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
         </div>
       </div>
 
-      {/* 4コマビューワー。誌面と同じ白地に置き、作品の白余白と地続きにする */}
-      <div className="bg-white">
+      {/* 4コマビューワー。誌面と同じ白地に置き、作品の白余白と地続きにする。
+          左右に余白を取り、コマが紙の端に着かないようにする */}
+      <div className="bg-white px-5 sm:px-8">
         {work.panels.map((panel, index) => (
           <div key={index} className="relative">
             <Image
@@ -248,13 +249,13 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               alt={`${work.title} - ${index + 1}コマ目`}
               width={0}
               height={0}
-              sizes="(max-width: 576px) 100vw, 576px"
+              sizes="(max-width: 576px) 100vw, 512px"
               style={{ width: '100%', height: 'auto' }}
               priority={index === 0}
             />
             {/* ページの切れ目。白地に白の作品が続くので、淡い罫線で区切りだけ示す */}
             {index < work.panels.length - 1 && (
-              <div className="mx-4 h-px bg-gray-100" />
+              <div className="h-px bg-gray-100" />
             )}
           </div>
         ))}
