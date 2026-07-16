@@ -169,7 +169,7 @@ export default function LpPage() {
             </Link>
             <Link
               href="/login"
-              className="text-sm px-5 py-2 bg-gradient-main text-white font-bold rounded-xl hover:opacity-90 hover:-translate-y-px transition-all duration-150 shadow-sm shadow-purple-500/20"
+              className="text-sm px-5 py-2 bg-gradient-main text-white font-bold rounded-xl hover:opacity-90 hover:-translate-y-px transition-all duration-150 shadow-xs shadow-purple-500/20"
             >
               無料ではじめる
             </Link>
@@ -215,7 +215,7 @@ export default function LpPage() {
               ].map((chip) => (
                 <span
                   key={chip.label}
-                  className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-white/90 border border-gray-200 rounded-full text-gray-600 shadow-sm font-medium backdrop-blur-sm"
+                  className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 bg-white/90 border border-gray-200 rounded-full text-gray-600 shadow-xs font-medium backdrop-blur-xs"
                 >
                   <chip.Icon className="w-3.5 h-3.5" />{chip.label}
                 </span>
@@ -234,7 +234,7 @@ export default function LpPage() {
               </Link>
               <a
                 href="#features"
-                className="w-full sm:w-auto px-8 py-4 text-base font-semibold rounded-2xl border border-gray-200/80 bg-white/80 text-gray-700 hover:border-purple-300 hover:text-purple-700 transition-all duration-200 text-center backdrop-blur-sm"
+                className="w-full sm:w-auto px-8 py-4 text-base font-semibold rounded-2xl border border-gray-200/80 bg-white/80 text-gray-700 hover:border-purple-300 hover:text-purple-700 transition-all duration-200 text-center backdrop-blur-xs"
               >
                 機能を見る
               </a>
@@ -252,7 +252,7 @@ export default function LpPage() {
           >
             <div className="absolute -top-4 left-[6%] z-20 glass-card rounded-2xl px-4 py-3 animate-float hidden sm:block">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-linear-to-br from-yellow-400 to-orange-400 flex items-center justify-center shrink-0">
                   <TrophyIcon className="w-4 h-4 text-white" />
                 </div>
                 <div>
@@ -266,7 +266,7 @@ export default function LpPage() {
               style={{ animation: "float 5s ease-in-out infinite 1.5s" }}
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-linear-to-br from-purple-400 to-pink-400 flex items-center justify-center shrink-0">
                   <FaceSmileIcon className="w-4 h-4 text-white" />
                 </div>
                 <div>
@@ -292,7 +292,7 @@ export default function LpPage() {
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-400">
           <span className="text-[10px] tracking-[0.2em] font-medium">SCROLL</span>
-          <div className="w-px h-8 bg-gradient-to-b from-gray-300 to-transparent" />
+          <div className="w-px h-8 bg-linear-to-b from-gray-300 to-transparent" />
         </div>
       </section>
 
@@ -309,10 +309,10 @@ export default function LpPage() {
               key={stat.label}
               className={`feature-card p-5 md:p-6 text-center lp-animate lp-animate-delay-${Math.min(i + 1, 3)}`}
             >
-              <div className={`w-8 h-8 mx-auto mb-3 bg-gradient-to-r ${stat.gradient} rounded-lg flex items-center justify-center`}>
+              <div className={`w-8 h-8 mx-auto mb-3 bg-linear-to-r ${stat.gradient} rounded-lg flex items-center justify-center`}>
                 <stat.Icon className="w-4 h-4 text-white" />
               </div>
-              <div className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
+              <div className={`text-3xl md:text-4xl font-black bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`}>
                 {stat.value}
               </div>
               <div className="text-xs text-gray-400 font-medium mt-1">{stat.label}</div>
@@ -322,7 +322,7 @@ export default function LpPage() {
       </section>
 
       {/* ===== Problem ===== */}
-      <section className="py-24 px-6 bg-[#fafbff]">
+      <section className="py-24 px-6 bg-komapara-bg">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14 lp-animate">
             <span className="badge-glass inline-flex mb-5">PROBLEM</span>
@@ -340,11 +340,11 @@ export default function LpPage() {
                 <h3 className="font-bold text-gray-900 mb-3">{item.problem}</h3>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 bg-red-50 text-red-400 rounded-md border border-red-100 flex-shrink-0">Before</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 bg-red-50 text-red-400 rounded-md border border-red-100 shrink-0">Before</span>
                     <span className="text-sm text-gray-400 line-through">{item.before}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 bg-purple-50 text-purple-600 rounded-md border border-purple-100 flex-shrink-0">After</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 bg-purple-50 text-purple-600 rounded-md border border-purple-100 shrink-0">After</span>
                     <span className="text-sm font-semibold text-gray-800">{item.after}</span>
                   </div>
                 </div>
@@ -370,18 +370,18 @@ export default function LpPage() {
                 key={pillar.title}
                 className={`feature-card p-8 lp-animate lp-animate-delay-${i + 1} group hover:-translate-y-1`}
               >
-                <div className={`h-0.5 w-14 rounded-full bg-gradient-to-r ${pillar.gradient} mb-7`} />
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-r ${pillar.gradient} flex items-center justify-center mb-4`}>
+                <div className={`h-0.5 w-14 rounded-full bg-linear-to-r ${pillar.gradient} mb-7`} />
+                <div className={`w-12 h-12 rounded-2xl bg-linear-to-r ${pillar.gradient} flex items-center justify-center mb-4`}>
                   <pillar.Icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className={`text-2xl font-black bg-gradient-to-r ${pillar.gradient} bg-clip-text text-transparent mb-3`}>
+                <h3 className={`text-2xl font-black bg-linear-to-r ${pillar.gradient} bg-clip-text text-transparent mb-3`}>
                   {pillar.title}
                 </h3>
                 <p className="text-sm text-gray-500 leading-relaxed mb-5">{pillar.description}</p>
                 <ul className="space-y-2.5">
                   {pillar.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5 text-sm text-gray-600">
-                      <span className={`w-4 h-4 rounded-full bg-gradient-to-r ${pillar.gradient} flex items-center justify-center flex-shrink-0`}>
+                      <span className={`w-4 h-4 rounded-full bg-linear-to-r ${pillar.gradient} flex items-center justify-center shrink-0`}>
                         <CheckIcon className="w-2.5 h-2.5 text-white" />
                       </span>
                       {f}
@@ -395,7 +395,7 @@ export default function LpPage() {
       </section>
 
       {/* ===== For Creators ===== */}
-      <section className="py-24 px-6 bg-[#fafbff]">
+      <section className="py-24 px-6 bg-komapara-bg">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14 lp-animate">
             <span className="badge-glass inline-flex mb-5">FOR CREATORS</span>
@@ -410,7 +410,7 @@ export default function LpPage() {
                 key={feature.title}
                 className={`feature-card p-7 lp-animate lp-animate-delay-${Math.min(i + 1, 3)} flex items-start gap-5`}
               >
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-100/50 flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-purple-50 to-blue-50 border border-purple-100/50 flex items-center justify-center shrink-0">
                   <feature.Icon className="w-6 h-6 text-purple-600" />
                 </div>
                 <div>
@@ -438,7 +438,7 @@ export default function LpPage() {
                 </svg>
                 <p className="text-gray-700 text-sm leading-relaxed mb-6">{t.text}</p>
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center text-base flex-shrink-0`}>
+                  <div className={`w-10 h-10 rounded-full bg-linear-to-br ${t.gradient} flex items-center justify-center text-base shrink-0`}>
                     {t.avatar}
                   </div>
                   <div>
@@ -453,7 +453,7 @@ export default function LpPage() {
       </section>
 
       {/* ===== How It Works ===== */}
-      <section className="py-24 px-6 bg-[#fafbff]">
+      <section className="py-24 px-6 bg-komapara-bg">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14 lp-animate">
             <span className="badge-glass inline-flex mb-5">HOW IT WORKS</span>
@@ -463,9 +463,9 @@ export default function LpPage() {
             {STEPS.map((s, i) => (
               <div key={s.step} className={`lp-animate lp-animate-delay-${i + 1} text-center relative`}>
                 {i < STEPS.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-[62%] w-[76%] h-px bg-gradient-to-r from-purple-200 to-pink-200" />
+                  <div className="hidden md:block absolute top-8 left-[62%] w-[76%] h-px bg-linear-to-r from-purple-200 to-pink-200" />
                 )}
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 text-white font-black text-xl mb-5 shadow-lg shadow-purple-500/20">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-linear-to-br from-purple-500 to-blue-500 text-white font-black text-xl mb-5 shadow-lg shadow-purple-500/20">
                   {s.step}
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2 text-sm">{s.title}</h3>
@@ -497,7 +497,7 @@ export default function LpPage() {
               </thead>
               <tbody>
                 {COMPARISONS.map((row, i) => (
-                  <tr key={row.feature} className={`border-b border-gray-50 last:border-0 ${i % 2 !== 0 ? "bg-[#fafbff]" : ""}`}>
+                  <tr key={row.feature} className={`border-b border-gray-50 last:border-0 ${i % 2 !== 0 ? "bg-komapara-bg" : ""}`}>
                     <td className="p-3 sm:p-4 font-medium text-gray-700 text-sm">{row.feature}</td>
                     <td className="p-4 text-center">
                       {row.komapara
@@ -519,7 +519,7 @@ export default function LpPage() {
       </section>
 
       {/* ===== Pricing ===== */}
-      <section id="pricing" className="py-24 px-6 bg-[#fafbff]">
+      <section id="pricing" className="py-24 px-6 bg-komapara-bg">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-14 lp-animate">
             <span className="badge-glass inline-flex mb-5">PRICING</span>
@@ -555,7 +555,7 @@ export default function LpPage() {
                   <ul className="space-y-3 mb-7">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-center gap-2.5 text-sm text-gray-600">
-                        <span className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${plan.featured ? "bg-purple-100" : "bg-gray-100"}`}>
+                        <span className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${plan.featured ? "bg-purple-100" : "bg-gray-100"}`}>
                           <CheckIcon className={`w-2.5 h-2.5 ${plan.featured ? "text-purple-600" : "text-gray-500"}`} />
                         </span>
                         {f}
@@ -590,7 +590,7 @@ export default function LpPage() {
             {FAQS.map((faq, i) => (
               <div key={faq.q} className={`feature-card p-6 lp-animate lp-animate-delay-${Math.min(i + 1, 3)}`}>
                 <h3 className="font-bold text-gray-900 flex items-start gap-3 mb-2">
-                  <span className="w-6 h-6 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-black flex-shrink-0 mt-0.5">Q</span>
+                  <span className="w-6 h-6 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-black shrink-0 mt-0.5">Q</span>
                   {faq.q}
                 </h3>
                 <p className="text-gray-500 text-sm leading-relaxed pl-9">{faq.a}</p>

@@ -56,7 +56,7 @@ export default async function SeriesDetailPage(props: Props) {
               alt={series.title}
               className="w-full h-full object-cover opacity-30"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-komapara-bg" />
+            <div className="absolute inset-0 bg-linear-to-b from-transparent to-komapara-bg" />
           </div>
         )}
         {!coverImage && <div className="h-24 bg-gradient-main rounded-b-2xl" />}
@@ -98,7 +98,7 @@ export default async function SeriesDetailPage(props: Props) {
                 className="w-8 h-8 rounded-full ring-2 ring-purple-200/50"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 text-sm font-medium">
+              <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 text-sm font-medium">
                 {series.author.name?.[0] || "?"}
               </div>
             )}
@@ -130,13 +130,13 @@ export default async function SeriesDetailPage(props: Props) {
               href={`/work/${work.id}`}
               className="flex items-center gap-3 p-3 glass rounded-xl hover:bg-white/10 transition-colors"
             >
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-main flex items-center justify-center text-white text-xs font-bold">
+              <div className="shrink-0 w-8 h-8 rounded-full bg-gradient-main flex items-center justify-center text-white text-xs font-bold">
                 {index + 1}
               </div>
               <img
                 src={work.panels[0]}
                 alt={work.title}
-                className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+                className="w-14 h-14 rounded-lg object-cover shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-komapara-text truncate">
@@ -150,7 +150,7 @@ export default async function SeriesDetailPage(props: Props) {
                 </div>
               </div>
               <svg
-                className="w-4 h-4 text-komapara-muted flex-shrink-0"
+                className="w-4 h-4 text-komapara-muted shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

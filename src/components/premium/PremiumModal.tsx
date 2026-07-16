@@ -97,7 +97,7 @@ export function PremiumModal({
               </button>
               <button
                 onClick={handleSubmit}
-                className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-yellow-500 to-orange-500 shadow-lg shadow-orange-500/25 hover:shadow-xl transition-all"
+                className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-yellow-500 to-orange-500 shadow-lg shadow-orange-500/25 hover:shadow-xl transition-all"
               >
                 お支払いへ進む
               </button>

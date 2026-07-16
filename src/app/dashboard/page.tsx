@@ -101,10 +101,10 @@ export default async function DashboardPage() {
             className="glass rounded-xl p-4 text-center relative overflow-hidden"
           >
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${STAT_STYLES[i].gradient} opacity-5`}
+              className={`absolute inset-0 bg-linear-to-br ${STAT_STYLES[i].gradient} opacity-5`}
             />
             <p
-              className={`text-2xl font-bold relative bg-gradient-to-r ${STAT_STYLES[i].gradient} bg-clip-text text-transparent`}
+              className={`text-2xl font-bold relative bg-linear-to-r ${STAT_STYLES[i].gradient} bg-clip-text text-transparent`}
             >
               {stat.value.toLocaleString()}
             </p>

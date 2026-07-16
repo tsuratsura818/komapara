@@ -19,7 +19,7 @@ export function PanelPreview({ panels, onRemove, compact }: Props) {
           {panels.map((panel, i) => (
             <div
               key={i}
-              className="relative flex-shrink-0 w-28 h-28 rounded-lg border border-komapara-border overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary-400 transition-all"
+              className="relative shrink-0 w-28 h-28 rounded-lg border border-komapara-border overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary-400 transition-all"
               onClick={() => setLightboxIndex(i)}
             >
               {panel.preview && (
@@ -44,7 +44,7 @@ export function PanelPreview({ panels, onRemove, compact }: Props) {
                 alt={`${lightboxIndex + 1}コマ目`}
                 className="w-full h-auto max-h-[85vh] object-contain rounded-lg"
               />
-              <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+              <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-sm">
                 {lightboxIndex + 1} / {panels.length}
               </div>
               <button
@@ -106,7 +106,7 @@ export function PanelPreview({ panels, onRemove, compact }: Props) {
                   ✕
                 </button>
               )}
-              <div className="absolute top-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+              <div className="absolute top-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded-sm">
                 {i + 1}コマ目
               </div>
             </div>

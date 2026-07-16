@@ -289,7 +289,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               value={newHandle}
               onChange={(e) => setNewHandle(e.target.value)}
               placeholder="@username"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-purple-300"
             />
           </div>
           <div>
@@ -299,7 +299,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="表示名"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-purple-300"
             />
           </div>
           <div>
@@ -307,7 +307,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
             <select
               value={newGenre}
               onChange={(e) => setNewGenre(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-purple-300"
             >
               {GENRES.map((g) => (
                 <option key={g} value={g}>{g}</option>
@@ -321,7 +321,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               value={newFollowers}
               onChange={(e) => setNewFollowers(e.target.value)}
               placeholder="0"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-purple-300"
             />
           </div>
           <div className="sm:col-span-2">
@@ -330,7 +330,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               value={newNote}
               onChange={(e) => setNewNote(e.target.value)}
               placeholder="作風や連絡先の情報など"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-purple-300"
             />
           </div>
           <div className="flex items-end gap-2">
@@ -399,7 +399,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               type="checkbox"
               checked={selectedIds.size === filtered.length && filtered.length > 0}
               onChange={toggleSelectAll}
-              className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+              className="w-4 h-4 rounded-sm border-gray-300 text-purple-600 focus:ring-purple-500"
             />
             <span className="text-[10px] text-komapara-muted">すべて選択</span>
           </div>
@@ -415,7 +415,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
                 type="checkbox"
                 checked={selectedIds.has(item.id)}
                 onChange={() => toggleSelect(item.id)}
-                className="w-4 h-4 mt-1 rounded border-gray-300 text-purple-600 focus:ring-purple-500 flex-shrink-0"
+                className="w-4 h-4 mt-1 rounded-sm border-gray-300 text-purple-600 focus:ring-purple-500 shrink-0"
               />
               {/* 左: プロフィール */}
               <div className="flex-1 min-w-0">
@@ -444,7 +444,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
                   <input
                     defaultValue={item.note || ""}
                     placeholder="メモを入力..."
-                    className="text-xs text-komapara-muted bg-transparent border-none focus:outline-none focus:ring-0 w-full"
+                    className="text-xs text-komapara-muted bg-transparent border-none focus:outline-hidden focus:ring-0 w-full"
                     onBlur={(e) => {
                       if (e.target.value !== (item.note || "")) {
                         handleNoteUpdate(item.id, e.target.value);
@@ -465,7 +465,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               </div>
 
               {/* 右: ステータス + アクション */}
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 {editingId === item.id ? (
                   <div className="flex flex-wrap gap-1">
                     {STATUSES.map((s) => (
@@ -508,7 +508,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
                           "px-3 py-1 text-xs rounded-lg font-medium transition-all",
                           dmCopiedId === item.id
                             ? "bg-green-500 text-white"
-                            : "bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90"
+                            : "bg-linear-to-r from-purple-500 to-blue-500 text-white hover:opacity-90"
                         )}
                         title="DM文をコピーしてXプロフィールを開く"
                       >

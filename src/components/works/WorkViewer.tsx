@@ -181,7 +181,7 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
               <Link
                 key={genre.slug}
                 href={`/genre/${genre.slug}`}
-                className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-50 to-blue-50 text-purple-600 border border-purple-100/50 hover:from-purple-100 hover:to-blue-100 transition-colors"
+                className="text-xs px-2 py-0.5 rounded-full bg-linear-to-r from-purple-50 to-blue-50 text-purple-600 border border-purple-100/50 hover:from-purple-100 hover:to-blue-100 transition-colors"
               >
                 {genre.emoji} {genre.name}
               </Link>
@@ -204,7 +204,7 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
                 className="w-10 h-10 rounded-full ring-2 ring-purple-200/50"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 font-medium">
+              <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 font-medium">
                 {work.author.name?.[0] || "?"}
               </div>
             )}
@@ -269,7 +269,7 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
                 }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   userReaction
-                    ? "bg-gradient-to-r from-pink-500 to-red-500 text-white shadow-lg shadow-pink-500/25"
+                    ? "bg-linear-to-r from-pink-500 to-red-500 text-white shadow-lg shadow-pink-500/25"
                     : "glass text-komapara-muted hover:text-pink-500"
                 }`}
                 disabled={!session}
@@ -365,7 +365,7 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
               onChange={(e) => setCommentText(e.target.value)}
               placeholder="コメントを入力..."
               maxLength={500}
-              className="flex-1 px-3 py-2 text-sm glass rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+              className="flex-1 px-3 py-2 text-sm glass rounded-full focus:outline-hidden focus:ring-2 focus:ring-purple-500/50"
             />
             <button
               type="submit"
@@ -395,10 +395,10 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
                 <img
                   src={comment.user.image}
                   alt={comment.user.name || ""}
-                  className="w-8 h-8 rounded-full flex-shrink-0"
+                  className="w-8 h-8 rounded-full shrink-0"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 flex-shrink-0" />
+                <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-100 to-blue-100 shrink-0" />
               )}
               <div>
                 <div className="flex items-center gap-2">

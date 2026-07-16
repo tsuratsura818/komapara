@@ -56,7 +56,7 @@ export default async function SettingsPage() {
               className="w-16 h-16 rounded-full ring-2 ring-purple-200/50"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 text-xl font-bold">
+            <div className="w-16 h-16 rounded-full bg-linear-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 text-xl font-bold">
               {session.user.name?.[0] || "?"}
             </div>
           )}

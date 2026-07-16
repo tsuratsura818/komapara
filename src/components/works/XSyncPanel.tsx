@@ -187,7 +187,7 @@ export function XSyncPanel() {
             onChange={(e) => setUrlInput(e.target.value)}
             placeholder={`https://x.com/user/status/123456\nhttps://x.com/user/status/789012`}
             rows={3}
-            className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+            className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-primary-500 resize-none"
             disabled={fetching}
           />
           <button
@@ -243,12 +243,12 @@ export function XSyncPanel() {
                             @{post.author}
                           </span>
                           {!post.is4koma && (
-                            <span className="ml-2 text-[10px] text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded">
+                            <span className="ml-2 text-[10px] text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded-sm">
                               {post.images.length}枚（画像なしのため選択不可）
                             </span>
                           )}
                           {post.is4koma && (
-                            <span className="ml-2 text-[10px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                            <span className="ml-2 text-[10px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded-sm">
                               {post.images.length}枚
                             </span>
                           )}
@@ -263,7 +263,7 @@ export function XSyncPanel() {
                           key={imgIdx}
                           src={img}
                           alt={`${imgIdx + 1}コマ目`}
-                          className="w-full aspect-square object-cover rounded"
+                          className="w-full aspect-square object-cover rounded-sm"
                         />
                       ))}
                     </div>
@@ -279,7 +279,7 @@ export function XSyncPanel() {
                           }
                           maxLength={50}
                           placeholder="タイトル（必須）"
-                          className="w-full px-2 py-1.5 border border-komapara-border rounded text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          className="w-full px-2 py-1.5 border border-komapara-border rounded-sm text-sm focus:outline-hidden focus:ring-1 focus:ring-primary-500"
                         />
                         <input
                           type="text"
@@ -289,7 +289,7 @@ export function XSyncPanel() {
                           }
                           maxLength={200}
                           placeholder="説明（任意）"
-                          className="w-full px-2 py-1.5 border border-komapara-border rounded text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          className="w-full px-2 py-1.5 border border-komapara-border rounded-sm text-sm focus:outline-hidden focus:ring-1 focus:ring-primary-500"
                         />
                         <div className="flex flex-wrap gap-1">
                           {GENRES.map((genre) => (

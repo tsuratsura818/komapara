@@ -16,7 +16,7 @@ export default async function ServicePlanPage() {
         href="/api/admin/service-plan"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 px-6 py-3 text-white font-semibold shadow-md hover:opacity-90 transition-opacity"
+        className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-purple-500 to-pink-500 px-6 py-3 text-white font-semibold shadow-md hover:opacity-90 transition-opacity"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

@@ -78,7 +78,7 @@ export function WorkInfoForm({
             onChange={(e) => onTitleChange(e.target.value)}
             maxLength={50}
             placeholder="作品のタイトル"
-            className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-primary-500"
           />
           <p className="text-xs text-komapara-muted mt-1 text-right">{title.length}/50</p>
         </div>
@@ -91,7 +91,7 @@ export function WorkInfoForm({
             maxLength={200}
             rows={3}
             placeholder="作品の説明"
-            className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+            className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-primary-500 resize-none"
           />
         </div>
 
@@ -121,7 +121,7 @@ export function WorkInfoForm({
             <select
               value={selectedSeriesId}
               onChange={(e) => onSeriesChange(e.target.value)}
-              className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+              className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-primary-500 bg-white"
             >
               <option value="">シリーズなし（単発）</option>
               {userSeries.map((s) => (
@@ -138,7 +138,7 @@ export function WorkInfoForm({
             value={xPostUrl}
             onChange={(e) => onXPostUrlChange(e.target.value)}
             placeholder="https://x.com/..."
-            className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-primary-500"
           />
         </div>
       </div>

@@ -100,7 +100,7 @@ export function NotificationList({
                   !n.isRead ? "bg-primary-50/30" : ""
                 }`}
               >
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-main flex items-center justify-center">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-gradient-main flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="none"
@@ -127,7 +127,7 @@ export function NotificationList({
                   </p>
                 </div>
                 {!n.isRead && (
-                  <div className="flex-shrink-0 w-2 h-2 rounded-full bg-primary-500 mt-2" />
+                  <div className="shrink-0 w-2 h-2 rounded-full bg-primary-500 mt-2" />
                 )}
               </div>
             );

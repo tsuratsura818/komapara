@@ -205,9 +205,9 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
             >
               <div className="aspect-square skeleton-shimmer" />
               <div className="p-3 space-y-2">
-                <div className="h-3 skeleton-shimmer rounded w-1/3" />
-                <div className="h-4 skeleton-shimmer rounded" />
-                <div className="h-3 skeleton-shimmer rounded w-2/3" />
+                <div className="h-3 skeleton-shimmer rounded-sm w-1/3" />
+                <div className="h-4 skeleton-shimmer rounded-sm" />
+                <div className="h-3 skeleton-shimmer rounded-sm w-2/3" />
               </div>
             </div>
           ))}

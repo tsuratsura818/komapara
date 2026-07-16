@@ -233,21 +233,21 @@ export function SettingsClient({
             placeholder="絵文字"
             value={newTag.emoji}
             onChange={(e) => setNewTag((p) => ({ ...p, emoji: e.target.value }))}
-            className="w-16 px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-none focus:ring-2 focus:ring-gradient-purple/30"
+            className="w-16 px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-gradient-purple/30"
           />
           <input
             type="text"
             placeholder="名前"
             value={newTag.name}
             onChange={(e) => setNewTag((p) => ({ ...p, name: e.target.value }))}
-            className="flex-1 min-w-[100px] px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-none focus:ring-2 focus:ring-gradient-purple/30"
+            className="flex-1 min-w-[100px] px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-gradient-purple/30"
           />
           <input
             type="text"
             placeholder="スラッグ (英数字)"
             value={newTag.slug}
             onChange={(e) => setNewTag((p) => ({ ...p, slug: e.target.value }))}
-            className="flex-1 min-w-[100px] px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-none focus:ring-2 focus:ring-gradient-purple/30"
+            className="flex-1 min-w-[100px] px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-gradient-purple/30"
           />
           <button
             onClick={createTag}
@@ -275,7 +275,7 @@ export function SettingsClient({
                         p ? { ...p, emoji: e.target.value } : null
                       )
                     }
-                    className="w-12 px-1 py-1 text-sm rounded border border-komapara-border"
+                    className="w-12 px-1 py-1 text-sm rounded-sm border border-komapara-border"
                   />
                   <input
                     type="text"
@@ -285,7 +285,7 @@ export function SettingsClient({
                         p ? { ...p, name: e.target.value } : null
                       )
                     }
-                    className="flex-1 px-2 py-1 text-sm rounded border border-komapara-border"
+                    className="flex-1 px-2 py-1 text-sm rounded-sm border border-komapara-border"
                   />
                   <input
                     type="text"
@@ -295,18 +295,18 @@ export function SettingsClient({
                         p ? { ...p, slug: e.target.value } : null
                       )
                     }
-                    className="flex-1 px-2 py-1 text-sm rounded border border-komapara-border"
+                    className="flex-1 px-2 py-1 text-sm rounded-sm border border-komapara-border"
                   />
                   <button
                     onClick={updateTag}
                     disabled={loading === `edit-${tag.id}`}
-                    className="text-xs px-2 py-1 rounded bg-green-100 text-green-700 hover:bg-green-200 disabled:opacity-50"
+                    className="text-xs px-2 py-1 rounded-sm bg-green-100 text-green-700 hover:bg-green-200 disabled:opacity-50"
                   >
                     保存
                   </button>
                   <button
                     onClick={() => setEditingTag(null)}
-                    className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    className="text-xs px-2 py-1 rounded-sm bg-gray-100 text-gray-600 hover:bg-gray-200"
                   >
                     取消
                   </button>
@@ -321,7 +321,7 @@ export function SettingsClient({
                   </span>
                   <button
                     onClick={() => setEditingTag(tag)}
-                    className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    className="text-xs px-2 py-1 rounded-sm bg-blue-100 text-blue-700 hover:bg-blue-200"
                   >
                     編集
                   </button>
@@ -330,7 +330,7 @@ export function SettingsClient({
                     disabled={
                       loading === `delete-${tag.id}` || tag._count.works > 0
                     }
-                    className="text-xs px-2 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50"
+                    className="text-xs px-2 py-1 rounded-sm bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50"
                     title={
                       tag._count.works > 0
                         ? "作品が紐付いているため削除不可"
@@ -378,7 +378,7 @@ export function SettingsClient({
                   }))
                 }
                 placeholder={`${field.label}を入力`}
-                className="w-full px-3 py-2 text-sm rounded-lg border border-komapara-border focus:outline-none focus:ring-2 focus:ring-gradient-purple/30"
+                className="w-full px-3 py-2 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-gradient-purple/30"
               />
             </div>
           ))}

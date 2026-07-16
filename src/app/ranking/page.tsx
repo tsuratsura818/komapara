@@ -67,7 +67,7 @@ export default async function RankingPage() {
                 </div>
                 <Link
                   href={`/work/${top3[1].work.id}`}
-                  className="block bg-white rounded-b-lg p-2 border shadow-sm hover:shadow-md transition-shadow"
+                  className="block bg-white rounded-b-lg p-2 border shadow-xs hover:shadow-md transition-shadow"
                 >
                   <p className="text-xs font-semibold truncate">
                     {top3[1].work.title}
@@ -94,7 +94,7 @@ export default async function RankingPage() {
                 </div>
                 <Link
                   href={`/work/${top3[0].work.id}`}
-                  className="block bg-white rounded-b-lg p-2 border shadow-sm hover:shadow-md transition-shadow"
+                  className="block bg-white rounded-b-lg p-2 border shadow-xs hover:shadow-md transition-shadow"
                 >
                   <p className="text-xs font-semibold truncate">
                     {top3[0].work.title}
@@ -121,7 +121,7 @@ export default async function RankingPage() {
                 </div>
                 <Link
                   href={`/work/${top3[2].work.id}`}
-                  className="block bg-white rounded-b-lg p-2 border shadow-sm hover:shadow-md transition-shadow"
+                  className="block bg-white rounded-b-lg p-2 border shadow-xs hover:shadow-md transition-shadow"
                 >
                   <p className="text-xs font-semibold truncate">
                     {top3[2].work.title}
@@ -143,12 +143,12 @@ export default async function RankingPage() {
                 className="flex items-center gap-3 glass rounded-xl p-3 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-200"
               >
                 {/* 順位 */}
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center font-bold text-sm text-komapara-muted">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-linear-to-br from-gray-100 to-gray-50 flex items-center justify-center font-bold text-sm text-komapara-muted">
                   {entry.rank}
                 </div>
 
                 {/* サムネイル */}
-                <div className="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                <div className="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 shrink-0">
                   {entry.work.panels[0] && (
                     <img
                       src={entry.work.panels[0]}

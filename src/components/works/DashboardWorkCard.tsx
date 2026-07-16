@@ -25,7 +25,7 @@ export function DashboardWorkCard(props: Props) {
     <>
       <div className="relative group/card">
         <Link href={`/work/${id}`} className="block">
-          <div className="bg-komapara-card rounded-xl shadow-sm border border-komapara-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+          <div className="bg-komapara-card rounded-xl shadow-xs border border-komapara-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
             <div className="aspect-square relative bg-gray-100 overflow-hidden">
               {panels[0] ? (
                 <Image
@@ -50,7 +50,7 @@ export function DashboardWorkCard(props: Props) {
                   {genres.slice(0, 2).map((genre) => (
                     <span
                       key={genre.slug}
-                      className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-50 to-blue-50 text-purple-600 border border-purple-100/50"
+                      className="text-xs px-2 py-0.5 rounded-full bg-linear-to-r from-purple-50 to-blue-50 text-purple-600 border border-purple-100/50"
                     >
                       {genre.emoji} {genre.name}
                     </span>
@@ -66,14 +66,14 @@ export function DashboardWorkCard(props: Props) {
                     <img
                       src={author.image}
                       alt={author.name || ""}
-                      className="w-5 h-5 rounded-full flex-shrink-0 ring-1 ring-purple-200/50"
+                      className="w-5 h-5 rounded-full shrink-0 ring-1 ring-purple-200/50"
                     />
                   ) : (
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 flex-shrink-0" />
+                    <div className="w-5 h-5 rounded-full bg-linear-to-br from-purple-100 to-blue-100 shrink-0" />
                   )}
                   <span className="text-sm text-komapara-muted truncate">{author.name}</span>
                 </div>
-                <div className="flex items-center gap-1 text-pink-500 flex-shrink-0">
+                <div className="flex items-center gap-1 text-pink-500 shrink-0">
                   <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>

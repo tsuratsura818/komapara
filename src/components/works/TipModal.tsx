@@ -99,7 +99,7 @@ export function TipModal({
                   onClick={() => { setSelectedAmount(amount); setIsCustom(false); }}
                   className={`py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                     !isCustom && selectedAmount === amount
-                      ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg shadow-orange-500/25"
+                      ? "bg-linear-to-r from-yellow-400 to-orange-500 text-white shadow-lg shadow-orange-500/25"
                       : "glass text-komapara-text hover:bg-gray-50"
                   }`}
                 >
@@ -113,7 +113,7 @@ export function TipModal({
               onClick={() => { setIsCustom(true); setCustomAmount(""); }}
               className={`w-full py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-3 ${
                 isCustom
-                  ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg shadow-orange-500/25"
+                  ? "bg-linear-to-r from-yellow-400 to-orange-500 text-white shadow-lg shadow-orange-500/25"
                   : "glass text-komapara-text hover:bg-gray-50"
               }`}
             >
@@ -130,7 +130,7 @@ export function TipModal({
                     placeholder="100〜10,000"
                     min={100}
                     max={10000}
-                    className="flex-1 px-3 py-2 text-sm glass rounded-xl border border-komapara-border focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                    className="flex-1 px-3 py-2 text-sm glass rounded-xl border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-orange-500/50"
                   />
                   <span className="text-sm text-komapara-muted">円</span>
                 </div>
@@ -147,13 +147,13 @@ export function TipModal({
               onChange={(e) => setMessage(e.target.value)}
               placeholder="応援メッセージ（任意・200文字以内）"
               maxLength={200}
-              className="w-full px-3 py-2 text-sm glass rounded-xl border border-komapara-border focus:outline-none focus:ring-2 focus:ring-orange-500/50 mb-4"
+              className="w-full px-3 py-2 text-sm glass rounded-xl border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-orange-500/50 mb-4"
             />
 
             <button
               onClick={() => setStep("confirm")}
               disabled={!isValidAmount}
-              className="w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg shadow-orange-500/25 hover:shadow-xl disabled:opacity-50 transition-all duration-200"
+              className="w-full py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-yellow-400 to-orange-500 shadow-lg shadow-orange-500/25 hover:shadow-xl disabled:opacity-50 transition-all duration-200"
             >
               {isValidAmount ? `${currentAmount.toLocaleString()}円を送る` : "金額を選択してください"}
             </button>
@@ -185,7 +185,7 @@ export function TipModal({
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg shadow-orange-500/25 disabled:opacity-50 transition-all"
+                className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-yellow-400 to-orange-500 shadow-lg shadow-orange-500/25 disabled:opacity-50 transition-all"
               >
                 {submitting ? "送信中..." : "お支払いへ進む"}
               </button>

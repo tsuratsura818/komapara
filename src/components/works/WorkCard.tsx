@@ -29,11 +29,11 @@ export function WorkCard({
           {panels[0] ? (
             <>
               <WorkCardImage src={panels[0]} alt={`${title} - 1コマ目`} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-              <span className="text-lg font-bold bg-gradient-to-r from-violet-500 to-indigo-500 bg-clip-text text-transparent select-none">
+            <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-purple-50 to-blue-50">
+              <span className="text-lg font-bold bg-linear-to-r from-violet-500 to-indigo-500 bg-clip-text text-transparent select-none">
                 コマパラ
               </span>
             </div>
@@ -69,16 +69,16 @@ export function WorkCard({
                 <img
                   src={author.image}
                   alt={author.name || "作家アイコン"}
-                  className="w-4 h-4 rounded-full flex-shrink-0 ring-1 ring-purple-100"
+                  className="w-4 h-4 rounded-full shrink-0 ring-1 ring-purple-100"
                 />
               ) : (
-                <div className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 flex-shrink-0" />
+                <div className="w-4 h-4 rounded-full bg-linear-to-br from-purple-100 to-blue-100 shrink-0" />
               )}
               <span className="text-[11px] text-gray-400 truncate font-medium">
                 {author.name}
               </span>
             </div>
-            <div className="flex items-center gap-1 text-gray-400 flex-shrink-0">
+            <div className="flex items-center gap-1 text-gray-400 shrink-0">
               {/* ストロークハートアイコン */}
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />

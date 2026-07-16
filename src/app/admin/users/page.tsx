@@ -60,7 +60,7 @@ export default async function AdminUsersPage(
             name="q"
             defaultValue={q}
             placeholder="名前・メールで検索..."
-            className="flex-1 px-3 py-2 text-sm glass rounded-lg border border-komapara-border focus:outline-none focus:ring-2 focus:ring-gradient-purple/30"
+            className="flex-1 px-3 py-2 text-sm glass rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-gradient-purple/30"
           />
           <button
             type="submit"

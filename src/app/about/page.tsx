@@ -70,11 +70,11 @@ export default function AboutPage() {
               className="glass rounded-xl p-5 text-center relative overflow-hidden"
             >
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-5`}
+                className={`absolute inset-0 bg-linear-to-br ${feature.gradient} opacity-5`}
               />
               <div className="text-3xl mb-3 relative">{feature.emoji}</div>
               <h3
-                className={`font-bold text-lg relative bg-gradient-to-r ${feature.gradient} bg-clip-text text-transparent`}
+                className={`font-bold text-lg relative bg-linear-to-r ${feature.gradient} bg-clip-text text-transparent`}
               >
                 {feature.title}
               </h3>

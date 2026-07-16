@@ -32,7 +32,7 @@ export function AdSlot({ isPremium = false, ad, slot }: AdSlotProps) {
         onClick={handleClick}
         className="block w-full rounded-xl overflow-hidden border border-gray-200/60 hover:border-purple-300/60 transition-colors relative"
       >
-        <span className="absolute top-2 left-2 z-10 text-[10px] font-bold px-1.5 py-0.5 bg-black/50 text-white rounded backdrop-blur-sm">
+        <span className="absolute top-2 left-2 z-10 text-[10px] font-bold px-1.5 py-0.5 bg-black/50 text-white rounded-sm backdrop-blur-xs">
           PR
         </span>
         {/* eslint-disable-next-line @next/next/no-img-element */}

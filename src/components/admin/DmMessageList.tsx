@@ -26,9 +26,9 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 function FollowerBadge({ count }: { count: number }) {
-  if (count >= 100000) return <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-500 font-medium">C ({(count / 10000).toFixed(1)}万)</span>;
-  if (count >= 50000) return <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-50 text-yellow-600 font-medium">B ({(count / 10000).toFixed(1)}万)</span>;
-  return <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-50 text-green-600 font-medium">A ({count.toLocaleString()})</span>;
+  if (count >= 100000) return <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-red-50 text-red-500 font-medium">C ({(count / 10000).toFixed(1)}万)</span>;
+  if (count >= 50000) return <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-yellow-50 text-yellow-600 font-medium">B ({(count / 10000).toFixed(1)}万)</span>;
+  return <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-green-50 text-green-600 font-medium">A ({count.toLocaleString()})</span>;
 }
 
 export function DmMessageList({ items }: { items: CreatorMessage[] }) {
@@ -170,7 +170,7 @@ export function DmMessageList({ items }: { items: CreatorMessage[] }) {
                   <textarea
                     value={currentText}
                     onChange={(e) => setEditedTexts({ ...editedTexts, [item.id]: e.target.value })}
-                    className="w-full min-h-[300px] p-3 text-sm leading-relaxed rounded-lg border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 resize-y font-sans"
+                    className="w-full min-h-[300px] p-3 text-sm leading-relaxed rounded-lg border border-gray-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-purple-300 resize-y font-sans"
                   />
                   <p className="text-[10px] text-komapara-muted mt-1">
                     ※ 編集した内容はこのページ内でのみ保持されます。コピーボタンで編集後の文面がコピーされます。

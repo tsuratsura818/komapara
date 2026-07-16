@@ -76,7 +76,7 @@ export default function RootLayout({
         <Providers>
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-white focus:text-komapara-text focus:rounded-lg focus:shadow-lg"
+            className="sr-only focus:not-sr-only focus:absolute focus:z-100 focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-white focus:text-komapara-text focus:rounded-lg focus:shadow-lg"
           >
             メインコンテンツへスキップ
           </a>

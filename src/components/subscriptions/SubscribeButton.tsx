@@ -67,7 +67,7 @@ export function SubscribeButton({
   if (isSubscribed) {
     return (
       <div className="flex items-center gap-2">
-        <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+        <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-linear-to-r from-purple-500 to-blue-500 text-white">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
@@ -89,7 +89,7 @@ export function SubscribeButton({
       <button
         onClick={() => setShowModal(true)}
         disabled={!session || isOwnProfile}
-        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg shadow-purple-500/25 hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-linear-to-r from-purple-500 to-blue-500 text-white shadow-lg shadow-purple-500/25 hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         title={
           !session
             ? "ログインが必要です"

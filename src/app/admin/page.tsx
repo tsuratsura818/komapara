@@ -118,10 +118,10 @@ export default async function AdminDashboardPage() {
             className="glass rounded-xl p-4 text-center relative overflow-hidden"
           >
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${STAT_STYLES[i].gradient} opacity-5`}
+              className={`absolute inset-0 bg-linear-to-br ${STAT_STYLES[i].gradient} opacity-5`}
             />
             <p
-              className={`text-2xl font-bold relative bg-gradient-to-r ${STAT_STYLES[i].gradient} bg-clip-text text-transparent`}
+              className={`text-2xl font-bold relative bg-linear-to-r ${STAT_STYLES[i].gradient} bg-clip-text text-transparent`}
             >
               {stat.value.toLocaleString()}
             </p>
@@ -141,20 +141,20 @@ export default async function AdminDashboardPage() {
           </span>
         </div>
         <div className="grid grid-cols-3 gap-3 mb-4">
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-yellow-50 to-orange-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-yellow-50 to-orange-50">
+            <p className="text-lg font-bold bg-linear-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
               {tipAmount.toLocaleString()}円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">総額</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-emerald-50 to-green-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-emerald-50 to-green-50">
+            <p className="text-lg font-bold bg-linear-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
               {tipFee.toLocaleString()}円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">手数料収入</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-blue-50 to-cyan-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-blue-50 to-cyan-50">
+            <p className="text-lg font-bold bg-linear-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
               {(tipAmount - tipFee).toLocaleString()}円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">クリエイター還元</p>
@@ -175,7 +175,7 @@ export default async function AdminDashboardPage() {
                   {tip.work.title}
                 </Link>
               </div>
-              <span className="text-xs font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent shrink-0">
+              <span className="text-xs font-bold bg-linear-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent shrink-0">
                 {tip.amount.toLocaleString()}円
               </span>
               <span className="text-xs text-komapara-muted shrink-0">
@@ -198,26 +198,26 @@ export default async function AdminDashboardPage() {
           </span>
         </div>
         <div className="grid grid-cols-4 gap-3 mb-4">
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-purple-50 to-blue-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-purple-50 to-blue-50">
+            <p className="text-lg font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
               {subAmount.toLocaleString()}円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">総額</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-emerald-50 to-green-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-emerald-50 to-green-50">
+            <p className="text-lg font-bold bg-linear-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
               {subFee.toLocaleString()}円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">手数料(15%)</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-blue-50 to-cyan-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-blue-50 to-cyan-50">
+            <p className="text-lg font-bold bg-linear-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
               {(subAmount - subFee).toLocaleString()}円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">クリエイター還元</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-indigo-50 to-purple-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-indigo-50 to-purple-50">
+            <p className="text-lg font-bold bg-linear-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
               {activeSubCount}
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">アクティブ購読</p>
@@ -238,7 +238,7 @@ export default async function AdminDashboardPage() {
               <span className={`text-xs px-1.5 py-0.5 rounded-full ${sub.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
                 {sub.status === "active" ? "有効" : sub.status === "cancelled" ? "解約済" : "期限切れ"}
               </span>
-              <span className="text-xs font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent shrink-0">
+              <span className="text-xs font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent shrink-0">
                 {sub.plan.price.toLocaleString()}円/月
               </span>
               <span className="text-xs text-komapara-muted shrink-0">
@@ -261,20 +261,20 @@ export default async function AdminDashboardPage() {
           </span>
         </div>
         <div className="grid grid-cols-3 gap-3 mb-4">
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-yellow-50 to-orange-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-yellow-50 to-orange-50">
+            <p className="text-lg font-bold bg-linear-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
               {premiumAmount.toLocaleString()}円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">総収入</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-purple-50 to-blue-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-purple-50 to-blue-50">
+            <p className="text-lg font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
               {activePremiumCount}
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">アクティブ会員</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-pink-50 to-red-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-pink-400 to-red-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-pink-50 to-red-50">
+            <p className="text-lg font-bold bg-linear-to-r from-pink-400 to-red-500 bg-clip-text text-transparent">
               300円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">月額</p>
@@ -292,7 +292,7 @@ export default async function AdminDashboardPage() {
               <span className={`text-xs px-1.5 py-0.5 rounded-full ${ps.status === "active" ? "bg-green-100 text-green-700" : ps.status === "cancelled" ? "bg-yellow-100 text-yellow-700" : "bg-gray-100 text-gray-500"}`}>
                 {ps.status === "active" ? "有効" : ps.status === "cancelled" ? "解約済" : "期限切れ"}
               </span>
-              <span className="text-xs font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent shrink-0">
+              <span className="text-xs font-bold bg-linear-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent shrink-0">
                 {ps.amount.toLocaleString()}円
               </span>
               <span className="text-xs text-komapara-muted shrink-0">
@@ -325,7 +325,7 @@ export default async function AdminDashboardPage() {
                   <img
                     src={work.panels[0]}
                     alt=""
-                    className="w-10 h-10 rounded object-cover shrink-0"
+                    className="w-10 h-10 rounded-sm object-cover shrink-0"
                   />
                 )}
                 <div className="min-w-0 flex-1">

@@ -174,7 +174,7 @@ export function SeriesManager({
               onChange={(e) => setNewTitle(e.target.value)}
               maxLength={50}
               placeholder="シリーズタイトル（必須）"
-              className="w-full px-3 py-2 text-sm border border-komapara-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-3 py-2 text-sm border border-komapara-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-primary-500"
             />
             <input
               type="text"
@@ -182,7 +182,7 @@ export function SeriesManager({
               onChange={(e) => setNewDesc(e.target.value)}
               maxLength={200}
               placeholder="説明（任意）"
-              className="w-full px-3 py-2 text-sm border border-komapara-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-3 py-2 text-sm border border-komapara-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-primary-500"
             />
             <button
               onClick={handleCreate}
@@ -204,38 +204,38 @@ export function SeriesManager({
             {seriesList.map((series) => (
               <div key={series.id} className="border border-komapara-border/50 rounded-lg overflow-hidden">
                 {/* シリーズヘッダー */}
-                <div className="px-3 py-2 bg-gradient-to-r from-purple-50/50 to-blue-50/50 flex items-center justify-between">
+                <div className="px-3 py-2 bg-linear-to-r from-purple-50/50 to-blue-50/50 flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <Link href={`/series/${series.id}`} className="text-sm font-medium text-komapara-text hover:text-primary-500 truncate">
                       {series.title}
                     </Link>
                     {series.isCompleted && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-100 text-green-700 flex-shrink-0">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-green-100 text-green-700 shrink-0">
                         完結
                       </span>
                     )}
-                    <span className="text-[10px] text-komapara-muted flex-shrink-0">
+                    <span className="text-[10px] text-komapara-muted shrink-0">
                       {series.works.length}話
                     </span>
                   </div>
-                  <div className="flex gap-1 flex-shrink-0">
+                  <div className="flex gap-1 shrink-0">
                     <button
                       onClick={() => handleToggleComplete(series.id, series.isCompleted)}
                       disabled={loading === `toggle-${series.id}`}
-                      className="text-[10px] px-2 py-1 rounded bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
+                      className="text-[10px] px-2 py-1 rounded-sm bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
                     >
                       {series.isCompleted ? "連載再開" : "完結にする"}
                     </button>
                     <button
                       onClick={() => setEditingId(editingId === series.id ? null : series.id)}
-                      className="text-[10px] px-2 py-1 rounded bg-blue-100 text-blue-700 hover:bg-blue-200"
+                      className="text-[10px] px-2 py-1 rounded-sm bg-blue-100 text-blue-700 hover:bg-blue-200"
                     >
                       {editingId === series.id ? "閉じる" : "編集"}
                     </button>
                     <button
                       onClick={() => handleDelete(series.id)}
                       disabled={loading === `delete-${series.id}`}
-                      className="text-[10px] px-2 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50"
+                      className="text-[10px] px-2 py-1 rounded-sm bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50"
                     >
                       削除
                     </button>
@@ -258,7 +258,7 @@ export function SeriesManager({
                           <img
                             src={work.panels[0]}
                             alt={work.title}
-                            className="w-8 h-8 rounded object-cover flex-shrink-0"
+                            className="w-8 h-8 rounded-sm object-cover shrink-0"
                           />
                           <Link href={`/work/${work.id}`} className="text-xs text-komapara-text hover:text-primary-500 truncate flex-1">
                             {work.title}
@@ -267,7 +267,7 @@ export function SeriesManager({
                             <button
                               onClick={() => handleRemoveWork(series.id, work.id)}
                               disabled={loading === `remove-${work.id}`}
-                              className="text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-500 hover:bg-red-100 disabled:opacity-50 flex-shrink-0"
+                              className="text-[10px] px-1.5 py-0.5 rounded-sm bg-red-50 text-red-500 hover:bg-red-100 disabled:opacity-50 shrink-0"
                             >
                               除外
                             </button>

@@ -47,7 +47,7 @@ export function SeriesNav({ nav }: SeriesNavProps) {
             className="flex-1 flex items-center gap-2 px-4 py-3 glass rounded-xl hover:bg-white/10 transition-colors"
           >
             <svg
-              className="w-4 h-4 text-komapara-muted flex-shrink-0"
+              className="w-4 h-4 text-komapara-muted shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -82,7 +82,7 @@ export function SeriesNav({ nav }: SeriesNavProps) {
               </p>
             </div>
             <svg
-              className="w-4 h-4 text-komapara-muted flex-shrink-0"
+              className="w-4 h-4 text-komapara-muted shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

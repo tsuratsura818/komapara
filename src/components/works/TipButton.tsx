@@ -29,7 +29,7 @@ export function TipButton({
       <button
         onClick={() => setShowModal(true)}
         disabled={!session || isOwnWork}
-        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg shadow-orange-500/25 hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-linear-to-r from-yellow-400 to-orange-500 text-white shadow-lg shadow-orange-500/25 hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         title={
           !session
             ? "ログインが必要です"

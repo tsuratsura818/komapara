@@ -50,7 +50,7 @@ export default async function AdminWorksPage(
             name="q"
             defaultValue={q}
             placeholder="タイトルで検索..."
-            className="flex-1 px-3 py-2 text-sm glass rounded-lg border border-komapara-border focus:outline-none focus:ring-2 focus:ring-gradient-purple/30"
+            className="flex-1 px-3 py-2 text-sm glass rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-gradient-purple/30"
           />
           <button
             type="submit"
@@ -106,7 +106,7 @@ export default async function AdminWorksPage(
                         <img
                           src={work.panels[0]}
                           alt=""
-                          className="w-10 h-10 rounded object-cover shrink-0"
+                          className="w-10 h-10 rounded-sm object-cover shrink-0"
                         />
                       )}
                       <p className="font-medium truncate max-w-[200px]">

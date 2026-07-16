@@ -110,7 +110,7 @@ export function ImportFromX({ onImportComplete, onBack }: Props) {
             value={importUrl}
             onChange={(e) => setImportUrl(e.target.value)}
             placeholder="https://x.com/user/status/..."
-            className="flex-1 px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="flex-1 px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-primary-500"
             disabled={importing}
           />
           <button

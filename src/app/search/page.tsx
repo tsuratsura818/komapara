@@ -62,7 +62,7 @@ export default function SearchPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="キーワードで検索..."
-            className="flex-1 px-4 py-2.5 glass rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+            className="flex-1 px-4 py-2.5 glass rounded-full text-sm focus:outline-hidden focus:ring-2 focus:ring-purple-500/50"
           />
           <button
             type="submit"
@@ -78,7 +78,7 @@ export default function SearchPage() {
             onClick={() => setType("works")}
             className={`text-sm px-3 py-1 rounded-full transition-all duration-200 ${
               type === "works"
-                ? "bg-gradient-main text-white shadow-sm"
+                ? "bg-gradient-main text-white shadow-xs"
                 : "glass text-komapara-muted"
             }`}
           >
@@ -89,7 +89,7 @@ export default function SearchPage() {
             onClick={() => setType("creators")}
             className={`text-sm px-3 py-1 rounded-full transition-all duration-200 ${
               type === "creators"
-                ? "bg-gradient-main text-white shadow-sm"
+                ? "bg-gradient-main text-white shadow-xs"
                 : "glass text-komapara-muted"
             }`}
           >
@@ -147,7 +147,7 @@ export default function SearchPage() {
                       className="w-12 h-12 rounded-full ring-2 ring-purple-200/50"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-blue-100" />
+                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-purple-100 to-blue-100" />
                   )}
                   <div>
                     <p className="font-medium text-komapara-text">

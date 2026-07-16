@@ -52,9 +52,9 @@ export default async function GenrePage(props: Props) {
             <Link
               key={g.slug}
               href={`/genre/${g.slug}`}
-              className={`flex-shrink-0 text-xs px-3 py-1.5 rounded-full transition-all duration-200 ${
+              className={`shrink-0 text-xs px-3 py-1.5 rounded-full transition-all duration-200 ${
                 g.slug === params.slug
-                  ? "bg-gradient-main text-white shadow-sm"
+                  ? "bg-gradient-main text-white shadow-xs"
                   : "glass text-komapara-muted hover:text-komapara-text"
               }`}
             >

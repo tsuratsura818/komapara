@@ -79,7 +79,7 @@ export function LibraryTabs({
                 {likedWorks.map((work) => (
                   <div key={work.id} className="relative">
                     {work.reaction !== "like" && (
-                      <div className="absolute top-2 right-2 z-10 text-lg bg-white/80 rounded-full w-7 h-7 flex items-center justify-center shadow-sm">
+                      <div className="absolute top-2 right-2 z-10 text-lg bg-white/80 rounded-full w-7 h-7 flex items-center justify-center shadow-xs">
                         {REACTION_EMOJI[work.reaction] || "❤️"}
                       </div>
                     )}

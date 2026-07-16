@@ -79,7 +79,7 @@ export function PushPermission() {
 
   return (
     <div className="mx-4 mt-2 p-3 glass rounded-xl border border-white/20 flex items-center gap-3">
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-main flex items-center justify-center">
+      <div className="shrink-0 w-8 h-8 rounded-full bg-gradient-main flex items-center justify-center">
         <svg
           className="w-4 h-4 text-white"
           fill="none"
@@ -102,7 +102,7 @@ export function PushPermission() {
           フォロー中の作家の新作をプッシュ通知でお知らせします
         </p>
       </div>
-      <div className="flex gap-2 flex-shrink-0">
+      <div className="flex gap-2 shrink-0">
         <button
           onClick={subscribe}
           className="px-3 py-1.5 text-xs font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all"

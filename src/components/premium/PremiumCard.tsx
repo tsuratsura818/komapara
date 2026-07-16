@@ -65,14 +65,14 @@ export function PremiumCard({
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-yellow-50 to-orange-50">
-            <p className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-yellow-50 to-orange-50">
+            <p className="text-lg font-bold bg-linear-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
               {currentSubscription.amount}円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">月額</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-gradient-to-br from-purple-50 to-blue-50">
-            <p className="text-sm font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-purple-50 to-blue-50">
+            <p className="text-sm font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
               {new Date(currentSubscription.currentPeriodEnd).toLocaleDateString("ja-JP")}
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">有効期限</p>
@@ -131,7 +131,7 @@ export function PremiumCard({
 
         <button
           onClick={() => setShowModal(true)}
-          className="w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-yellow-500 to-orange-500 shadow-lg shadow-orange-500/25 hover:shadow-xl transition-all"
+          className="w-full py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-yellow-500 to-orange-500 shadow-lg shadow-orange-500/25 hover:shadow-xl transition-all"
         >
           プレミアムになる
         </button>

@@ -53,7 +53,7 @@ export function MethodSelector({ onSelect }: Props) {
             onClick={() => onSelect(m.key)}
             className="w-full p-5 glass rounded-xl border border-white/20 hover:border-primary-300 hover:shadow-lg transition-all text-left flex items-center gap-4"
           >
-            <div className="flex-shrink-0">{m.icon}</div>
+            <div className="shrink-0">{m.icon}</div>
             <div>
               <div className="font-semibold text-komapara-text">{m.title}</div>
               <div className="text-xs text-komapara-muted mt-0.5">{m.desc}</div>

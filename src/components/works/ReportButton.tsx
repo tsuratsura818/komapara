@@ -90,7 +90,7 @@ export function ReportButton({ workId }: { workId: string }) {
                   placeholder="詳細（任意）"
                   rows={3}
                   maxLength={500}
-                  className="w-full px-3 py-2 text-sm glass rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 resize-none"
+                  className="w-full px-3 py-2 text-sm glass rounded-lg focus:outline-hidden focus:ring-2 focus:ring-purple-500/50 resize-none"
                 />
 
                 <div className="flex gap-3">
