@@ -36,7 +36,7 @@ export function UploadWizard({ userSeries = [] }: { userSeries?: SeriesOption[] 
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [completedWork, setCompletedWork] = useState<{ id: string; title: string } | null>(null);
+  const [completedWork, setCompletedWork] = useState<{ id: string; title: string; coverImage?: string } | null>(null);
 
   const errorRef = useRef<HTMLDivElement>(null);
 
@@ -177,7 +177,7 @@ export function UploadWizard({ userSeries = [] }: { userSeries?: SeriesOption[] 
       }
 
       const work = await res.json();
-      setCompletedWork({ id: work.id, title: title.trim() });
+      setCompletedWork({ id: work.id, title: title.trim(), coverImage: urls[0] });
     } catch (err) {
       setError(err instanceof Error ? err.message : "投稿に失敗しました");
     } finally {
@@ -186,7 +186,7 @@ export function UploadWizard({ userSeries = [] }: { userSeries?: SeriesOption[] 
   };
 
   if (completedWork) {
-    return <UploadComplete workId={completedWork.id} workTitle={completedWork.title} />;
+    return <UploadComplete workId={completedWork.id} workTitle={completedWork.title} coverImage={completedWork.coverImage} />;
   }
 
   return (

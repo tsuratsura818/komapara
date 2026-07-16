@@ -197,6 +197,13 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
       <div className="px-4 py-4">
         <h1 className="text-xl font-bold text-komapara-text">{work.title}</h1>
 
+        {/* 説明・詳細（投稿時に入力した本文。改行を保持） */}
+        {work.description && (
+          <p className="mt-2 text-sm leading-relaxed text-komapara-text/80 whitespace-pre-wrap break-words">
+            {work.description}
+          </p>
+        )}
+
         {/* ジャンルタグ */}
         {work.genres.length > 0 && (
           <div className="flex gap-1.5 mt-2">

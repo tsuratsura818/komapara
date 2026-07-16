@@ -14,6 +14,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
       where: { id: params.id },
       select: {
         title: true,
+        description: true,
         panels: true,
         likeCount: true,
         author: { select: { name: true } },
@@ -216,8 +217,9 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
       );
     }
 
-    // デフォルト: X/Facebook用 横長（1200x630）
+    // デフォルト: X/Facebook用 横長（1200x630）。作品そのもの＝1コマ目を主役に、クロップせず全体を見せる
     const panelUrl = work.panels[0] || null;
+    const ogDesc = (work.description || "").trim().replace(/\s+/g, " ").slice(0, 90);
 
     return new ImageResponse(
       (
@@ -226,53 +228,42 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
             width: "100%",
             height: "100%",
             display: "flex",
-            background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 50%, #EC4899 100%)",
+            background: "#ffffff",
             fontFamily: '"Noto Sans JP", sans-serif',
-            position: "relative",
           }}
         >
-          {/* 左: 1コマ目画像 */}
+          {/* 左: 1コマ目を全体表示（objectFit:contain でイラストを切らない） */}
           <div
             style={{
-              width: 420,
+              width: 520,
               height: "100%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              padding: 30,
+              background: "#f1f5f9",
+              padding: 36,
               flexShrink: 0,
             }}
           >
-            {panelUrl ? (
-              <img
-                src={panelUrl}
-                alt=""
-                width={360}
-                height={360}
-                style={{
-                  objectFit: "cover",
-                  borderRadius: 20,
-                  border: "4px solid rgba(255,255,255,0.3)",
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: 360,
-                  height: 360,
-                  borderRadius: 20,
-                  background: "rgba(255,255,255,0.15)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 60,
-                  color: "rgba(255,255,255,0.5)",
-                }}
-              >
-                4コマ
-              </div>
-            )}
+            <div
+              style={{
+                width: 448,
+                height: 558,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#ffffff",
+                borderRadius: 16,
+                boxShadow: "0 12px 40px rgba(15,23,42,0.15)",
+                overflow: "hidden",
+              }}
+            >
+              {panelUrl ? (
+                <img src={panelUrl} alt="" width={448} height={558} style={{ objectFit: "contain" }} />
+              ) : (
+                <div style={{ display: "flex", fontSize: 40, fontWeight: 700, color: "#2563eb" }}>コマパラ</div>
+              )}
+            </div>
           </div>
 
           {/* 右: テキストエリア */}
@@ -282,75 +273,48 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              padding: "40px 50px 40px 20px",
-              color: "white",
+              padding: "56px 56px",
             }}
           >
+            {/* コマパラ ラベル */}
+            <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 5, background: "#2563eb", marginRight: 10 }} />
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#2563eb" }}>コマパラ</div>
+            </div>
+
             <div
               style={{
-                fontSize: work.title.length > 20 ? 36 : 44,
+                fontSize: work.title.length > 18 ? 40 : 48,
                 fontWeight: 700,
-                lineHeight: 1.3,
-                marginBottom: 20,
-                display: "-webkit-box",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                textShadow: "0 2px 10px rgba(0,0,0,0.3)",
+                lineHeight: 1.25,
+                color: "#0f172a",
+                marginBottom: ogDesc ? 20 : 28,
+                display: "flex",
               }}
             >
               {work.title}
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                fontSize: 24,
-                opacity: 0.9,
-                marginBottom: 16,
-              }}
-            >
-              <span style={{ marginRight: 8, color: "#C084FC" }}>by</span>
-              {work.author.name || "名無し"}
-            </div>
-
-            {work.likeCount > 0 && (
+            {ogDesc && (
               <div
                 style={{
+                  fontSize: 24,
+                  lineHeight: 1.6,
+                  color: "#475569",
+                  marginBottom: 28,
                   display: "flex",
-                  alignItems: "center",
-                  fontSize: 20,
-                  opacity: 0.8,
-                  color: "#F472B6",
                 }}
               >
-                <span style={{ marginRight: 6 }}>♥</span>
-                {work.likeCount}
+                {ogDesc}
               </div>
             )}
-          </div>
 
-          {/* ロゴ（右下） */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: 30,
-              right: 40,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 28,
-                fontWeight: 700,
-                color: "white",
-                opacity: 0.9,
-                textShadow: "0 2px 8px rgba(0,0,0,0.2)",
-              }}
-            >
-              コマパラ
+            <div style={{ display: "flex", alignItems: "center", fontSize: 22, color: "#64748b" }}>
+              <span style={{ marginRight: 8, color: "#2563eb" }}>by</span>
+              {work.author.name || "名無し"}
+              {work.likeCount > 0 && (
+                <span style={{ marginLeft: 20, color: "#94a3b8" }}>♥ {work.likeCount}</span>
+              )}
             </div>
           </div>
         </div>

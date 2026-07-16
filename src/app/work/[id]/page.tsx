@@ -25,12 +25,17 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   if (!work) return { title: "作品が見つかりません" };
 
+  // 投稿時の説明文をシェア文面に使う（無ければ作家名で補完）。改行/連続空白は1つに詰める
+  const shareDescription =
+    work.description?.trim().replace(/\s+/g, " ").slice(0, 110) ||
+    `${work.author.name}の4コマ漫画`;
+
   return {
     title: work.title,
-    description: `${work.author.name}の4コマ漫画`,
+    description: shareDescription,
     openGraph: {
       title: `${work.title} - コマパラ`,
-      description: `${work.author.name}の4コマ漫画`,
+      description: shareDescription,
       images: [
         {
           url: `/api/og/work/${params.id}`,
@@ -50,7 +55,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: `${work.title} - コマパラ`,
-      description: `${work.author.name}の4コマ漫画`,
+      description: shareDescription,
       images: [`/api/og/work/${params.id}`],
     },
   };

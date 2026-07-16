@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 type Props = {
   workId: string;
   workTitle: string;
+  coverImage?: string;
 };
 
-export function UploadComplete({ workId, workTitle }: Props) {
+export function UploadComplete({ workId, workTitle, coverImage }: Props) {
   const router = useRouter();
 
   const handleShareToX = () => {
@@ -19,9 +20,18 @@ export function UploadComplete({ workId, workTitle }: Props) {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-12 text-center">
-      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-main flex items-center justify-center text-white text-2xl animate-scale-in">
-        &#10003;
-      </div>
+      {coverImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={coverImage}
+          alt={`${workTitle} 1コマ目`}
+          className="w-40 mx-auto mb-4 rounded-xl border border-komapara-border/60 shadow-sm animate-scale-in"
+        />
+      ) : (
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-main flex items-center justify-center text-white text-2xl animate-scale-in">
+          &#10003;
+        </div>
+      )}
       <h1 className="text-xl font-bold text-komapara-text mb-2">投稿完了！</h1>
       <p className="text-sm text-komapara-muted mb-8">
         「{workTitle}」を投稿しました

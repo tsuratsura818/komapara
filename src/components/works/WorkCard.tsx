@@ -24,8 +24,8 @@ export function WorkCard({
   return (
     <Link href={`/work/${id}`} className="block group">
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all duration-300 group-hover:shadow-lg group-hover:shadow-blue-500/10 group-hover:-translate-y-1 group-hover:border-blue-100">
-        {/* サムネイル（1コマ目） */}
-        <div className="aspect-square relative bg-gray-50 overflow-hidden">
+        {/* サムネイル（1コマ目。イラストを切らないよう原寸比で表示。Instagramの縦長4:5にフィット） */}
+        <div className="aspect-[4/5] relative bg-white overflow-hidden">
           {panels[0] ? (
             <>
               <WorkCardImage src={panels[0]} alt={`${title} - 1コマ目`} />

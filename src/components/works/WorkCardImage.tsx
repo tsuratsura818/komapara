@@ -22,7 +22,7 @@ export function WorkCardImage({ src, alt }: { src: string; alt: string }) {
           alt={alt}
           fill
           sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 20vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className="object-contain transition-transform duration-300 group-hover:scale-105"
           onError={() => setFailed(true)}
         />
       )}
