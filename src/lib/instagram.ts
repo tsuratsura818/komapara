@@ -98,17 +98,42 @@ export type IgMedia = {
   children?: { data: { id: string; media_type: string; media_url?: string }[] };
 };
 
-// 本人のメディア一覧（カルーセルは children 展開）
-export async function getMedia(token: string, limit = 24): Promise<IgMedia[]> {
-  const fields =
-    "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,children{id,media_type,media_url}";
-  const p = new URLSearchParams({ fields, access_token: token, limit: String(limit) });
-  const res = await fetch(`https://graph.instagram.com/me/media?${p.toString()}`, {
-    signal: AbortSignal.timeout(15000),
+const MEDIA_FIELDS =
+  "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,children{id,media_type,media_url}";
+
+// 本人のメディア一覧（カルーセルは children 展開）。paging.next を辿って複数ページ取得
+export async function getMedia(token: string, max = 120): Promise<IgMedia[]> {
+  const p = new URLSearchParams({
+    fields: MEDIA_FIELDS,
+    access_token: token,
+    limit: "50",
   });
-  if (!res.ok) return [];
-  const d = await res.json();
-  return d?.data ?? [];
+  let url: string | null = `https://graph.instagram.com/me/media?${p.toString()}`;
+  const all: IgMedia[] = [];
+  // 最大数ページまで（1ページ50件）。max に達したら打ち切り
+  for (let i = 0; i < 6 && url; i++) {
+    const res: Response = await fetch(url, { signal: AbortSignal.timeout(15000) });
+    if (!res.ok) break;
+    const d = await res.json();
+    if (Array.isArray(d?.data)) all.push(...d.data);
+    url = d?.paging?.next ?? null;
+    if (all.length >= max) break;
+  }
+  return all.slice(0, max);
+}
+
+// 単一メディアをIDで直接取得（取り込み時に確実に対象を得る）
+export async function getMediaById(
+  token: string,
+  mediaId: string
+): Promise<IgMedia | null> {
+  const p = new URLSearchParams({ fields: MEDIA_FIELDS, access_token: token });
+  const res = await fetch(
+    `https://graph.instagram.com/${mediaId}?${p.toString()}`,
+    { signal: AbortSignal.timeout(15000) }
+  );
+  if (!res.ok) return null;
+  return res.json();
 }
 
 // 1件のメディア → 画像URL配列（4コマ＝カルーセル全コマ / 単一画像）。動画は除外

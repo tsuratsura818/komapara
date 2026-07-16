@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
-import { getMedia, imageUrlsFromMedia } from "@/lib/instagram";
+import { getMediaById, imageUrlsFromMedia } from "@/lib/instagram";
 import { fetchImageSafely } from "@/lib/safe-image-fetch";
 import { processImageToWebP } from "@/lib/image";
 import { put } from "@vercel/blob";
@@ -33,8 +33,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "mediaId が必要です" }, { status: 400 });
   }
 
-  const media = await getMedia(acc.accessToken, 50);
-  const target = media.find((m) => m.id === mediaId);
+  const target = await getMediaById(acc.accessToken, mediaId);
   if (!target) {
     return NextResponse.json({ error: "投稿が見つかりません" }, { status: 404 });
   }
@@ -46,9 +45,15 @@ export async function POST(request: NextRequest) {
 
   // カルーセル全コマ / 単一画像を原寸で取得 → WebP → Blob
   const savedUrls: string[] = [];
+  let lastError = "";
   for (const u of urls) {
     try {
-      const buffer = await fetchImageSafely(u);
+      const buffer = await fetchImageSafely(u, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36",
+        },
+      });
       const uuid = randomUUID();
       const processed = await processImageToWebP(buffer, uuid);
       const blob = await put(`panels/${processed.filename}`, processed.buffer, {
@@ -57,13 +62,14 @@ export async function POST(request: NextRequest) {
       });
       savedUrls.push(blob.url);
     } catch (e) {
-      console.error("Instagram import image error:", e);
+      lastError = e instanceof Error ? e.message : String(e);
+      console.error("Instagram import image error:", u.slice(0, 80), lastError);
     }
   }
 
   if (savedUrls.length === 0) {
     return NextResponse.json(
-      { error: "画像の取り込みに失敗しました" },
+      { error: `画像の取り込みに失敗しました（${lastError || "原因不明"}）` },
       { status: 502 }
     );
   }

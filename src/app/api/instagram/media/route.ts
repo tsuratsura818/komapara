@@ -15,7 +15,7 @@ export async function GET() {
     return NextResponse.json({ error: "Instagram未連携です" }, { status: 400 });
   }
 
-  const media = await getMedia(acc.accessToken, 24);
+  const media = await getMedia(acc.accessToken, 120);
   const items = media
     .map((m) => ({
       id: m.id,
