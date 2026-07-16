@@ -3,8 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { getSiteSetting } from "@/lib/admin";
-
-const PLATFORM_FEE_RATE = 0.15;
+import { isStripeEnabled } from "@/lib/stripe";
+import { PLATFORM_SUB_FEE_RATE } from "@/lib/fees";
 
 // POST: サブスクリプション開始
 export async function POST(request: NextRequest) {
@@ -12,6 +12,14 @@ export async function POST(request: NextRequest) {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    // 本番(Stripe有効時)は無決済のモックサブスクを禁止。決済は /api/stripe/checkout 経由
+    if (isStripeEnabled()) {
+      return NextResponse.json(
+        { error: "決済は /api/stripe/checkout 経由で行ってください" },
+        { status: 400 }
+      );
     }
 
     const { success } = await rateLimit(`sub:create:${session.user.id}`, {
@@ -57,7 +65,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "既にこのクリエイターを購読中です" }, { status: 400 });
     }
 
-    const platformFee = Math.floor(plan.price * PLATFORM_FEE_RATE);
+    const platformFee = Math.floor(plan.price * PLATFORM_SUB_FEE_RATE);
     const netAmount = plan.price - platformFee;
     const currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 

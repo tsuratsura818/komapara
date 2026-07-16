@@ -3,8 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { getSiteSetting } from "@/lib/admin";
-
-const PREMIUM_PRICE = 300; // 300円/月
+import { isStripeEnabled } from "@/lib/stripe";
+import { PREMIUM_PRICE } from "@/lib/fees";
 
 // GET: プレミアムステータス取得
 export async function GET() {
@@ -62,6 +62,14 @@ export async function POST() {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    // 本番(Stripe有効時)は無決済のモック購読を禁止。決済は /api/stripe/checkout 経由
+    if (isStripeEnabled()) {
+      return NextResponse.json(
+        { error: "決済は /api/stripe/checkout 経由で行ってください" },
+        { status: 400 }
+      );
     }
 
     const { success } = await rateLimit(`premium:create:${session.user.id}`, {

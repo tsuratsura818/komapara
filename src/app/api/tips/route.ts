@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { PLATFORM_TIP_FEE_RATE } from "@/lib/fees";
+import { isStripeEnabled } from "@/lib/stripe";
 
 const MIN_AMOUNT = 100;
 const MAX_AMOUNT = 10000;
@@ -12,6 +13,14 @@ export async function POST(request: NextRequest) {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    // 本番(Stripe有効時)は無決済のモック投げ銭を禁止。決済は /api/stripe/checkout 経由
+    if (isStripeEnabled()) {
+      return NextResponse.json(
+        { error: "決済は /api/stripe/checkout 経由で行ってください" },
+        { status: 400 }
+      );
     }
 
     const { success } = await rateLimit(`tips:post:${session.user.id}`, {
