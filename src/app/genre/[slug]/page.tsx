@@ -8,6 +8,11 @@ import type { Metadata } from "next";
 // 公開のジャンル一覧（ユーザー個別状態なし）。ISRで配信しDB負荷を抑える
 export const revalidate = 3600;
 
+// 動的セグメントをオンデマンドISR化
+export function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {

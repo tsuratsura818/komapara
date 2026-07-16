@@ -7,6 +7,11 @@ import type { Metadata } from "next";
 // シリーズ一覧（公開・ユーザー個別状態なし）。ISRで配信
 export const revalidate = 1800;
 
+// 動的セグメントをオンデマンドISR化
+export function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {

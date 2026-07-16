@@ -8,6 +8,11 @@ import { SubscribeButton } from "@/components/subscriptions/SubscribeButton";
 // 公開の作家ページ（フォロー/購読状態はクライアントが自己フェッチ）。ISRで配信
 export const revalidate = 1800;
 
+// 動的セグメントをオンデマンドISR化
+export function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {

@@ -9,6 +9,11 @@ import type { Metadata } from "next";
 // 公開の作品詳細（ユーザー個別状態はクライアントが自己フェッチ）。ISRで配信
 export const revalidate = 300;
 
+// 動的セグメントをオンデマンドISR化（初回リクエストで生成しrevalidate秒キャッシュ）
+export function generateStaticParams() {
+  return [];
+}
+
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
