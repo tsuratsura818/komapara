@@ -1,0 +1,342 @@
+<style>
+  :root {
+    --accent: #2563eb;
+    --accent-2: #1d4ed8;
+    --accent-soft: #eef4ff;
+    --bg: #ffffff;
+    --surface: #f6f9fc;
+    --surface-2: #eef2f8;
+    --text: #17202e;
+    --muted: #5b6675;
+    --border: #e5eaf1;
+    --ok: #15803d;
+    --ok-soft: #eaf6ee;
+    --warn: #b45309;
+    --shadow: 0 1px 2px rgba(16,32,64,.04), 0 8px 24px rgba(16,32,64,.05);
+    --maxw: 860px;
+    --font: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Noto Sans JP",
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --accent: #4f8cff; --accent-2: #6ea3ff; --accent-soft: #16233d;
+      --bg: #0c0f16; --surface: #12161f; --surface-2: #171c28;
+      --text: #e8edf5; --muted: #98a2b3; --border: #232b3a;
+      --ok: #4ade80; --ok-soft: #14251b; --warn: #f59e0b;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --accent:#2563eb; --accent-2:#1d4ed8; --accent-soft:#eef4ff;
+    --bg:#fff; --surface:#f6f9fc; --surface-2:#eef2f8; --text:#17202e; --muted:#5b6675;
+    --border:#e5eaf1; --ok:#15803d; --ok-soft:#eaf6ee; --warn:#b45309;
+    --shadow:0 1px 2px rgba(16,32,64,.04),0 8px 24px rgba(16,32,64,.05);
+  }
+  :root[data-theme="dark"] {
+    --accent:#4f8cff; --accent-2:#6ea3ff; --accent-soft:#16233d;
+    --bg:#0c0f16; --surface:#12161f; --surface-2:#171c28; --text:#e8edf5; --muted:#98a2b3;
+    --border:#232b3a; --ok:#4ade80; --ok-soft:#14251b; --warn:#f59e0b;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:var(--font);
+    line-height:1.75; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:var(--maxw); margin:0 auto; padding:0 24px; }
+
+  /* header */
+  .top { position:sticky; top:0; z-index:20; background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:saturate(180%) blur(10px); border-bottom:1px solid var(--border); }
+  .top .wrap { display:flex; align-items:center; justify-content:space-between; height:56px; }
+  .brand { font-weight:800; letter-spacing:-.01em; color:var(--accent); font-size:17px; }
+  .brand span { color:var(--muted); font-weight:600; font-size:12px; margin-left:10px; }
+  .top a.cta { font-size:13px; font-weight:700; color:#fff; background:var(--accent);
+    padding:7px 14px; border-radius:9px; text-decoration:none; }
+
+  /* hero */
+  .hero { padding:72px 0 44px; }
+  .eyebrow { font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent); font-weight:600; }
+  h1 { font-size:clamp(30px,6vw,52px); line-height:1.08; letter-spacing:-.02em; font-weight:800;
+    margin:18px 0 0; text-wrap:balance; }
+  .lead { font-size:clamp(16px,2.4vw,19px); color:var(--muted); margin:20px 0 0; max-width:40em; }
+  .meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:26px; }
+  .meta a, .meta span.pill { font-size:12.5px; font-weight:600; color:var(--muted);
+    border:1px solid var(--border); background:var(--surface); border-radius:999px; padding:6px 13px; text-decoration:none; }
+  .meta a { color:var(--accent); border-color:color-mix(in srgb,var(--accent) 30%, var(--border)); }
+
+  /* stats */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:34px 0 0; }
+  .stat { border:1px solid var(--border); border-radius:14px; padding:16px; background:var(--surface); }
+  .stat b { display:block; font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--accent);
+    font-variant-numeric:tabular-nums; }
+  .stat small { color:var(--muted); font-size:12px; }
+  @media (max-width:560px){ .stats{ grid-template-columns:repeat(2,1fr);} }
+
+  /* section */
+  section { padding:44px 0; border-top:1px solid var(--border); }
+  h2 { font-size:clamp(22px,3.4vw,28px); font-weight:800; letter-spacing:-.015em; margin:10px 0 6px; text-wrap:balance; }
+  .sub { color:var(--muted); margin:0 0 22px; }
+  h3 { font-size:15px; font-weight:700; margin:26px 0 10px; color:var(--text); }
+  p { margin:0 0 14px; }
+  a { color:var(--accent); }
+
+  /* pillars */
+  .pillars { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .pillar { border:1px solid var(--border); border-radius:16px; padding:22px; background:var(--surface); }
+  .pillar .k { font-size:19px; font-weight:800; }
+  .pillar .k em { font-style:normal; color:var(--accent); }
+  .pillar p { font-size:13.5px; color:var(--muted); margin:8px 0 0; line-height:1.7; }
+  @media (max-width:640px){ .pillars{ grid-template-columns:1fr;} }
+
+  /* table */
+  .tw { overflow-x:auto; border:1px solid var(--border); border-radius:14px; background:var(--bg); }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; min-width:520px; }
+  th, td { text-align:left; padding:12px 15px; border-bottom:1px solid var(--border); vertical-align:top; }
+  thead th { font-size:11.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); font-weight:700;
+    background:var(--surface-2); }
+  tbody tr:last-child td { border-bottom:0; }
+  td.first, th.first { font-weight:700; }
+  td.k { color:var(--accent); font-weight:800; }
+  .yes { color:var(--accent); font-weight:800; }
+  .part { color:var(--muted); }
+  .no { color:var(--border); }
+  .num { font-variant-numeric:tabular-nums; text-align:right; }
+
+  .tag { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px;
+    background:var(--ok-soft); color:var(--ok); }
+  .tag.plan { background:var(--surface-2); color:var(--muted); }
+
+  /* two-col problem */
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:640px){ .cols{ grid-template-columns:1fr;} }
+  .card { border:1px solid var(--border); border-radius:14px; padding:18px; background:var(--surface); }
+  .card h4 { margin:0 0 6px; font-size:14.5px; }
+  .card ul { margin:8px 0 0; padding-left:0; list-style:none; }
+  .card li { font-size:13px; color:var(--muted); padding:4px 0 4px 20px; position:relative; line-height:1.6; }
+  .card li::before { content:"→"; position:absolute; left:0; color:var(--accent); font-weight:700; }
+
+  /* roadmap */
+  .road { border-left:2px solid var(--border); margin-left:6px; padding-left:22px; }
+  .road li { list-style:none; position:relative; padding:0 0 20px; }
+  .road li::before { content:""; position:absolute; left:-30px; top:5px; width:10px; height:10px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--accent); }
+  .road li.done::before { background:var(--accent); }
+  .road time { font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.02em; }
+  .road b { display:block; font-size:14.5px; margin-top:2px; }
+
+  .callout { border:1px solid color-mix(in srgb,var(--accent) 30%, var(--border)); background:var(--accent-soft);
+    border-radius:16px; padding:22px 24px; }
+  .callout p:last-child { margin-bottom:0; }
+
+  footer { padding:40px 0 60px; border-top:1px solid var(--border); color:var(--muted); font-size:13px; }
+  footer .wrap { display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:center; }
+
+  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:4px; }
+  @media (prefers-reduced-motion:reduce){ *{ scroll-behavior:auto;} }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">コマパラ <span>サービス企画書</span></div>
+    <a class="cta" href="https://komapara.com" target="_blank" rel="noopener">komapara.com ↗</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Service Overview · 2026</div>
+    <h1>4コマ漫画に特化した、<br>読む・描く・つながるプラットフォーム。</h1>
+    <p class="lead">XやInstagramに散らばる4コマを一箇所に集約。読者には「いつでもサクッと楽しめる4コマ体験」を、
+      作家には「作品を届ける場所と収益化の手段」を提供します。</p>
+    <div class="meta">
+      <a href="https://komapara.com" target="_blank" rel="noopener">komapara.com</a>
+      <span class="pill">4コマ漫画ポータル</span>
+      <span class="pill">運営：株式会社TSURATSURA</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>4コマ</b><small>完全特化の専用設計</small></div>
+      <div class="stat"><b>1タップ</b><small>X / Instagram 連携投稿</small></div>
+      <div class="stat"><b>¥0</b><small>読者も作家も基本無料</small></div>
+      <div class="stat"><b>3</b><small>収益源（広告・手数料・課金）</small></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="eyebrow">Problem</div>
+    <h2>既存プラットフォームの空白</h2>
+    <p class="sub">4コマは根強い人気を持つが、専用の居場所がない。読者も作家も不便を抱えている。</p>
+    <div class="cols">
+      <div class="card">
+        <h4>読者の課題</h4>
+        <ul>
+          <li>4コマがTLに流れて消え、見つけにくい</li>
+          <li>作家ごとにアカウントを巡回しないとまとめて読めない</li>
+          <li>過去作を読み返せない</li>
+          <li>連載（シリーズ）が時系列に埋もれて追えない</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>作家の課題</h4>
+        <ul>
+          <li>SNSだけでは収益化の導線が弱い</li>
+          <li>プラットフォームごとに再投稿する手間</li>
+          <li>フォロワー依存で新規読者に届きにくい</li>
+          <li>「いいね数」だけでは反応（感情）が見えにくい</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Concept</div>
+    <h2>読む・描く・つながる</h2>
+    <p class="sub">3つの体験を1つのプラットフォームで。</p>
+    <div class="pillars">
+      <div class="pillar"><div class="k">📖 <em>読む</em></div><p>ジャンル別・週間ランキング・フォローで、好みの4コマがすぐ見つかる。無限スクロールフィード。</p></div>
+      <div class="pillar"><div class="k">✏️ <em>描く</em></div><p>画像をアップするだけ。X/Instagramからの1タップインポート。連載はシリーズ機能で管理。</p></div>
+      <div class="pillar"><div class="k">🤝 <em>つながる</em></div><p>5種リアクション・コメント・フォローで、作家と読者が直接つながる。投げ銭で応援も。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Features</div>
+    <h2>主要機能</h2>
+    <h3>作家向け</h3>
+    <div class="tw"><table>
+      <thead><tr><th class="first">機能</th><th>内容</th><th>差別化</th></tr></thead>
+      <tbody>
+        <tr><td class="first">かんたん投稿</td><td>画像D&D＋ウィザード形式</td><td>最短30秒で公開</td></tr>
+        <tr><td class="first">SNS 1タップ連携</td><td>X/Instagram投稿から画像を自動取得</td><td>再投稿の手間ゼロ</td></tr>
+        <tr><td class="first">バッチインポート</td><td>過去投稿もまとめて同期</td><td>移行コストを最小化</td></tr>
+        <tr><td class="first">シリーズ管理</td><td>連載の話数・完結設定・前後ナビ</td><td>長期連載のハブ</td></tr>
+        <tr><td class="first">ダッシュボード</td><td>閲覧数・いいね・フォロワー・収益を一覧</td><td>創作の継続を後押し</td></tr>
+        <tr><td class="first">投げ銭 / サブスク</td><td>メッセージ付き応援金・月額プラン</td><td>直接的な収益基盤</td></tr>
+      </tbody>
+    </table></div>
+    <h3>読者向け</h3>
+    <div class="tw"><table>
+      <thead><tr><th class="first">機能</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td class="first">フィード</td><td>新着・人気・フォロー中の3タブ、無限スクロール</td></tr>
+        <tr><td class="first">ジャンル / ランキング</td><td>4コマ特化のジャンル設計、週間TOP20を自動集計</td></tr>
+        <tr><td class="first">4コマビューワー</td><td>没入感のある縦スクロール表示、コンテンツ主役のUI</td></tr>
+        <tr><td class="first">5種リアクション</td><td>❤️😂😢🤝✨ ── 「いいね」以上の感情表現</td></tr>
+        <tr><td class="first">マイライブラリ / 通知</td><td>いいね・閲覧履歴の一元管理、フォロー作家の新作をWeb Push</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Positioning</div>
+    <h2>なぜコマパラか</h2>
+    <p class="sub">汎用プラットフォームでは満たせない「4コマに特化した体験」で差別化する。</p>
+    <div class="tw"><table>
+      <thead><tr><th class="first">比較軸</th><th class="k" style="text-align:center">コマパラ</th><th style="text-align:center">pixiv</th><th style="text-align:center">X</th></tr></thead>
+      <tbody>
+        <tr><td class="first">4コマ特化</td><td style="text-align:center" class="yes">◎</td><td style="text-align:center" class="part">△</td><td style="text-align:center" class="part">×</td></tr>
+        <tr><td class="first">SNS連携投稿</td><td style="text-align:center" class="yes">◎</td><td style="text-align:center" class="part">×</td><td style="text-align:center" class="part">—</td></tr>
+        <tr><td class="first">5種リアクション</td><td style="text-align:center" class="yes">◎</td><td style="text-align:center" class="part">×</td><td style="text-align:center" class="part">×</td></tr>
+        <tr><td class="first">投げ銭・サブスク</td><td style="text-align:center" class="yes">◎</td><td style="text-align:center" class="part">○</td><td style="text-align:center" class="part">×</td></tr>
+        <tr><td class="first">週間ランキング</td><td style="text-align:center" class="yes">◎</td><td style="text-align:center" class="part">○</td><td style="text-align:center" class="part">×</td></tr>
+        <tr><td class="first">シリーズ管理</td><td style="text-align:center" class="yes">◎</td><td style="text-align:center" class="part">○</td><td style="text-align:center" class="part">×</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Monetization</div>
+    <h2>収益モデル</h2>
+    <p class="sub">3つの収益源をフェーズで積み上げる。</p>
+    <div class="tw"><table>
+      <thead><tr><th class="first">収益源</th><th>内容</th><th>対象</th><th>状態</th></tr></thead>
+      <tbody>
+        <tr><td class="first">広告（AdSense）</td><td>フィード内・作品詳細</td><td>全ユーザー</td><td><span class="tag">実装済</span></td></tr>
+        <tr><td class="first">取引手数料</td><td>投げ銭 10% / サブスク 15%</td><td>取引発生時</td><td><span class="tag">実装済</span></td></tr>
+        <tr><td class="first">プレミアム課金</td><td>月額300円・広告非表示</td><td>ヘビーユーザー</td><td><span class="tag">実装済</span></td></tr>
+        <tr><td class="first">AIネタ出し / グッズEC</td><td>Phase 3 の拡張</td><td>—</td><td><span class="tag plan">計画中</span></td></tr>
+      </tbody>
+    </table></div>
+    <h3>月間収益シミュレーション</h3>
+    <div class="tw"><table>
+      <thead><tr><th class="first">指標</th><th class="num">初期 100人</th><th class="num">成長 1,000人</th><th class="num">安定 10,000人</th></tr></thead>
+      <tbody>
+        <tr><td class="first">広告収入</td><td class="num">〜¥1,000</td><td class="num">〜¥10,000</td><td class="num">〜¥100,000</td></tr>
+        <tr><td class="first">投げ銭手数料</td><td class="num">〜¥500</td><td class="num">〜¥5,000</td><td class="num">〜¥50,000</td></tr>
+        <tr><td class="first">サブスク手数料</td><td class="num">〜¥300</td><td class="num">〜¥3,000</td><td class="num">〜¥30,000</td></tr>
+        <tr><td class="first">プレミアム</td><td class="num">〜¥3,000</td><td class="num">〜¥30,000</td><td class="num">〜¥300,000</td></tr>
+        <tr><td class="first" style="color:var(--accent)">月間合計</td><td class="num k">〜¥4,800</td><td class="num k">〜¥48,000</td><td class="num k">〜¥480,000</td></tr>
+      </tbody>
+    </table></div>
+    <p class="sub" style="margin-top:12px; font-size:12.5px">※ 概算レンジ。ユーザー数・課金率の前提により変動します。</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">Metrics</div>
+    <h2>KPI・成功指標</h2>
+    <p class="sub">北極星指標：<strong style="color:var(--text)">週間アクティブ読者数（WAU）× 1人あたり平均閲覧作品数</strong></p>
+    <div class="tw"><table>
+      <thead><tr><th class="first">カテゴリ</th><th>指標</th><th>目標（3ヶ月）</th></tr></thead>
+      <tbody>
+        <tr><td class="first">集客</td><td>月間ユニークユーザー</td><td>500人</td></tr>
+        <tr><td class="first">エンゲージ</td><td>1セッション閲覧数</td><td>5作品以上</td></tr>
+        <tr><td class="first">リテンション</td><td>翌週再訪率</td><td>30%以上</td></tr>
+        <tr><td class="first">作家</td><td>月間投稿数</td><td>100作品</td></tr>
+        <tr><td class="first">収益</td><td>MRR</td><td>¥10,000</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Roadmap</div>
+    <h2>ロードマップ</h2>
+    <ul class="road">
+      <li class="done"><time>2026.02</time><b>MVP完成 ── 基本機能一式・認証・投稿・フィード</b></li>
+      <li class="done"><time>2026.02</time><b>X/Instagram連携・OGP・SEO・収益機能</b></li>
+      <li class="done"><time>2026.03</time><b>シリーズ・リアクション・通知拡充・パフォーマンス最適化</b></li>
+      <li class="done"><time>2026.07</time><b>基盤刷新 ── Neon移行・独自ドメイン・セキュリティ/ISR強化・デザイン刷新</b></li>
+      <li><time>2026.07〜</time><b>クリエイター招待（クローズドβ）── 準備完了、招待開始</b></li>
+      <li><time>Next</time><b>AIネタ出し機能・グッズEC連携</b></li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="eyebrow">Tech</div>
+    <h2>技術構成</h2>
+    <div class="tw"><table>
+      <thead><tr><th class="first">レイヤー</th><th>技術</th></tr></thead>
+      <tbody>
+        <tr><td class="first">フロント / API</td><td>Next.js 16（App Router）＋ React 19 ＋ TypeScript ＋ Tailwind CSS 4</td></tr>
+        <tr><td class="first">データ</td><td>Prisma ORM ＋ PostgreSQL（Neon・サーバーレス）</td></tr>
+        <tr><td class="first">認証</td><td>NextAuth v5（Google / X / メール）</td></tr>
+        <tr><td class="first">画像 / 配信</td><td>Vercel Blob（WebP変換）＋ Vercel（ISR・エッジ配信）</td></tr>
+        <tr><td class="first">決済</td><td>Stripe（投げ銭・サブスク・プレミアム）</td></tr>
+        <tr><td class="first">通知 / PWA</td><td>Web Push（VAPID）＋ Service Worker</td></tr>
+      </tbody>
+    </table></div>
+    <p class="sub" style="margin-top:14px; font-size:13px">
+      設計思想：<strong style="color:var(--text)">コンテンツ（4コマ）が主役、UIは静かに。</strong>
+      単一アクセント・清潔なレイアウト・モバイルファースト。読み込みはISRとエッジ配信で高速化。</p>
+  </section>
+
+  <section>
+    <div class="callout">
+      <div class="eyebrow">Summary</div>
+      <h2 style="margin-top:8px">読者と作家の、好循環をつくる</h2>
+      <p>コマパラは「4コマ漫画」というニッチだが根強い人気のコンテンツに特化し、
+        「読みたい4コマがすぐ見つかる」「描いた4コマがすぐ届く」体験を実現します。</p>
+      <p>SNS連携によるゼロコスト投稿、5種リアクションによる豊かなフィードバック、
+        投げ銭・サブスクによる作家支援を一体化し、<strong style="color:var(--text)">読者と作家の好循環</strong>を生み出します。</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>コマパラ ── 4コマ漫画ポータル</span>
+    <span>運営：株式会社TSURATSURA ／ <a href="https://komapara.com" target="_blank" rel="noopener">komapara.com</a></span>
+  </div>
+</footer>
