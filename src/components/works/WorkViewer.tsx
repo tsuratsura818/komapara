@@ -179,6 +179,26 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
 
   return (
     <div className="max-w-2xl mx-auto">
+      {/* 見出し。パネルより先に置き、開いた瞬間に「何の作品か」が分かるようにする */}
+      <div className="px-4 pt-5 pb-3">
+        <h1 className="text-xl sm:text-2xl font-bold text-komapara-text leading-tight">
+          {work.title}
+        </h1>
+        {work.genres.length > 0 && (
+          <div className="flex gap-1.5 mt-2 flex-wrap">
+            {work.genres.map((genre) => (
+              <Link
+                key={genre.slug}
+                href={`/genre/${genre.slug}`}
+                className="text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100/50 hover:bg-blue-100 transition-colors"
+              >
+                {genre.emoji} {genre.name}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* 4コマビューワー（没入感のあるダーク背景） */}
       <div className="bg-gray-900">
         {work.panels.map((panel, index) => (
@@ -199,33 +219,16 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
         ))}
       </div>
 
-      {/* 作品情報 */}
+      {/* 作品情報（見出しはパネル上に移設済み） */}
       <div className="px-4 py-4">
-        <h1 className="text-xl font-bold text-komapara-text">{work.title}</h1>
-
         {/* 説明・詳細（投稿時に入力した本文。改行を保持） */}
         {work.description && (
-          <p className="mt-2 text-sm leading-relaxed text-komapara-text/80 whitespace-pre-wrap break-words">
+          <p className="text-sm leading-relaxed text-komapara-text/80 whitespace-pre-wrap break-words">
             {work.description}
           </p>
         )}
 
-        {/* ジャンルタグ */}
-        {work.genres.length > 0 && (
-          <div className="flex gap-1.5 mt-2">
-            {work.genres.map((genre) => (
-              <Link
-                key={genre.slug}
-                href={`/genre/${genre.slug}`}
-                className="text-xs px-2 py-0.5 rounded-full bg-linear-to-r from-blue-50 to-blue-50 text-blue-600 border border-blue-100/50 hover:from-blue-100 hover:to-blue-100 transition-colors"
-              >
-                {genre.emoji} {genre.name}
-              </Link>
-            ))}
-          </div>
-        )}
-
-        <div className="border-t border-komapara-border/50 my-3" />
+        {work.description && <div className="border-t border-komapara-border/50 my-3" />}
 
         {/* 作家情報 */}
         <div className="flex items-center justify-between">
