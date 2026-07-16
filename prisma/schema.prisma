@@ -54,6 +54,9 @@ model User {
   image         String?
   bio           String?
   xHandle       String?
+  // 作家ページからSNSへ導線を張るためのリンク設定
+  instagramHandle String?
+  websiteUrl      String?
   isCreator     Boolean   @default(false)
   isBanned      Boolean   @default(false)
   isPremium     Boolean   @default(false)

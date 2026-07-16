@@ -55,6 +55,7 @@ export default function SearchPage() {
 
   return (
     <div className="px-4 py-6">
+      <h1 className="text-lg font-bold text-komapara-text mb-4">検索</h1>
       <form onSubmit={handleSearch} className="mb-6">
         <div className="flex gap-2">
           <input

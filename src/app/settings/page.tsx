@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { PremiumCard } from "@/components/premium/PremiumCard";
 import { StripeConnectCard } from "@/components/settings/StripeConnectCard";
+import { ProfileForm } from "@/components/settings/ProfileForm";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +23,12 @@ export default async function SettingsPage() {
         premiumExpiry: true,
         isCreator: true,
         stripeConnectOnboarded: true,
+        name: true,
+        bio: true,
+        image: true,
+        xHandle: true,
+        instagramHandle: true,
+        websiteUrl: true,
       },
     }),
     prisma.premiumSubscription.findFirst({
@@ -47,31 +54,16 @@ export default async function SettingsPage() {
     <div className="px-4 py-6 space-y-6">
       <h1 className="text-xl font-bold gradient-text">アカウント設定</h1>
 
-      <div className="glass rounded-xl p-6">
-        <div className="flex items-center gap-4 mb-6">
-          {session.user.image ? (
-            <img
-              src={session.user.image}
-              alt={session.user.name || ""}
-              className="w-16 h-16 rounded-full ring-2 ring-blue-200/50"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-100 to-blue-100 flex items-center justify-center text-blue-600 text-xl font-bold">
-              {session.user.name?.[0] || "?"}
-            </div>
-          )}
-          <div>
-            <p className="font-medium text-komapara-text">
-              {session.user.name}
-            </p>
-            <p className="text-sm text-komapara-muted">{session.user.email}</p>
-          </div>
-        </div>
-
-        <p className="text-sm text-komapara-muted">
-          プロフィール編集機能は近日公開予定です。
-        </p>
-      </div>
+      <ProfileForm
+        initial={{
+          name: user?.name ?? session.user.name ?? "",
+          bio: user?.bio ?? null,
+          image: user?.image ?? session.user.image ?? null,
+          xHandle: user?.xHandle ?? null,
+          instagramHandle: user?.instagramHandle ?? null,
+          websiteUrl: user?.websiteUrl ?? null,
+        }}
+      />
 
       {/* プレミアム */}
       <PremiumCard

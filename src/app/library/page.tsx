@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { LibraryTabs } from "@/components/library/LibraryTabs";
 import type { Metadata } from "next";
+import { PageTitle } from "@/components/layout/PageTitle";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -64,9 +65,12 @@ export default async function LibraryPage() {
   }));
 
   return (
-    <LibraryTabs
-      likedWorks={likedWorksData}
-      readWorks={readWorksData}
-    />
+    <>
+      <PageTitle sub="いいねした作品と、読んだ作品">マイライブラリ</PageTitle>
+      <LibraryTabs
+        likedWorks={likedWorksData}
+        readWorks={readWorksData}
+      />
+    </>
   );
 }
