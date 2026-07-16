@@ -181,7 +181,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
     // 誌面の枠（幅・白地・影）は作品ページ側が持つ。ここは中身だけ
     <div>
       {/* 見出し。パネルより先に置き、開いた瞬間に「何の作品か」が分かるようにする */}
-      <div className="px-4 pt-4 pb-1">
+      <div className="px-4 pt-4 pb-3">
         <h1 className="text-2xl sm:text-3xl font-bold text-komapara-text leading-tight">
           {work.title}
         </h1>
@@ -241,7 +241,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
 
       {/* 4コマビューワー。誌面と同じ白地に置き、作品の白余白と地続きにする。
           左右に余白を取り、コマが紙の端に着かないようにする */}
-      <div className="bg-white px-5 sm:px-8">
+      <div className="bg-white px-[8%] sm:px-[10%]">
         {work.panels.map((panel, index) => (
           <div key={index} className="relative">
             <Image
@@ -249,7 +249,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               alt={`${work.title} - ${index + 1}コマ目`}
               width={0}
               height={0}
-              sizes="(max-width: 576px) 100vw, 512px"
+              sizes="(max-width: 576px) 84vw, 460px"
               style={{ width: '100%', height: 'auto' }}
               priority={index === 0}
             />
