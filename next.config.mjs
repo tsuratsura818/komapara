@@ -2,6 +2,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       {
@@ -41,7 +42,7 @@ const nextConfig = {
         hostname: "*.fbcdn.net",
       },
     ],
-    formats: ["image/webp"],
+    formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200],
     imageSizes: [128, 256, 384, 400],
   },
@@ -49,7 +50,11 @@ const nextConfig = {
 
 export default withSentryConfig(nextConfig, {
   silent: true,
-  disableLogger: true,
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
   sourcemaps: {
     disable: true,
   },
