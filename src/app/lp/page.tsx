@@ -10,8 +10,8 @@ import {
 } from "./Icons";
 
 export const metadata: Metadata = {
-  title: "コマパラ — 4コマ漫画ポータルサイト",
-  description: "XやInstagramに散らばる4コマ漫画を一箇所に集約。読者もクリエイターも無料で今すぐはじめよう。",
+  title: "コマパラ — 4コマ作家のための発表・収益化プラットフォーム",
+  description: "XやInstagramに埋もれる4コマを、集約して新しい読者に届ける。1タップ投稿・ダッシュボード・投げ銭まで、ぜんぶ無料。",
 };
 
 const PILLARS = [
@@ -27,14 +27,14 @@ const PILLARS = [
     title: "描く",
     description: "画像をアップロードするだけ。X/Instagramからの1タップ連携も",
     features: ["かんたん投稿", "X/Instagram連携", "シリーズ管理"],
-    gradient: "from-blue-500 to-cyan-500",
+    gradient: "from-blue-500 to-blue-500",
   },
   {
     Icon: UsersIcon,
     title: "つながる",
     description: "5種リアクション・コメント・フォローで作家と読者がつながる",
     features: ["5種リアクション", "投げ銭・サブスク", "プッシュ通知"],
-    gradient: "from-pink-500 to-blue-500",
+    gradient: "from-blue-500 to-blue-500",
   },
 ];
 
@@ -81,21 +81,21 @@ const TESTIMONIALS = [
     role: "クリエイター・OLあるある 作者",
     avatar: "💼",
     text: "投げ銭で初めて応援をもらった時は感動しました。創作を続けるモチベーションが全然違います。ダッシュボードで数字が見えるのも嬉しい。",
-    gradient: "from-pink-200 to-blue-200",
+    gradient: "from-blue-200 to-blue-200",
   },
   {
     name: "たけし@通勤読書派",
     role: "読者",
     avatar: "🚃",
     text: "通勤時間に毎日5作品は読んでいます。ジャンルで絞れるから好みの4コマがすぐ見つかる。プッシュ通知で新作も見逃さない！",
-    gradient: "from-blue-200 to-cyan-200",
+    gradient: "from-blue-200 to-blue-200",
   },
   {
     name: "ねこ好きママ",
     role: "読者",
     avatar: "🐈",
     text: "育児系の4コマを探していたら、ジャンルを選ぶだけで大量に出てきて感動。シリーズ機能で最初から全部追えるのが最高です！",
-    gradient: "from-yellow-200 to-orange-200",
+    gradient: "from-blue-200 to-blue-200",
   },
 ];
 
@@ -171,7 +171,7 @@ export default function LpPage() {
               href="/login"
               className="text-sm px-5 py-2 bg-gradient-main text-white font-bold rounded-xl hover:opacity-90 hover:-translate-y-px transition-all duration-150 shadow-xs shadow-blue-500/20"
             >
-              無料ではじめる
+              作家として参加
             </Link>
           </div>
         </div>
@@ -186,32 +186,32 @@ export default function LpPage() {
           <div>
             <div className="badge-glass animate-fade-in mb-8 inline-flex items-center">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-              4コマ漫画に特化したポータルサイト
+              4コマ作家のための発表・収益化プラットフォーム
             </div>
 
             <h1
               className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[0.93] tracking-tight text-gray-900 animate-fade-in"
               style={{ animationDelay: "0.12s" }}
             >
-              4コマの世界を、
+              あなたの4コマに、
               <br />
-              <span className="gradient-text">もっと楽しく。</span>
+              <span className="gradient-text">新しい読者を。</span>
             </h1>
 
             <p
               className="text-gray-500 text-lg mt-8 max-w-md leading-relaxed animate-fade-in"
               style={{ animationDelay: "0.24s" }}
             >
-              笑える、泣ける、共感できる。<br />
-              あなたの「好き」が、きっと見つかる。
+              XやInstagramに埋もれる作品を、集約して届ける。<br />
+              投稿も、分析も、収益化も、ぜんぶ無料。
             </p>
 
             <div className="flex flex-wrap gap-2 mt-7 animate-fade-in" style={{ animationDelay: "0.36s" }}>
               {[
-                { label: "無限スクロールフィード", Icon: BookOpenIcon },
                 { label: "SNS 1タップ連携", Icon: BoltIcon },
-                { label: "5種リアクション", Icon: FaceSmileIcon },
+                { label: "ダッシュボード分析", Icon: ChartBarIcon },
                 { label: "投げ銭・収益化", Icon: BanknotesIcon },
+                { label: "完全無料", Icon: SparklesIcon },
               ].map((chip) => (
                 <span
                   key={chip.label}
@@ -230,18 +230,18 @@ export default function LpPage() {
                 href="/login"
                 className="w-full sm:w-auto px-8 py-4 text-base bg-gradient-main text-white font-bold rounded-2xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/35 hover:-translate-y-0.5 transition-all duration-200 text-center"
               >
-                無料ではじめる →
+                作家として参加 →
               </Link>
               <a
-                href="#features"
+                href="#creators"
                 className="w-full sm:w-auto px-8 py-4 text-base font-semibold rounded-2xl border border-gray-200/80 bg-white/80 text-gray-700 hover:border-blue-300 hover:text-blue-700 transition-all duration-200 text-center backdrop-blur-xs"
               >
-                機能を見る
+                作家メリットを見る
               </a>
             </div>
 
             <p className="mt-5 text-sm text-gray-400 animate-fade-in" style={{ animationDelay: "0.56s" }}>
-              🎉 クレジットカード不要 · 登録30秒 · 完全無料
+              🎉 登録30秒 · 完全無料 · SNSからそのままインポート
             </p>
           </div>
 
@@ -252,7 +252,7 @@ export default function LpPage() {
           >
             <div className="absolute -top-4 left-[6%] z-20 glass-card rounded-2xl px-4 py-3 animate-float hidden sm:block">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-linear-to-br from-yellow-400 to-orange-400 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-linear-to-br from-blue-400 to-blue-400 flex items-center justify-center shrink-0">
                   <TrophyIcon className="w-4 h-4 text-white" />
                 </div>
                 <div>
@@ -266,7 +266,7 @@ export default function LpPage() {
               style={{ animation: "float 5s ease-in-out infinite 1.5s" }}
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-linear-to-br from-blue-400 to-pink-400 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-linear-to-br from-blue-400 to-blue-400 flex items-center justify-center shrink-0">
                   <FaceSmileIcon className="w-4 h-4 text-white" />
                 </div>
                 <div>
@@ -301,9 +301,9 @@ export default function LpPage() {
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { value: "500+", label: "投稿作品数", Icon: RectangleStackIcon, gradient: "from-blue-500 to-blue-500" },
-            { value: "100+", label: "クリエイター", Icon: PencilSquareIcon, gradient: "from-blue-500 to-cyan-500" },
-            { value: "15", label: "ジャンル", Icon: TagIcon, gradient: "from-pink-500 to-blue-500" },
-            { value: "¥0", label: "基本利用料", Icon: SparklesIcon, gradient: "from-green-400 to-teal-500" },
+            { value: "100+", label: "クリエイター", Icon: PencilSquareIcon, gradient: "from-blue-500 to-blue-500" },
+            { value: "15", label: "ジャンル", Icon: TagIcon, gradient: "from-blue-500 to-blue-500" },
+            { value: "¥0", label: "基本利用料", Icon: SparklesIcon, gradient: "from-blue-400 to-blue-500" },
           ].map((stat, i) => (
             <div
               key={stat.label}
@@ -395,11 +395,11 @@ export default function LpPage() {
       </section>
 
       {/* ===== For Creators ===== */}
-      <section className="py-24 px-6 bg-komapara-bg">
+      <section id="creators" className="py-24 px-6 bg-komapara-bg scroll-mt-16">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14 lp-animate">
             <span className="badge-glass inline-flex mb-5">FOR CREATORS</span>
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900">クリエイターの味方</h2>
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900">作家として、はじめる理由</h2>
             <p className="text-gray-500 mt-4 max-w-sm mx-auto text-sm leading-relaxed">
               投稿・分析・収益化がワンストップ。創作活動に集中できる環境を。
             </p>
@@ -463,7 +463,7 @@ export default function LpPage() {
             {STEPS.map((s, i) => (
               <div key={s.step} className={`lp-animate lp-animate-delay-${i + 1} text-center relative`}>
                 {i < STEPS.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-[62%] w-[76%] h-px bg-linear-to-r from-blue-200 to-pink-200" />
+                  <div className="hidden md:block absolute top-8 left-[62%] w-[76%] h-px bg-linear-to-r from-blue-200 to-blue-200" />
                 )}
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-linear-to-br from-blue-500 to-blue-500 text-white font-black text-xl mb-5 shadow-lg shadow-blue-500/20">
                   {s.step}
@@ -603,9 +603,8 @@ export default function LpPage() {
       {/* ===== Final CTA (DARK) ===== */}
       <section className="relative py-32 px-6 text-center overflow-hidden bg-gray-950">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(139,92,246,0.35),transparent)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_20%_70%,rgba(59,130,246,0.18),transparent)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_80%_70%,rgba(236,72,153,0.15),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(37,99,235,0.35),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_20%_70%,rgba(59,130,246,0.16),transparent)]" />
         </div>
         <div
           className="absolute inset-0 opacity-[0.035] pointer-events-none"
@@ -615,21 +614,21 @@ export default function LpPage() {
           }}
         />
         <div className="relative z-10 max-w-2xl mx-auto lp-animate">
-          <span className="badge-dark inline-flex mb-8">✦ 今すぐはじめよう</span>
+          <span className="badge-dark inline-flex mb-8">✦ 作家募集中</span>
           <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-[1.05] mb-6">
-            4コマの世界へ、<br />
-            <span className="gradient-text">ようこそ。</span>
+            あなたの作品を、<br />
+            <span className="gradient-text">コマパラで。</span>
           </h2>
           <p className="text-gray-400 text-lg mb-10 leading-relaxed">
-            登録30秒・完全無料。<br className="sm:hidden" />
-            今すぐお気に入りの4コマを探しに行こう。
+            登録30秒・完全無料。SNSからそのままインポート。<br className="sm:hidden" />
+            今日から、新しい読者に届けよう。
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/login"
               className="w-full sm:w-auto px-10 py-4 text-lg bg-gradient-main text-white font-bold rounded-2xl shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-200 text-center"
             >
-              無料ではじめる →
+              作家として参加 →
             </Link>
             <Link
               href="/"
