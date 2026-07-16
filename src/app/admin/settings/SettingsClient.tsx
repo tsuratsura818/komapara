@@ -252,7 +252,7 @@ export function SettingsClient({
           <button
             onClick={createTag}
             disabled={loading === "create-tag"}
-            className="px-4 py-1.5 text-sm font-medium text-white bg-gradient-main rounded-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all disabled:opacity-50"
+            className="px-4 py-1.5 text-sm font-medium text-white bg-gradient-main rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
           >
             追加
           </button>
@@ -387,7 +387,7 @@ export function SettingsClient({
           <button
             onClick={saveTokusho}
             disabled={loading === "tokusho"}
-            className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all disabled:opacity-50"
+            className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
           >
             {loading === "tokusho" ? "保存中..." : "保存"}
           </button>
@@ -407,7 +407,7 @@ export function SettingsClient({
           <button
             onClick={triggerRanking}
             disabled={loading === "ranking"}
-            className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all disabled:opacity-50"
+            className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
           >
             {loading === "ranking" ? "集計中..." : "実行"}
           </button>

@@ -319,7 +319,7 @@ export function XSyncPanel() {
               <button
                 onClick={handleImport}
                 disabled={importing}
-                className="w-full py-3 text-white font-semibold bg-gradient-main rounded-xl hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full py-3 text-white font-semibold bg-gradient-main rounded-xl hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {importing
                   ? "インポート中..."

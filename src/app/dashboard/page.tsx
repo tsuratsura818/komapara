@@ -14,13 +14,13 @@ export const metadata: Metadata = {
 };
 
 const STAT_STYLES = [
-  { gradient: "from-purple-500 to-blue-500" },
+  { gradient: "from-blue-500 to-blue-500" },
   { gradient: "from-blue-500 to-cyan-500" },
   { gradient: "from-pink-500 to-red-500" },
   { gradient: "from-orange-500 to-yellow-500" },
   { gradient: "from-yellow-400 to-orange-500" },
-  { gradient: "from-purple-400 to-indigo-500" },
-  { gradient: "from-indigo-400 to-blue-500" },
+  { gradient: "from-blue-400 to-blue-500" },
+  { gradient: "from-blue-400 to-blue-500" },
 ];
 
 export default async function DashboardPage() {
@@ -167,7 +167,7 @@ export default async function DashboardPage() {
           <p>まだ作品がありません</p>
           <Link
             href="/upload"
-            className="inline-block mt-3 px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+            className="inline-block mt-3 px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-blue-500/25 transition-all"
           >
             最初の4コマを投稿する
           </Link>

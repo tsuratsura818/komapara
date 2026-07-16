@@ -62,11 +62,11 @@ export default function SearchPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="キーワードで検索..."
-            className="flex-1 px-4 py-2.5 glass rounded-full text-sm focus:outline-hidden focus:ring-2 focus:ring-purple-500/50"
+            className="flex-1 px-4 py-2.5 glass rounded-full text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-500/50"
           />
           <button
             type="submit"
-            className="px-4 py-2.5 bg-gradient-main text-white rounded-full text-sm font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
+            className="px-4 py-2.5 bg-gradient-main text-white rounded-full text-sm font-medium hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200"
           >
             検索
           </button>
@@ -138,16 +138,16 @@ export default function SearchPage() {
                 <Link
                   key={creator.id}
                   href={`/creator/${creator.id}`}
-                  className="flex items-center gap-3 glass rounded-xl p-3 hover:shadow-lg hover:shadow-purple-500/5 transition-all duration-200"
+                  className="flex items-center gap-3 glass rounded-xl p-3 hover:shadow-lg hover:shadow-blue-500/5 transition-all duration-200"
                 >
                   {creator.image ? (
                     <img
                       src={creator.image}
                       alt={creator.name || ""}
-                      className="w-12 h-12 rounded-full ring-2 ring-purple-200/50"
+                      className="w-12 h-12 rounded-full ring-2 ring-blue-200/50"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-purple-100 to-blue-100" />
+                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-100 to-blue-100" />
                   )}
                   <div>
                     <p className="font-medium text-komapara-text">

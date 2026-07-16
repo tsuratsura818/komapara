@@ -115,7 +115,7 @@ export function PlanManager({ initialPlans }: { initialPlans: Plan[] }) {
             value={newPlan.name}
             onChange={(e) => setNewPlan((p) => ({ ...p, name: e.target.value }))}
             maxLength={50}
-            className="flex-1 min-w-[100px] px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-purple-500/30"
+            className="flex-1 min-w-[100px] px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-blue-500/30"
           />
           <div className="flex items-center gap-1">
             <input
@@ -125,7 +125,7 @@ export function PlanManager({ initialPlans }: { initialPlans: Plan[] }) {
               onChange={(e) => setNewPlan((p) => ({ ...p, price: e.target.value }))}
               min={100}
               max={10000}
-              className="w-24 px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-purple-500/30"
+              className="w-24 px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-blue-500/30"
             />
             <span className="text-xs text-komapara-muted">円/月</span>
           </div>
@@ -135,12 +135,12 @@ export function PlanManager({ initialPlans }: { initialPlans: Plan[] }) {
             value={newPlan.description}
             onChange={(e) => setNewPlan((p) => ({ ...p, description: e.target.value }))}
             maxLength={500}
-            className="w-full px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-purple-500/30"
+            className="w-full px-2 py-1.5 text-sm rounded-lg border border-komapara-border focus:outline-hidden focus:ring-2 focus:ring-blue-500/30"
           />
           <button
             onClick={createPlan}
             disabled={loading === "create"}
-            className="px-4 py-1.5 text-sm font-medium text-white bg-linear-to-r from-purple-500 to-blue-500 rounded-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all disabled:opacity-50"
+            className="px-4 py-1.5 text-sm font-medium text-white bg-linear-to-r from-blue-500 to-blue-500 rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
           >
             追加
           </button>
@@ -185,7 +185,7 @@ export function PlanManager({ initialPlans }: { initialPlans: Plan[] }) {
             ) : (
               <>
                 <span className="flex-1 text-sm font-medium">{plan.name}</span>
-                <span className="text-sm font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+                <span className="text-sm font-bold bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
                   {plan.price.toLocaleString()}円/月
                 </span>
                 <span className="text-xs text-komapara-muted">

@@ -66,7 +66,7 @@ export function StripeConnectCard({
               <button
                 onClick={handleConnect}
                 disabled={loading}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-white bg-linear-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/25 hover:shadow-xl disabled:opacity-50 transition-all duration-200"
+                className="px-4 py-2 rounded-xl text-sm font-medium text-white bg-linear-to-r from-blue-500 to-blue-500 shadow-lg shadow-blue-500/25 hover:shadow-xl disabled:opacity-50 transition-all duration-200"
               >
                 {loading ? "処理中..." : "設定を続ける"}
               </button>
@@ -81,7 +81,7 @@ export function StripeConnectCard({
           <button
             onClick={handleConnect}
             disabled={loading}
-            className="w-full py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/25 hover:shadow-xl disabled:opacity-50 transition-all duration-200"
+            className="w-full py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-blue-500 to-blue-500 shadow-lg shadow-blue-500/25 hover:shadow-xl disabled:opacity-50 transition-all duration-200"
           >
             {loading ? "処理中..." : "Stripeアカウントを連携する"}
           </button>

@@ -50,7 +50,7 @@ export function FollowButton({ userId }: { userId: string }) {
       className={`px-4 py-1.5 text-sm rounded-full font-medium transition-all duration-200 ${
         following
           ? "glass text-komapara-muted hover:bg-gray-100"
-          : "bg-gradient-main text-white shadow-lg shadow-purple-500/25 hover:shadow-xl"
+          : "bg-gradient-main text-white shadow-lg shadow-blue-500/25 hover:shadow-xl"
       }`}
     >
       {following ? "フォロー中" : "フォロー"}

@@ -107,7 +107,7 @@ export function PremiumModal({
 
         {step === "processing" && (
           <div className="text-center py-8">
-            <div className="animate-spin w-8 h-8 border-4 border-purple-200 border-t-purple-500 rounded-full mx-auto mb-4" />
+            <div className="animate-spin w-8 h-8 border-4 border-blue-200 border-t-blue-500 rounded-full mx-auto mb-4" />
             <p className="text-sm text-komapara-muted">処理中...</p>
           </div>
         )}
@@ -123,7 +123,7 @@ export function PremiumModal({
             </p>
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl text-sm font-medium bg-gradient-main text-white shadow-lg shadow-purple-500/25 hover:shadow-xl transition-all"
+              className="w-full py-3 rounded-xl text-sm font-medium bg-gradient-main text-white shadow-lg shadow-blue-500/25 hover:shadow-xl transition-all"
             >
               閉じる
             </button>

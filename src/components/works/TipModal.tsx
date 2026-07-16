@@ -202,7 +202,7 @@ export function TipModal({
             </p>
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl text-sm font-medium bg-gradient-main text-white shadow-lg shadow-purple-500/25 hover:shadow-xl transition-all"
+              className="w-full py-3 rounded-xl text-sm font-medium bg-gradient-main text-white shadow-lg shadow-blue-500/25 hover:shadow-xl transition-all"
             >
               閉じる
             </button>

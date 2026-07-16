@@ -132,7 +132,7 @@ export function AdminSidebar() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-2.5 text-sm transition-colors",
                     isActive
-                      ? "gradient-text font-medium bg-purple-50/50"
+                      ? "gradient-text font-medium bg-blue-50/50"
                       : "text-komapara-muted hover:text-komapara-text hover:bg-gray-50"
                   )}
                 >

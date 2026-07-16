@@ -94,7 +94,7 @@ export default async function CreatorPage(props: Props) {
               className="w-20 h-20 rounded-full ring-4 ring-white shadow-lg"
             />
           ) : (
-            <div className="w-20 h-20 rounded-full ring-4 ring-white shadow-lg bg-linear-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 text-2xl font-bold">
+            <div className="w-20 h-20 rounded-full ring-4 ring-white shadow-lg bg-linear-to-br from-blue-100 to-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold">
               {user.name?.[0] || "?"}
             </div>
           )}
@@ -131,7 +131,7 @@ export default async function CreatorPage(props: Props) {
           )}
           {subscriberCount > 0 && (
             <span>
-              <strong className="bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+              <strong className="bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
                 {subscriberCount}
               </strong>{" "}
               購読者
@@ -146,7 +146,7 @@ export default async function CreatorPage(props: Props) {
               {subPlans.map((plan) => (
                 <div key={plan.id} className="glass rounded-xl p-3">
                   <p className="text-sm font-medium text-komapara-text">{plan.name}</p>
-                  <p className="text-lg font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+                  <p className="text-lg font-bold bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
                     {plan.price.toLocaleString()}円/月
                   </p>
                   {plan.description && (
@@ -188,7 +188,7 @@ export default async function CreatorPage(props: Props) {
                       className="w-16 h-16 rounded-lg object-cover shrink-0"
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-lg bg-linear-to-br from-purple-100 to-blue-100 shrink-0 flex items-center justify-center text-purple-400">
+                    <div className="w-16 h-16 rounded-lg bg-linear-to-br from-blue-100 to-blue-100 shrink-0 flex items-center justify-center text-blue-400">
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                       </svg>

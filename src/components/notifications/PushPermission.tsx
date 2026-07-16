@@ -105,7 +105,7 @@ export function PushPermission() {
       <div className="flex gap-2 shrink-0">
         <button
           onClick={subscribe}
-          className="px-3 py-1.5 text-xs font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+          className="px-3 py-1.5 text-xs font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-blue-500/25 transition-all"
         >
           許可
         </button>

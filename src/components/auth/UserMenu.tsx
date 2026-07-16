@@ -12,7 +12,7 @@ export function UserMenu() {
     return (
       <Link
         href="/login"
-        className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
+        className="px-4 py-2 text-sm font-medium text-komapara-text bg-white border border-komapara-border rounded-full hover:bg-gray-50 transition-colors"
       >
         ログイン
       </Link>
@@ -29,10 +29,10 @@ export function UserMenu() {
           <img
             src={session.user.image}
             alt={session.user.name || ""}
-            className="w-8 h-8 rounded-full ring-2 ring-purple-200/50"
+            className="w-8 h-8 rounded-full ring-2 ring-blue-200/50"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 font-medium text-sm">
+          <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-100 to-blue-100 flex items-center justify-center text-blue-600 font-medium text-sm">
             {session.user.name?.[0] || "?"}
           </div>
         )}
@@ -44,7 +44,7 @@ export function UserMenu() {
             className="fixed inset-0 z-40"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 top-full mt-2 w-48 glass rounded-xl shadow-2xl shadow-purple-500/10 z-50 py-1 animate-scale-in">
+          <div className="absolute right-0 top-full mt-2 w-48 glass rounded-xl shadow-2xl shadow-blue-500/10 z-50 py-1 animate-scale-in">
             <div className="px-4 py-2 border-b border-white/20">
               <p className="text-sm font-medium text-komapara-text truncate">
                 {session.user.name}
@@ -56,14 +56,14 @@ export function UserMenu() {
             <Link
               href="/dashboard"
               onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-komapara-text hover:bg-purple-50/50 transition-colors"
+              className="block px-4 py-2 text-sm text-komapara-text hover:bg-blue-50/50 transition-colors"
             >
               ダッシュボード
             </Link>
             <Link
               href="/settings"
               onClick={() => setOpen(false)}
-              className="block px-4 py-2 text-sm text-komapara-text hover:bg-purple-50/50 transition-colors"
+              className="block px-4 py-2 text-sm text-komapara-text hover:bg-blue-50/50 transition-colors"
             >
               設定
             </Link>

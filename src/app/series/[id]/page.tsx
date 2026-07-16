@@ -76,7 +76,7 @@ export default async function SeriesDetailPage(props: Props) {
                 完結
               </span>
             )}
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-medium">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">
               全{series._count.works}話
             </span>
           </div>
@@ -100,10 +100,10 @@ export default async function SeriesDetailPage(props: Props) {
               <img
                 src={series.author.image}
                 alt={series.author.name || ""}
-                className="w-8 h-8 rounded-full ring-2 ring-purple-200/50"
+                className="w-8 h-8 rounded-full ring-2 ring-blue-200/50"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 text-sm font-medium">
+              <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-100 to-blue-100 flex items-center justify-center text-blue-600 text-sm font-medium">
                 {series.author.name?.[0] || "?"}
               </div>
             )}

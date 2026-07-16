@@ -40,7 +40,7 @@ export function UploadComplete({ workId, workTitle }: Props) {
 
         <button
           onClick={() => router.push(`/work/${workId}`)}
-          className="w-full py-3 text-white font-semibold bg-gradient-main rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+          className="w-full py-3 text-white font-semibold bg-gradient-main rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all"
         >
           作品を見る
         </button>

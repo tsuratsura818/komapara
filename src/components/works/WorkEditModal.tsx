@@ -100,7 +100,7 @@ export function WorkEditModal({ work, onClose }: WorkEditModalProps) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={100}
-            className="w-full px-3 py-2 text-sm glass rounded-lg focus:outline-hidden focus:ring-2 focus:ring-purple-500/50"
+            className="w-full px-3 py-2 text-sm glass rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500/50"
           />
         </div>
 
@@ -113,7 +113,7 @@ export function WorkEditModal({ work, onClose }: WorkEditModalProps) {
             onChange={(e) => setDescription(e.target.value)}
             maxLength={500}
             rows={3}
-            className="w-full px-3 py-2 text-sm glass rounded-lg focus:outline-hidden focus:ring-2 focus:ring-purple-500/50 resize-none"
+            className="w-full px-3 py-2 text-sm glass rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 resize-none"
           />
         </div>
 
@@ -129,7 +129,7 @@ export function WorkEditModal({ work, onClose }: WorkEditModalProps) {
                 onClick={() => toggleGenre(genre.slug)}
                 className={`text-xs px-3 py-1.5 rounded-full transition-all ${
                   selectedGenres.includes(genre.slug)
-                    ? "bg-gradient-main text-white shadow-md shadow-purple-500/25"
+                    ? "bg-gradient-main text-white shadow-md shadow-blue-500/25"
                     : "glass text-komapara-muted hover:text-komapara-text"
                 }`}
               >
@@ -172,7 +172,7 @@ export function WorkEditModal({ work, onClose }: WorkEditModalProps) {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-xl hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 transition-all"
+                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-xl hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 transition-all"
               >
                 {saving ? "保存中..." : "保存"}
               </button>

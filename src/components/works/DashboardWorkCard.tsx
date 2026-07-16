@@ -25,7 +25,7 @@ export function DashboardWorkCard(props: Props) {
     <>
       <div className="relative group/card">
         <Link href={`/work/${id}`} className="block">
-          <div className="bg-komapara-card rounded-xl shadow-xs border border-komapara-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+          <div className="bg-komapara-card rounded-xl shadow-xs border border-komapara-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1">
             <div className="aspect-square relative bg-gray-100 overflow-hidden">
               {panels[0] ? (
                 <Image
@@ -50,7 +50,7 @@ export function DashboardWorkCard(props: Props) {
                   {genres.slice(0, 2).map((genre) => (
                     <span
                       key={genre.slug}
-                      className="text-xs px-2 py-0.5 rounded-full bg-linear-to-r from-purple-50 to-blue-50 text-purple-600 border border-purple-100/50"
+                      className="text-xs px-2 py-0.5 rounded-full bg-linear-to-r from-blue-50 to-blue-50 text-blue-600 border border-blue-100/50"
                     >
                       {genre.emoji} {genre.name}
                     </span>
@@ -66,10 +66,10 @@ export function DashboardWorkCard(props: Props) {
                     <img
                       src={author.image}
                       alt={author.name || ""}
-                      className="w-5 h-5 rounded-full shrink-0 ring-1 ring-purple-200/50"
+                      className="w-5 h-5 rounded-full shrink-0 ring-1 ring-blue-200/50"
                     />
                   ) : (
-                    <div className="w-5 h-5 rounded-full bg-linear-to-br from-purple-100 to-blue-100 shrink-0" />
+                    <div className="w-5 h-5 rounded-full bg-linear-to-br from-blue-100 to-blue-100 shrink-0" />
                   )}
                   <span className="text-sm text-komapara-muted truncate">{author.name}</span>
                 </div>
@@ -93,7 +93,7 @@ export function DashboardWorkCard(props: Props) {
             e.preventDefault();
             setEditing(true);
           }}
-          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 shadow-md flex items-center justify-center text-komapara-muted hover:text-purple-600 opacity-0 group-hover/card:opacity-100 transition-all z-10"
+          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 shadow-md flex items-center justify-center text-komapara-muted hover:text-blue-600 opacity-0 group-hover/card:opacity-100 transition-all z-10"
           title="編集"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

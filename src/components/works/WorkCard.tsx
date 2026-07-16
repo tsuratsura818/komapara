@@ -23,7 +23,7 @@ export function WorkCard({
 }: WorkCardProps) {
   return (
     <Link href={`/work/${id}`} className="block group">
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all duration-300 group-hover:shadow-lg group-hover:shadow-purple-500/10 group-hover:-translate-y-1 group-hover:border-purple-100">
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all duration-300 group-hover:shadow-lg group-hover:shadow-blue-500/10 group-hover:-translate-y-1 group-hover:border-blue-100">
         {/* サムネイル（1コマ目） */}
         <div className="aspect-square relative bg-gray-50 overflow-hidden">
           {panels[0] ? (
@@ -32,8 +32,8 @@ export function WorkCard({
               <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-purple-50 to-blue-50">
-              <span className="text-lg font-bold bg-linear-to-r from-violet-500 to-indigo-500 bg-clip-text text-transparent select-none">
+            <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-blue-50 to-blue-50">
+              <span className="text-lg font-bold bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent select-none">
                 コマパラ
               </span>
             </div>
@@ -48,7 +48,7 @@ export function WorkCard({
               {genres.slice(0, 2).map((genre) => (
                 <span
                   key={genre.slug}
-                  className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-100/60 font-medium"
+                  className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100/60 font-medium"
                 >
                   {genre.name}
                 </span>
@@ -69,10 +69,10 @@ export function WorkCard({
                 <img
                   src={author.image}
                   alt={author.name || "作家アイコン"}
-                  className="w-4 h-4 rounded-full shrink-0 ring-1 ring-purple-100"
+                  className="w-4 h-4 rounded-full shrink-0 ring-1 ring-blue-100"
                 />
               ) : (
-                <div className="w-4 h-4 rounded-full bg-linear-to-br from-purple-100 to-blue-100 shrink-0" />
+                <div className="w-4 h-4 rounded-full bg-linear-to-br from-blue-100 to-blue-100 shrink-0" />
               )}
               <span className="text-[11px] text-gray-400 truncate font-medium">
                 {author.name}

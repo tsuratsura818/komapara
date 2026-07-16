@@ -152,7 +152,7 @@ export function SeriesManager({
         </h2>
         <button
           onClick={() => setCreating(!creating)}
-          className="text-xs px-3 py-1 font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+          className="text-xs px-3 py-1 font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-blue-500/25 transition-all"
         >
           {creating ? "キャンセル" : "+ 新規"}
         </button>
@@ -204,7 +204,7 @@ export function SeriesManager({
             {seriesList.map((series) => (
               <div key={series.id} className="border border-komapara-border/50 rounded-lg overflow-hidden">
                 {/* シリーズヘッダー */}
-                <div className="px-3 py-2 bg-linear-to-r from-purple-50/50 to-blue-50/50 flex items-center justify-between">
+                <div className="px-3 py-2 bg-linear-to-r from-blue-50/50 to-blue-50/50 flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     <Link href={`/series/${series.id}`} className="text-sm font-medium text-komapara-text hover:text-primary-500 truncate">
                       {series.title}

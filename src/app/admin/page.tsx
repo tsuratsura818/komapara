@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "ダッシュボード" };
 
 const STAT_STYLES = [
-  { gradient: "from-purple-500 to-blue-500" },
+  { gradient: "from-blue-500 to-blue-500" },
   { gradient: "from-blue-500 to-cyan-500" },
   { gradient: "from-green-500 to-emerald-500" },
   { gradient: "from-pink-500 to-red-500" },
@@ -198,8 +198,8 @@ export default async function AdminDashboardPage() {
           </span>
         </div>
         <div className="grid grid-cols-4 gap-3 mb-4">
-          <div className="text-center p-3 rounded-lg bg-linear-to-br from-purple-50 to-blue-50">
-            <p className="text-lg font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-blue-50 to-blue-50">
+            <p className="text-lg font-bold bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
               {subAmount.toLocaleString()}円
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">総額</p>
@@ -216,8 +216,8 @@ export default async function AdminDashboardPage() {
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">クリエイター還元</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-linear-to-br from-indigo-50 to-purple-50">
-            <p className="text-lg font-bold bg-linear-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-blue-50 to-blue-50">
+            <p className="text-lg font-bold bg-linear-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
               {activeSubCount}
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">アクティブ購読</p>
@@ -238,7 +238,7 @@ export default async function AdminDashboardPage() {
               <span className={`text-xs px-1.5 py-0.5 rounded-full ${sub.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
                 {sub.status === "active" ? "有効" : sub.status === "cancelled" ? "解約済" : "期限切れ"}
               </span>
-              <span className="text-xs font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent shrink-0">
+              <span className="text-xs font-bold bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent shrink-0">
                 {sub.plan.price.toLocaleString()}円/月
               </span>
               <span className="text-xs text-komapara-muted shrink-0">
@@ -267,8 +267,8 @@ export default async function AdminDashboardPage() {
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">総収入</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-linear-to-br from-purple-50 to-blue-50">
-            <p className="text-lg font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-blue-50 to-blue-50">
+            <p className="text-lg font-bold bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
               {activePremiumCount}
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">アクティブ会員</p>

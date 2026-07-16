@@ -61,7 +61,7 @@ export function ContactForm() {
             setMessage("");
             setStatus("idle");
           }}
-          className="mt-6 text-sm text-violet-600 hover:underline"
+          className="mt-6 text-sm text-blue-600 hover:underline"
         >
           新しいお問い合わせを送る
         </button>
@@ -82,7 +82,7 @@ export function ContactForm() {
           maxLength={100}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-violet-300"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-300"
           placeholder="山田太郎"
         />
       </div>
@@ -98,7 +98,7 @@ export function ContactForm() {
           maxLength={200}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-violet-300"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-300"
           placeholder="example@email.com"
         />
       </div>
@@ -111,7 +111,7 @@ export function ContactForm() {
           id="contact-category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-violet-300 bg-white"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-300 bg-white"
         >
           {CATEGORIES.map((c) => (
             <option key={c.value} value={c.value}>{c.label}</option>
@@ -130,7 +130,7 @@ export function ContactForm() {
           rows={6}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-violet-300 resize-y"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-300 resize-y"
           placeholder="お問い合わせ内容を入力してください"
         />
         <p className="text-xs text-gray-400 mt-1 text-right">{message.length} / 2000</p>
@@ -143,7 +143,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="w-full bg-violet-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-blue-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {status === "sending" ? "送信中..." : "送信する"}
       </button>

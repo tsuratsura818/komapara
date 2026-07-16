@@ -162,7 +162,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
         </div>
         <button
           onClick={openCreate}
-          className="px-4 py-2 bg-linear-to-r from-purple-500 to-blue-500 text-white text-sm font-bold rounded-xl hover:opacity-90 transition-opacity"
+          className="px-4 py-2 bg-linear-to-r from-blue-500 to-blue-500 text-white text-sm font-bold rounded-xl hover:opacity-90 transition-opacity"
         >
           + 新規広告追加
         </button>
@@ -205,7 +205,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-gray-900 text-sm">{ad.title}</span>
                     <span className="text-xs text-gray-400">{ad.company}</span>
-                    <span className="text-[10px] px-2 py-0.5 bg-purple-50 text-purple-600 rounded-full border border-purple-100">
+                    <span className="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full border border-blue-100">
                       {PLACEMENT_LABELS[ad.placement] ?? ad.placement}
                     </span>
                     {isLive ? (
@@ -242,7 +242,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                     className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
                       ad.isActive
                         ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        : "bg-purple-50 text-purple-600 hover:bg-purple-100"
+                        : "bg-blue-50 text-blue-600 hover:bg-blue-100"
                     }`}
                   >
                     {ad.isActive ? "停止" : "有効化"}
@@ -286,7 +286,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
                     placeholder="例: 〇〇株式会社 夏キャンペーン"
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-purple-400"
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-blue-400"
                   />
                 </div>
 
@@ -297,7 +297,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                     value={form.company}
                     onChange={(e) => setForm({ ...form, company: e.target.value })}
                     placeholder="例: 株式会社コマパラ"
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-purple-400"
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-blue-400"
                   />
                 </div>
 
@@ -308,7 +308,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                     value={form.imageUrl}
                     onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
                     placeholder="https://example.com/ad.png"
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-purple-400"
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-blue-400"
                   />
                 </div>
 
@@ -319,7 +319,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                     value={form.linkUrl}
                     onChange={(e) => setForm({ ...form, linkUrl: e.target.value })}
                     placeholder="https://example.com/landing"
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-purple-400"
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-blue-400"
                   />
                 </div>
 
@@ -330,7 +330,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                     value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                     placeholder="例: 詳しくはこちら"
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-purple-400"
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-blue-400"
                   />
                 </div>
 
@@ -339,7 +339,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                   <select
                     value={form.placement}
                     onChange={(e) => setForm({ ...form, placement: e.target.value })}
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-purple-400"
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-blue-400"
                   >
                     <option value="feed">フィード（トップページ）</option>
                     <option value="work">作品詳細ページ</option>
@@ -354,7 +354,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                       type="date"
                       value={form.startDate}
                       onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-purple-400"
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-blue-400"
                     />
                   </div>
                   <div>
@@ -363,7 +363,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                       type="date"
                       value={form.endDate}
                       onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-purple-400"
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-blue-400"
                     />
                   </div>
                 </div>
@@ -374,7 +374,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                     type="number"
                     value={form.sortOrder}
                     onChange={(e) => setForm({ ...form, sortOrder: parseInt(e.target.value) || 0 })}
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-purple-400"
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-hidden focus:border-blue-400"
                   />
                 </div>
 
@@ -382,7 +382,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                   <button
                     type="button"
                     onClick={() => setForm({ ...form, isActive: !form.isActive })}
-                    className={`relative w-11 h-6 rounded-full transition-colors ${form.isActive ? "bg-purple-500" : "bg-gray-300"}`}
+                    className={`relative w-11 h-6 rounded-full transition-colors ${form.isActive ? "bg-blue-500" : "bg-gray-300"}`}
                   >
                     <span
                       className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.isActive ? "translate-x-5" : "translate-x-0"}`}
@@ -408,7 +408,7 @@ export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex-1 py-2.5 rounded-xl bg-linear-to-r from-purple-500 to-blue-500 text-white text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-50"
+                  className="flex-1 py-2.5 rounded-xl bg-linear-to-r from-blue-500 to-blue-500 text-white text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   {saving ? "保存中..." : "保存する"}
                 </button>

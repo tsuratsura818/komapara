@@ -11,7 +11,7 @@ export function Header() {
   if (pathname.startsWith("/admin") || pathname.startsWith("/lp")) return null;
 
   return (
-    <header className="sticky top-0 z-50 glass border-b border-white/20">
+    <header className="sticky top-0 z-50 glass border-b border-komapara-border">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 h-14 flex items-center justify-between">
         {/* Left: Desktop navigation */}
         <nav className="hidden md:flex items-center gap-6 flex-1" aria-label="メインナビゲーション">
@@ -56,7 +56,7 @@ export function Header() {
 
           <Link
             href="/upload"
-            className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-white bg-gradient-main rounded-xl shadow-xs shadow-purple-500/20 hover:shadow-md hover:shadow-purple-500/30 hover:-translate-y-px transition-all duration-150"
+            className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-white bg-gradient-main rounded-xl shadow-xs shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/30 hover:-translate-y-px transition-all duration-150"
           >
             + 投稿
           </Link>

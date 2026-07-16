@@ -204,7 +204,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               <Link
                 key={genre.slug}
                 href={`/genre/${genre.slug}`}
-                className="text-xs px-2 py-0.5 rounded-full bg-linear-to-r from-purple-50 to-blue-50 text-purple-600 border border-purple-100/50 hover:from-purple-100 hover:to-blue-100 transition-colors"
+                className="text-xs px-2 py-0.5 rounded-full bg-linear-to-r from-blue-50 to-blue-50 text-blue-600 border border-blue-100/50 hover:from-blue-100 hover:to-blue-100 transition-colors"
               >
                 {genre.emoji} {genre.name}
               </Link>
@@ -224,10 +224,10 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               <img
                 src={work.author.image}
                 alt={work.author.name || ""}
-                className="w-10 h-10 rounded-full ring-2 ring-purple-200/50"
+                className="w-10 h-10 rounded-full ring-2 ring-blue-200/50"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-100 to-blue-100 flex items-center justify-center text-purple-600 font-medium">
+              <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-100 to-blue-100 flex items-center justify-center text-blue-600 font-medium">
                 {work.author.name?.[0] || "?"}
               </div>
             )}
@@ -247,7 +247,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               className={`px-4 py-1.5 text-sm rounded-full font-medium transition-all duration-200 ${
                 following
                   ? "glass text-komapara-muted hover:bg-gray-100"
-                  : "bg-gradient-main text-white shadow-lg shadow-purple-500/25 hover:shadow-xl"
+                  : "bg-gradient-main text-white shadow-lg shadow-blue-500/25 hover:shadow-xl"
               }`}
             >
               {following ? "フォロー中" : "フォロー"}
@@ -267,7 +267,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
                   onClick={() => handleReaction(r.type)}
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs transition-all ${
                     userReaction === r.type
-                      ? "bg-purple-100 text-purple-700 ring-1 ring-purple-300"
+                      ? "bg-blue-100 text-blue-700 ring-1 ring-blue-300"
                       : "glass text-komapara-muted hover:bg-gray-100"
                   }`}
                   disabled={!session}
@@ -312,7 +312,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
                       onClick={() => handleReaction(r.type)}
                       className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl transition-all hover:scale-110 ${
                         userReaction === r.type
-                          ? "bg-purple-100 ring-1 ring-purple-300"
+                          ? "bg-blue-100 ring-1 ring-blue-300"
                           : "hover:bg-gray-100"
                       }`}
                       title={r.label}
@@ -388,12 +388,12 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               onChange={(e) => setCommentText(e.target.value)}
               placeholder="コメントを入力..."
               maxLength={500}
-              className="flex-1 px-3 py-2 text-sm glass rounded-full focus:outline-hidden focus:ring-2 focus:ring-purple-500/50"
+              className="flex-1 px-3 py-2 text-sm glass rounded-full focus:outline-hidden focus:ring-2 focus:ring-blue-500/50"
             />
             <button
               type="submit"
               disabled={!commentText.trim() || submitting}
-              className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 transition-all duration-200"
+              className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 transition-all duration-200"
             >
               送信
             </button>
@@ -421,7 +421,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
                   className="w-8 h-8 rounded-full shrink-0"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-100 to-blue-100 shrink-0" />
+                <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-100 to-blue-100 shrink-0" />
               )}
               <div>
                 <div className="flex items-center gap-2">

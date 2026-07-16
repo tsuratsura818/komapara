@@ -143,7 +143,7 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
           className={cn(
             "px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-all shrink-0",
             genre === null
-              ? "bg-gradient-main text-white shadow-md shadow-purple-500/25"
+              ? "bg-gradient-main text-white shadow-md shadow-blue-500/25"
               : "glass text-komapara-muted hover:text-komapara-text"
           )}
         >
@@ -156,7 +156,7 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
             className={cn(
               "inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-full whitespace-nowrap transition-all shrink-0",
               genre === g.slug
-                ? "bg-gradient-main text-white shadow-md shadow-purple-500/25"
+                ? "bg-gradient-main text-white shadow-md shadow-blue-500/25"
                 : "glass text-komapara-muted hover:text-komapara-text"
             )}
           >

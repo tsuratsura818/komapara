@@ -97,7 +97,7 @@ export function SubscribeModal({
                   onClick={() => setSelectedPlan(plan)}
                   className={`w-full text-left p-4 rounded-xl transition-all duration-200 ${
                     selectedPlan?.id === plan.id
-                      ? "bg-linear-to-r from-purple-500 to-blue-500 text-white shadow-lg shadow-purple-500/25"
+                      ? "bg-linear-to-r from-blue-500 to-blue-500 text-white shadow-lg shadow-blue-500/25"
                       : "glass text-komapara-text hover:bg-gray-50"
                   }`}
                 >
@@ -117,7 +117,7 @@ export function SubscribeModal({
             <button
               onClick={() => setStep("confirm")}
               disabled={!selectedPlan}
-              className="w-full py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/25 hover:shadow-xl disabled:opacity-50 transition-all duration-200"
+              className="w-full py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-blue-500 to-blue-500 shadow-lg shadow-blue-500/25 hover:shadow-xl disabled:opacity-50 transition-all duration-200"
             >
               {selectedPlan ? `${selectedPlan.price.toLocaleString()}円/月で購読する` : "プランを選択してください"}
             </button>
@@ -147,7 +147,7 @@ export function SubscribeModal({
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/25 disabled:opacity-50 transition-all"
+                className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-linear-to-r from-blue-500 to-blue-500 shadow-lg shadow-blue-500/25 disabled:opacity-50 transition-all"
               >
                 {submitting ? "処理中..." : "お支払いへ進む"}
               </button>
@@ -164,7 +164,7 @@ export function SubscribeModal({
             </p>
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl text-sm font-medium bg-gradient-main text-white shadow-lg shadow-purple-500/25 hover:shadow-xl transition-all"
+              className="w-full py-3 rounded-xl text-sm font-medium bg-gradient-main text-white shadow-lg shadow-blue-500/25 hover:shadow-xl transition-all"
             >
               閉じる
             </button>

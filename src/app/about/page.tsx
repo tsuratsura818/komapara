@@ -10,7 +10,7 @@ const FEATURES = [
     emoji: "📖",
     title: "読む",
     description: "多彩なクリエイターの4コマ漫画をいつでもどこでも楽しめます",
-    gradient: "from-purple-500 to-blue-500",
+    gradient: "from-blue-500 to-blue-500",
   },
   {
     emoji: "✏️",
@@ -22,7 +22,7 @@ const FEATURES = [
     emoji: "💬",
     title: "つながる",
     description: "いいね・コメント・フォローで作家と読者がつながります",
-    gradient: "from-pink-500 to-purple-500",
+    gradient: "from-pink-500 to-blue-500",
   },
 ];
 
@@ -43,7 +43,7 @@ export default function AboutPage() {
           </p>
           <Link
             href="/login"
-            className="inline-block mt-6 px-6 py-2.5 bg-white text-purple-600 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+            className="inline-block mt-6 px-6 py-2.5 bg-white text-blue-600 font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
           >
             無料ではじめる
           </Link>
@@ -97,7 +97,7 @@ export default function AboutPage() {
           </p>
           <Link
             href="/login"
-            className="inline-block mt-4 px-6 py-2.5 bg-gradient-main text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-200"
+            className="inline-block mt-4 px-6 py-2.5 bg-gradient-main text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-200"
           >
             無料ではじめる
           </Link>

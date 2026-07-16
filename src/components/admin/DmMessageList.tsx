@@ -21,7 +21,7 @@ const STATUS_COLORS: Record<string, string> = {
   いいね中: "bg-blue-100 text-blue-700",
   DM送信済: "bg-yellow-100 text-yellow-700",
   返信あり: "bg-green-100 text-green-700",
-  登録済み: "bg-purple-100 text-purple-700",
+  登録済み: "bg-blue-100 text-blue-700",
   見送り: "bg-red-50 text-red-400",
 };
 
@@ -119,12 +119,12 @@ export function DmMessageList({ items }: { items: CreatorMessage[] }) {
                     href={`https://x.com/${item.xHandle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-purple-500 hover:text-purple-700"
+                    className="text-xs text-blue-500 hover:text-blue-700"
                     onClick={(e) => e.stopPropagation()}
                   >
                     @{item.xHandle}
                   </a>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-100/60">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100/60">
                     {item.genre}
                   </span>
                   <FollowerBadge count={item.followers} />
@@ -170,7 +170,7 @@ export function DmMessageList({ items }: { items: CreatorMessage[] }) {
                   <textarea
                     value={currentText}
                     onChange={(e) => setEditedTexts({ ...editedTexts, [item.id]: e.target.value })}
-                    className="w-full min-h-[300px] p-3 text-sm leading-relaxed rounded-lg border border-gray-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-purple-300 resize-y font-sans"
+                    className="w-full min-h-[300px] p-3 text-sm leading-relaxed rounded-lg border border-gray-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-300 resize-y font-sans"
                   />
                   <p className="text-[10px] text-komapara-muted mt-1">
                     ※ 編集した内容はこのページ内でのみ保持されます。コピーボタンで編集後の文面がコピーされます。

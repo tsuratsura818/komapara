@@ -14,7 +14,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="glass rounded-2xl p-6 shadow-2xl shadow-purple-500/20">
+        <div className="glass rounded-2xl p-6 shadow-2xl shadow-blue-500/20">
           <h2 className="text-lg font-semibold text-komapara-text text-center mb-6">
             ログイン / 新規登録
           </h2>

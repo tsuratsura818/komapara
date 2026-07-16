@@ -53,7 +53,7 @@ export function LibraryTabs({
           onClick={() => setTab("liked")}
           className={`flex-1 py-3 text-sm font-medium text-center transition-all ${
             tab === "liked"
-              ? "gradient-text border-b-2 border-purple-500"
+              ? "gradient-text border-b-2 border-blue-500"
               : "text-komapara-muted hover:text-komapara-text"
           }`}
         >
@@ -63,7 +63,7 @@ export function LibraryTabs({
           onClick={() => setTab("history")}
           className={`flex-1 py-3 text-sm font-medium text-center transition-all ${
             tab === "history"
-              ? "gradient-text border-b-2 border-purple-500"
+              ? "gradient-text border-b-2 border-blue-500"
               : "text-komapara-muted hover:text-komapara-text"
           }`}
         >
@@ -145,7 +145,7 @@ function EmptyState({ message, sub }: { message: string; sub: string }) {
       <p className="text-sm mb-4">{sub}</p>
       <Link
         href="/"
-        className="inline-block px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+        className="inline-block px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-full hover:shadow-lg hover:shadow-blue-500/25 transition-all"
       >
         作品を探す
       </Link>

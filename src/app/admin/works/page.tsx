@@ -54,7 +54,7 @@ export default async function AdminWorksPage(
           />
           <button
             type="submit"
-            className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-lg hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+            className="px-4 py-2 text-sm font-medium text-white bg-gradient-main rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all"
           >
             検索
           </button>

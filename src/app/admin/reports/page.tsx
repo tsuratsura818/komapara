@@ -80,7 +80,7 @@ function ReportRow({ report }: {
             </span>
             <span className="text-xs text-gray-500">{REASON_LABELS[report.reason] ?? report.reason}</span>
           </div>
-          <Link href={`/work/${report.work.id}`} className="text-sm font-medium text-violet-600 hover:underline" target="_blank">
+          <Link href={`/work/${report.work.id}`} className="text-sm font-medium text-blue-600 hover:underline" target="_blank">
             {report.work.title}
           </Link>
           {report.detail && <p className="text-xs text-gray-500">{report.detail}</p>}

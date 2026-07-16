@@ -26,7 +26,7 @@ const STATUS_COLORS: Record<string, string> = {
   いいね中: "bg-blue-100 text-blue-700",
   DM送信済: "bg-yellow-100 text-yellow-700",
   返信あり: "bg-green-100 text-green-700",
-  登録済み: "bg-purple-100 text-purple-700",
+  登録済み: "bg-blue-100 text-blue-700",
   見送り: "bg-red-50 text-red-400",
 };
 
@@ -259,7 +259,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
         <button
           onClick={handleSync}
           disabled={syncing}
-          className="px-4 py-1.5 text-xs font-medium text-purple-600 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors disabled:opacity-50"
+          className="px-4 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors disabled:opacity-50"
           title="登録済みユーザーとxHandleを突合"
         >
           {syncing ? "同期中..." : "登録同期"}
@@ -289,7 +289,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               value={newHandle}
               onChange={(e) => setNewHandle(e.target.value)}
               placeholder="@username"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -299,7 +299,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="表示名"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -307,7 +307,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
             <select
               value={newGenre}
               onChange={(e) => setNewGenre(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-300"
             >
               {GENRES.map((g) => (
                 <option key={g} value={g}>{g}</option>
@@ -321,7 +321,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               value={newFollowers}
               onChange={(e) => setNewFollowers(e.target.value)}
               placeholder="0"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div className="sm:col-span-2">
@@ -330,7 +330,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               value={newNote}
               onChange={(e) => setNewNote(e.target.value)}
               placeholder="作風や連絡先の情報など"
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-purple-300"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div className="flex items-end gap-2">
@@ -354,7 +354,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
 
       {/* 一括アクションバー */}
       {selectedIds.size > 0 && (
-        <div className="glass rounded-xl p-3 mb-3 flex flex-wrap items-center gap-2 sticky top-0 z-10 border border-purple-200/50">
+        <div className="glass rounded-xl p-3 mb-3 flex flex-wrap items-center gap-2 sticky top-0 z-10 border border-blue-200/50">
           <span className="text-xs font-medium text-komapara-text">
             {selectedIds.size}件選択中
           </span>
@@ -399,7 +399,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
               type="checkbox"
               checked={selectedIds.size === filtered.length && filtered.length > 0}
               onChange={toggleSelectAll}
-              className="w-4 h-4 rounded-sm border-gray-300 text-purple-600 focus:ring-purple-500"
+              className="w-4 h-4 rounded-sm border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <span className="text-[10px] text-komapara-muted">すべて選択</span>
           </div>
@@ -407,7 +407,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
         {filtered.map((item) => (
           <div key={item.id} className={cn(
             "glass rounded-xl p-4 transition-all",
-            selectedIds.has(item.id) && "ring-2 ring-purple-300"
+            selectedIds.has(item.id) && "ring-2 ring-blue-300"
           )}>
             <div className="flex flex-wrap items-start gap-3">
               {/* チェックボックス */}
@@ -415,7 +415,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
                 type="checkbox"
                 checked={selectedIds.has(item.id)}
                 onChange={() => toggleSelect(item.id)}
-                className="w-4 h-4 mt-1 rounded-sm border-gray-300 text-purple-600 focus:ring-purple-500 shrink-0"
+                className="w-4 h-4 mt-1 rounded-sm border-gray-300 text-blue-600 focus:ring-blue-500 shrink-0"
               />
               {/* 左: プロフィール */}
               <div className="flex-1 min-w-0">
@@ -424,12 +424,12 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
                     href={`https://x.com/${item.xHandle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-bold text-komapara-text hover:text-purple-600 transition-colors"
+                    className="text-sm font-bold text-komapara-text hover:text-blue-600 transition-colors"
                   >
                     @{item.xHandle}
                   </a>
                   <span className="text-sm text-komapara-muted">{item.name}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 border border-purple-100/60">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100/60">
                     {item.genre}
                   </span>
                   {item.followers > 0 && (
@@ -475,7 +475,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
                         className={cn(
                           "px-2 py-1 text-[10px] rounded-full font-medium transition-all",
                           item.status === s
-                            ? "ring-2 ring-purple-400 " + STATUS_COLORS[s]
+                            ? "ring-2 ring-blue-400 " + STATUS_COLORS[s]
                             : STATUS_COLORS[s] + " opacity-60 hover:opacity-100"
                         )}
                       >
@@ -508,7 +508,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
                           "px-3 py-1 text-xs rounded-lg font-medium transition-all",
                           dmCopiedId === item.id
                             ? "bg-green-500 text-white"
-                            : "bg-linear-to-r from-purple-500 to-blue-500 text-white hover:opacity-90"
+                            : "bg-linear-to-r from-blue-500 to-blue-500 text-white hover:opacity-90"
                         )}
                         title="DM文をコピーしてXプロフィールを開く"
                       >

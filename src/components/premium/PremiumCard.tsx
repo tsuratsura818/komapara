@@ -71,8 +71,8 @@ export function PremiumCard({
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">月額</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-linear-to-br from-purple-50 to-blue-50">
-            <p className="text-sm font-bold bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <div className="text-center p-3 rounded-lg bg-linear-to-br from-blue-50 to-blue-50">
+            <p className="text-sm font-bold bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
               {new Date(currentSubscription.currentPeriodEnd).toLocaleDateString("ja-JP")}
             </p>
             <p className="text-xs text-komapara-muted mt-0.5">有効期限</p>
