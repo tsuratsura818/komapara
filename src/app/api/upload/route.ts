@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { put } from "@vercel/blob";
+import { putImage } from "@/lib/blob";
 import { randomUUID } from "crypto";
 import { processImageToWebP, generateThumbnail } from "@/lib/image";
 
@@ -50,14 +50,8 @@ export async function POST(request: NextRequest) {
 
     // Vercel Blobにアップロード
     const [mainBlob, thumbBlob] = await Promise.all([
-      put(`panels/${processed.filename}`, processed.buffer, {
-        access: "public",
-        contentType: "image/webp",
-      }),
-      put(`thumbs/${thumbnail.filename}`, thumbnail.buffer, {
-        access: "public",
-        contentType: "image/webp",
-      }),
+      putImage(`panels/${processed.filename}`, processed.buffer),
+      putImage(`thumbs/${thumbnail.filename}`, thumbnail.buffer),
     ]);
 
     return NextResponse.json(

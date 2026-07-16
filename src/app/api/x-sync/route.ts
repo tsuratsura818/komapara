@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
-import { put } from "@vercel/blob";
+import { putImage } from "@/lib/blob";
 import { randomUUID } from "crypto";
 import { processImageToWebP } from "@/lib/image";
 import { fetchImageSafely } from "@/lib/safe-image-fetch";
@@ -204,10 +204,7 @@ async function handleImport(
         const uuid = randomUUID();
         const processed = await processImageToWebP(buffer, uuid);
 
-        const blob = await put(`panels/${processed.filename}`, processed.buffer, {
-          access: "public",
-          contentType: "image/webp",
-        });
+        const blob = await putImage(`panels/${processed.filename}`, processed.buffer);
         savedUrls.push(blob.url);
       }
 

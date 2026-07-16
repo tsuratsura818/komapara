@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getMediaById, imageUrlsFromMedia } from "@/lib/instagram";
 import { fetchImageSafely } from "@/lib/safe-image-fetch";
 import { processImageToWebP } from "@/lib/image";
-import { put } from "@vercel/blob";
+import { putImage } from "@/lib/blob";
 import { randomUUID } from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -56,10 +56,7 @@ export async function POST(request: NextRequest) {
       });
       const uuid = randomUUID();
       const processed = await processImageToWebP(buffer, uuid);
-      const blob = await put(`panels/${processed.filename}`, processed.buffer, {
-        access: "public",
-        contentType: "image/webp",
-      });
+      const blob = await putImage(`panels/${processed.filename}`, processed.buffer);
       savedUrls.push(blob.url);
     } catch (e) {
       lastError = e instanceof Error ? e.message : String(e);

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/admin";
-import { put } from "@vercel/blob";
+import { putImage } from "@/lib/blob";
 import { randomUUID } from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 import { processImageToWebP } from "@/lib/image";
@@ -821,11 +821,7 @@ export async function POST(request: NextRequest) {
       }
 
       try {
-        const blob = await put(
-          `panels/${processed.filename}`,
-          processed.buffer,
-          { access: "public", contentType: "image/webp" }
-        );
+        const blob = await putImage(`panels/${processed.filename}`, processed.buffer);
         savedUrls.push(blob.url);
       } catch (e) {
         console.error("[IG] Blob upload error:", e);
