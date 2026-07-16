@@ -2,8 +2,31 @@ import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { cleanCaptionForShare } from "@/lib/utils";
+import sharp from "sharp";
 
 export const runtime = "nodejs";
+
+/**
+ * パネル画像をOG画像へ埋め込める形にする。
+ * next/og(satori)はWebPをデコードできず、そのままURLを渡すと無言で空白になる。
+ * コマパラはパネルを全てWebPで保存しているため、JPEGへ変換してdata URIで埋め込む。
+ */
+async function toEmbeddablePanel(url: string, width: number): Promise<string | null> {
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+    if (!res.ok) return null;
+    const input = Buffer.from(await res.arrayBuffer());
+    const jpeg = await sharp(input)
+      .resize({ width, withoutEnlargement: true })
+      .flatten({ background: "#ffffff" })
+      .jpeg({ quality: 80 })
+      .toBuffer();
+    return `data:image/jpeg;base64,${jpeg.toString("base64")}`;
+  } catch (e) {
+    console.error("OG panel embed error:", e);
+    return null;
+  }
+}
 
 export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -42,6 +65,10 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
 
     // 縦長フォーマット（LINE/Instagram Stories向け 1080x1920）
     if (format === "vertical") {
+      const verticalPanels = (
+        await Promise.all(work.panels.slice(0, 4).map((p) => toEmbeddablePanel(p, 960)))
+      ).filter((p): p is string => Boolean(p));
+
       return new ImageResponse(
         (
           <div
@@ -88,7 +115,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 justifyContent: "center",
               }}
             >
-              {work.panels.map((panel, i) => (
+              {verticalPanels.map((panel, i) => (
                 <img
                   key={i}
                   src={panel}
@@ -96,7 +123,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                   width={960}
                   height={340}
                   style={{
-                    objectFit: "cover",
+                    objectFit: "contain",
                     borderRadius: 12,
                     border: "2px solid rgba(255,255,255,0.1)",
                   }}
@@ -150,6 +177,10 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
 
     // 正方形フォーマット（Instagram Feed向け 1080x1080）
     if (format === "square") {
+      const squarePanels = (
+        await Promise.all(work.panels.slice(0, 4).map((p) => toEmbeddablePanel(p, 600)))
+      ).filter((p): p is string => Boolean(p));
+
       return new ImageResponse(
         (
           <div
@@ -173,7 +204,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 gap: 10,
               }}
             >
-              {work.panels.map((panel, i) => (
+              {squarePanels.map((panel, i) => (
                 <img
                   key={i}
                   src={panel}
@@ -181,7 +212,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                   width={500}
                   height={400}
                   style={{
-                    objectFit: "cover",
+                    objectFit: "contain",
                     borderRadius: 16,
                     border: "3px solid rgba(255,255,255,0.2)",
                     width: "calc(50% - 5px)",
@@ -219,7 +250,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
     }
 
     // デフォルト: X/Facebook用 横長（1200x630）。作品そのもの＝1コマ目を主役に、クロップせず全体を見せる
-    const panelUrl = work.panels[0] || null;
+    const panelSrc = work.panels[0] ? await toEmbeddablePanel(work.panels[0], 900) : null;
     const cleanedDesc = cleanCaptionForShare(work.description);
     const ogDesc = cleanedDesc.length >= 10 ? cleanedDesc.slice(0, 90) : "";
 
@@ -260,8 +291,8 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 overflow: "hidden",
               }}
             >
-              {panelUrl ? (
-                <img src={panelUrl} alt="" width={448} height={558} style={{ objectFit: "contain" }} />
+              {panelSrc ? (
+                <img src={panelSrc} alt="" width={448} height={558} style={{ objectFit: "contain" }} />
               ) : (
                 <div style={{ display: "flex", fontSize: 40, fontWeight: 700, color: "#2563eb" }}>コマパラ</div>
               )}
