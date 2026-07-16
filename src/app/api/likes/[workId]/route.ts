@@ -17,10 +17,8 @@ async function getReactionCounts(workId: string) {
   return counts;
 }
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { workId: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ workId: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -120,10 +118,8 @@ export async function POST(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { workId: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ workId: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {

@@ -8,9 +8,10 @@ import { SubscribeButton } from "@/components/subscriptions/SubscribeButton";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: { id: string } };
+type Props = { params: Promise<{ id: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const user = await prisma.user.findUnique({
     where: { id: params.id },
     select: { name: true },
@@ -19,7 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${user.name}の作品` };
 }
 
-export default async function CreatorPage({ params }: Props) {
+export default async function CreatorPage(props: Props) {
+  const params = await props.params;
   const session = await auth();
 
   const user = await prisma.user.findUnique({

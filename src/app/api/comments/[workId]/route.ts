@@ -4,10 +4,8 @@ import { requireUser } from "@/lib/admin";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendNotification } from "@/lib/notifications";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { workId: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ workId: string }> }) {
+  const params = await props.params;
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
@@ -37,10 +35,8 @@ export async function GET(
   }
 }
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { workId: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ workId: string }> }) {
+  const params = await props.params;
   try {
     const { error, session } = await requireUser();
     if (error) return error;

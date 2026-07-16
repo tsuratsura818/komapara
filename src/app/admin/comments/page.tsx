@@ -7,11 +7,12 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "コメント管理" };
 
-export default async function AdminCommentsPage({
-  searchParams,
-}: {
-  searchParams: { page?: string };
-}) {
+export default async function AdminCommentsPage(
+  props: {
+    searchParams: Promise<{ page?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const page = parseInt(searchParams.page || "1");
   const limit = 20;
   const skip = (page - 1) * limit;

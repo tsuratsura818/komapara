@@ -8,15 +8,17 @@ import type { Metadata } from "next";
 // 公開のジャンル一覧（ユーザー個別状態なし）。ISRで配信しDB負荷を抑える
 export const revalidate = 3600;
 
-type Props = { params: { slug: string } };
+type Props = { params: Promise<{ slug: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const genre = GENRES.find((g) => g.slug === params.slug);
   if (!genre) return { title: "ジャンルが見つかりません" };
   return { title: `${genre.emoji} ${genre.name}の4コマ` };
 }
 
-export default async function GenrePage({ params }: Props) {
+export default async function GenrePage(props: Props) {
+  const params = await props.params;
   const genre = GENRES.find((g) => g.slug === params.slug);
   if (!genre) notFound();
 

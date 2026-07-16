@@ -4,10 +4,8 @@ import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendNotification } from "@/lib/notifications";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { userId: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -59,10 +57,8 @@ export async function POST(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { userId: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {

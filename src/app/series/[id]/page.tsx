@@ -7,9 +7,10 @@ import type { Metadata } from "next";
 // シリーズ一覧（公開・ユーザー個別状態なし）。ISRで配信
 export const revalidate = 1800;
 
-type Props = { params: { id: string } };
+type Props = { params: Promise<{ id: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const series = await prisma.series.findUnique({
     where: { id: params.id },
     include: { author: { select: { name: true } } },
@@ -21,7 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function SeriesDetailPage({ params }: Props) {
+export default async function SeriesDetailPage(props: Props) {
+  const params = await props.params;
   const series = await prisma.series.findUnique({
     where: { id: params.id },
     include: {

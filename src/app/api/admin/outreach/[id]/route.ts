@@ -3,10 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminApi } from "@/lib/admin";
 
 // 更新
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { error } = await requireAdminApi();
   if (error) return error;
 
@@ -35,10 +33,8 @@ export async function PATCH(
 }
 
 // 削除
-export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(_request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { error } = await requireAdminApi();
   if (error) return error;
 

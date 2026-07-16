@@ -10,10 +10,8 @@ const REASONS: Record<string, string> = {
   other: "その他",
 };
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "認証が必要です" }, { status: 401 });

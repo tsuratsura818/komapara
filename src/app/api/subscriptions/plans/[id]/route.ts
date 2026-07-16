@@ -4,10 +4,8 @@ import { auth } from "@/lib/auth";
 import { getSiteSetting } from "@/lib/admin";
 
 // PATCH: プラン更新
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -62,10 +60,8 @@ export async function PATCH(
 }
 
 // DELETE: プラン無効化（soft delete）
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {

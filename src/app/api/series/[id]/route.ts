@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-type Props = { params: { id: string } };
+type Props = { params: Promise<{ id: string }> };
 
 // シリーズ詳細
-export async function GET(_request: NextRequest, { params }: Props) {
+export async function GET(_request: NextRequest, props: Props) {
+  const params = await props.params;
   try {
     const series = await prisma.series.findUnique({
       where: { id: params.id },
@@ -44,7 +45,8 @@ export async function GET(_request: NextRequest, { params }: Props) {
 }
 
 // シリーズ更新
-export async function PATCH(request: NextRequest, { params }: Props) {
+export async function PATCH(request: NextRequest, props: Props) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -133,7 +135,8 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 // シリーズ削除
-export async function DELETE(_request: NextRequest, { params }: Props) {
+export async function DELETE(_request: NextRequest, props: Props) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {

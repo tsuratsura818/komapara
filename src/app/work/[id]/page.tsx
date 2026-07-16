@@ -10,9 +10,10 @@ import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: { id: string } };
+type Props = { params: Promise<{ id: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const work = await prisma.work.findUnique({
     where: { id: params.id },
     include: { author: { select: { name: true } } },
@@ -51,7 +52,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function WorkDetailPage({ params }: Props) {
+export default async function WorkDetailPage(props: Props) {
+  const params = await props.params;
   const session = await auth();
 
   const work = await prisma.work.findUnique({

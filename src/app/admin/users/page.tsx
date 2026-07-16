@@ -6,11 +6,12 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "ユーザー管理" };
 
-export default async function AdminUsersPage({
-  searchParams,
-}: {
-  searchParams: { q?: string; page?: string };
-}) {
+export default async function AdminUsersPage(
+  props: {
+    searchParams: Promise<{ q?: string; page?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const q = searchParams.q?.trim();
   const page = parseInt(searchParams.page || "1");
   const limit = 20;

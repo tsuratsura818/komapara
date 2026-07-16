@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 type IconProps = { className?: string };
 
 function SunIcon({ className }: IconProps) {

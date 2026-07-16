@@ -8,10 +8,8 @@ import { auth } from "@/lib/auth";
  * GETの副作用ではなくこのPOSTに集約することで、bot/プリフェッチ/リンクプレビューでの
  * 過剰カウントを避け、作品詳細ページをキャッシュ可能に保つ。
  */
-export async function POST(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(_request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { id } = params;
   try {
     await prisma.work.update({
