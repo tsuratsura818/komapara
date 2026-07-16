@@ -181,7 +181,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
     // 誌面の枠（幅・白地・影）は作品ページ側が持つ。ここは中身だけ
     <div>
       {/* 見出し。パネルより先に置き、開いた瞬間に「何の作品か」が分かるようにする */}
-      <div className="px-4 pt-5 pb-3">
+      <div className="px-4 pt-4 pb-1">
         <h1 className="text-xl sm:text-2xl font-bold text-komapara-text leading-tight">
           {work.title}
         </h1>
@@ -209,7 +209,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               alt={`${work.title} - ${index + 1}コマ目`}
               width={0}
               height={0}
-              sizes="(max-width: 672px) 100vw, 672px"
+              sizes="(max-width: 576px) 100vw, 576px"
               style={{ width: '100%', height: 'auto' }}
               priority={index === 0}
             />

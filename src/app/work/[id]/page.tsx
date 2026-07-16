@@ -206,7 +206,7 @@ export default async function WorkDetailPage(props: Props) {
 
       {/* 誌面。柄の地から1枚の紙として浮かせる。ブロックを分けると継ぎ目に
           影の線が出るため、読む部分から広告・シリーズナビまでを1枚に収める */}
-      <div className="max-w-2xl mx-auto bg-white pb-2 sm:mt-5 sm:rounded-2xl sm:shadow-[0_2px_28px_rgba(15,23,42,0.13)] sm:ring-1 sm:ring-black/5">
+      <div className="max-w-xl mx-auto bg-white pb-2 sm:mt-5 sm:rounded-2xl sm:shadow-[0_2px_28px_rgba(15,23,42,0.13)] sm:ring-1 sm:ring-black/5">
         {/* 通報ボタンは WorkViewer 内でクライアント判定して表示 */}
         <WorkViewer work={workData} tipsEnabled={tipsEnabled} />
 
