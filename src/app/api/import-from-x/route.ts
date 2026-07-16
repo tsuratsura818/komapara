@@ -13,6 +13,68 @@ function extractTweetId(url: string): string | null {
   return match ? match[1] : null;
 }
 
+type TweetData = {
+  text: string;
+  author: { screen_name: string };
+  media: { photos: { url: string }[] };
+};
+
+// fxtwitter を主、vxtwitter を予備に。片方が落ちても取得を継続できるようにする
+async function fetchTweetData(tweetId: string): Promise<TweetData | null> {
+  const ua = { "User-Agent": "Komapara/1.0" };
+
+  // 1) fxtwitter（media.photos に全画像）
+  try {
+    const r = await fetch(`https://api.fxtwitter.com/status/${tweetId}`, {
+      headers: ua,
+      signal: AbortSignal.timeout(10000),
+    });
+    if (r.ok) {
+      const d = await r.json();
+      const t = d?.tweet;
+      if (t) {
+        const photos =
+          t.media?.photos ||
+          (t.media?.all || []).filter((m: { type: string }) => m.type === "photo");
+        if ((photos && photos.length) || t.text) {
+          return {
+            text: t.text || "",
+            author: { screen_name: t.author?.screen_name || "" },
+            media: { photos: photos || [] },
+          };
+        }
+      }
+    }
+  } catch (e) {
+    console.error("fxtwitter error:", e);
+  }
+
+  // 2) vxtwitter フォールバック（media_extended から画像URL）
+  try {
+    const r = await fetch(`https://api.vxtwitter.com/status/${tweetId}`, {
+      headers: ua,
+      signal: AbortSignal.timeout(10000),
+    });
+    if (r.ok) {
+      const d = await r.json();
+      const photos: { url: string }[] = (d?.media_extended || [])
+        .filter((m: { type: string }) => m.type === "image")
+        .map((m: { url: string }) => ({ url: m.url }));
+      if (photos.length || d?.text) {
+        return {
+          text: d?.text || "",
+          author: { screen_name: d?.user_screen_name || "" },
+          media: { photos },
+        };
+      }
+    }
+  } catch (e) {
+    console.error("vxtwitter error:", e);
+  }
+
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { error, session } = await requireUser();
@@ -45,39 +107,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // fxtwitter API で投稿データを取得
-    let tweet;
-    try {
-      const apiRes = await fetch(
-        `https://api.fxtwitter.com/status/${tweetId}`,
-        { headers: { "User-Agent": "Komapara/1.0" }, signal: AbortSignal.timeout(10000) }
-      );
-      if (!apiRes.ok) {
-        return NextResponse.json(
-          { error: "X投稿の取得に失敗しました。URLが正しいか確認してください" },
-          { status: 404 }
-        );
-      }
-      const data = await apiRes.json();
-      tweet = data.tweet;
-    } catch (e) {
-      console.error("fxtwitter fetch error:", e);
-      return NextResponse.json(
-        { error: "X投稿の取得中にエラーが発生しました" },
-        { status: 502 }
-      );
-    }
-
+    // 投稿データを取得（fxtwitter → vxtwitter フォールバックで単一障害点を回避）
+    const tweet = await fetchTweetData(tweetId);
     if (!tweet) {
       return NextResponse.json(
-        { error: "投稿データが見つかりませんでした" },
+        { error: "X投稿の取得に失敗しました。URLが正しいか、公開投稿か確認してください" },
         { status: 404 }
       );
     }
 
-    const photos = tweet.media?.photos || tweet.media?.all?.filter(
-      (m: { type: string }) => m.type === "photo"
-    ) || [];
+    const photos = tweet.media.photos;
 
     if (photos.length === 0) {
       return NextResponse.json(
