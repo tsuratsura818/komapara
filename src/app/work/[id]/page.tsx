@@ -172,7 +172,7 @@ export default async function WorkDetailPage(props: Props) {
           tags: { select: { name: true, slug: true, emoji: true } },
         },
         orderBy: { likeCount: "desc" },
-        take: 6,
+        take: 4,
       })
     : [];
 
@@ -217,7 +217,7 @@ export default async function WorkDetailPage(props: Props) {
           <h2 className="text-sm font-semibold text-komapara-text mb-3">
             関連作品
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {relatedWorks.map((rw) => (
               <WorkCard
                 key={rw.id}

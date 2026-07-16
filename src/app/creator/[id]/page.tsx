@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { highResAvatar } from "@/lib/utils";
 import { WorkCard } from "@/components/works/WorkCard";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -89,7 +90,7 @@ export default async function CreatorPage(props: Props) {
         <div className="flex items-end gap-4 mb-4">
           {user.image ? (
             <img
-              src={user.image}
+              src={highResAvatar(user.image) as string}
               alt={user.name || ""}
               className="w-20 h-20 rounded-full ring-4 ring-white shadow-lg"
             />

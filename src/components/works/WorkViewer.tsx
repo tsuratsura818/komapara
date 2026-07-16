@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import { formatRelativeTime, buildWorkShareText } from "@/lib/utils";
+import { formatRelativeTime, buildWorkShareText, highResAvatar } from "@/lib/utils";
 import { AdsenseUnit } from "@/components/ui/AdsenseUnit";
 import { TipButton } from "./TipButton";
 import { ReportButton } from "./ReportButton";
@@ -235,7 +235,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
           >
             {work.author.image ? (
               <img
-                src={work.author.image}
+                src={highResAvatar(work.author.image) as string}
                 alt={work.author.name || ""}
                 className="w-10 h-10 rounded-full ring-2 ring-blue-200/50"
               />
@@ -429,7 +429,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
             >
               {comment.user.image ? (
                 <img
-                  src={comment.user.image}
+                  src={highResAvatar(comment.user.image) as string}
                   alt={comment.user.name || ""}
                   className="w-8 h-8 rounded-full shrink-0"
                 />

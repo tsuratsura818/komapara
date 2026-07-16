@@ -82,3 +82,19 @@ export function buildWorkShareText(work: {
   lines.push("", tags);
   return lines.join("\n");
 }
+
+/**
+ * SNSアバターURLを高解像度版に変換する。
+ * X(Twitter)は既定で `_normal`(48px)、Googleは `=s96-c`(96px) のURLを返すため、
+ * そのまま大きく表示するとぼやける。表示側で解像度を上げる。
+ */
+export function highResAvatar(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.includes("pbs.twimg.com")) {
+    return url.replace(/_(normal|bigger|mini)\.(jpg|jpeg|png|gif|webp)$/i, "_400x400.$2");
+  }
+  if (url.includes("googleusercontent.com")) {
+    return url.replace(/=s\d+(-c)?$/i, "=s400$1");
+  }
+  return url;
+}

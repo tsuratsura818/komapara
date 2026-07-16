@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime, highResAvatar } from "@/lib/utils";
 import { WorkCardImage } from "./WorkCardImage";
 
 type WorkCardProps = {
@@ -67,7 +67,7 @@ export function WorkCard({
               {author.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={author.image}
+                  src={highResAvatar(author.image) as string}
                   alt={author.name || "作家アイコン"}
                   className="w-4 h-4 rounded-full shrink-0 ring-1 ring-blue-100"
                 />
