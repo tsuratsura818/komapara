@@ -39,6 +39,9 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
   const { data: session } = useSession();
   const [tab, setTab] = useState<Tab>("new");
   const [genre, setGenre] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  // 打鍵ごとに叩かないよう、入力が落ち着いてから検索語を確定させる
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [works, setWorks] = useState<Work[]>(initialWorks ?? []);
   const [, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(
@@ -54,6 +57,7 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
       try {
         const params = new URLSearchParams({ sort: tab, page: String(pageNum), limit: "20" });
         if (genre) params.set("genre", genre);
+        if (debouncedQuery) params.set("q", debouncedQuery);
         const res = await fetch(`/api/works?${params}`);
         const data = await res.json();
         const newWorks = data.works ?? [];
@@ -70,10 +74,16 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
         setLoading(false);
       }
     },
-    [tab, genre]
+    [tab, genre, debouncedQuery]
   );
 
-  // タブ or カテゴリ変更時にリセット（初回はスキップ）
+  // 入力が落ち着いてから検索語を確定（打鍵ごとのリクエストを防ぐ）
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedQuery(query.trim()), 300);
+    return () => clearTimeout(id);
+  }, [query]);
+
+  // タブ / カテゴリ / 検索語の変更時にリセット（初回はスキップ）
   useEffect(() => {
     if (initialLoadSkipped.current) {
       initialLoadSkipped.current = false;
@@ -81,7 +91,7 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
     }
     setPage(1);
     fetchWorks(1, true);
-  }, [tab, genre, fetchWorks]);
+  }, [tab, genre, debouncedQuery, fetchWorks]);
 
   // 無限スクロール
   useEffect(() => {
@@ -112,29 +122,58 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
 
   return (
     <div>
-      {/* タブ */}
-      <div className="flex glass border-b border-white/20 sticky top-14 z-40">
-        {tabs.map((t) => {
-          if (t.requireAuth && !session) return null;
-          return (
-            <button
-              key={t.value}
-              onClick={() => setTab(t.value)}
-              className={cn(
-                "flex-1 py-3 text-sm font-medium transition-colors relative",
-                tab === t.value
-                  ? "gradient-text"
-                  : "text-komapara-muted hover:text-komapara-text"
-              )}
-            >
-              {t.label}
-              {tab === t.value && (
-                <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 bg-gradient-main rounded-full" />
-              )}
-            </button>
-          );
-        })}
+      {/* タブ + キーワード検索
+          下線タブは「選択中」しか主張せず、他も選べることが伝わらなかったため、
+          枠で囲ったセグメンテッドコントロールにして切り替え可能なことを明示する。 */}
+      <div className="glass border-b border-white/20 sticky top-14 z-40 px-4 py-2 flex items-center gap-3">
+        <div className="inline-flex gap-1 p-1 rounded-xl bg-gray-100/80 shrink-0">
+          {tabs.map((t) => {
+            if (t.requireAuth && !session) return null;
+            const active = tab === t.value;
+            return (
+              <button
+                key={t.value}
+                onClick={() => setTab(t.value)}
+                aria-pressed={active}
+                className={cn(
+                  "px-4 py-1.5 text-sm rounded-lg transition-all whitespace-nowrap",
+                  active
+                    ? "bg-white text-blue-600 font-semibold shadow-sm"
+                    : "text-gray-500 font-medium hover:text-gray-900"
+                )}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 検索は画面遷移させず、この場でフィードを絞り込む */}
+        <div className="relative flex-1 min-w-0 max-w-xs">
+          <svg
+            className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+          </svg>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="作品・作家を検索"
+            aria-label="作品・作家を検索"
+            className="w-full pl-9 pr-3 py-1.5 text-sm bg-white border border-gray-200 rounded-lg placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+          />
+        </div>
       </div>
+
+      {query.trim() && !loading && (
+        <p className="px-4 pt-3 text-xs text-komapara-muted">
+          「{query.trim()}」の検索結果 {works.length}件
+        </p>
+      )}
 
       {/* カテゴリフィルター */}
       <div className="flex gap-2 px-4 py-2 overflow-x-auto no-scrollbar">

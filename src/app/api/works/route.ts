@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const sort = searchParams.get("sort") || "new";
     const genre = searchParams.get("genre");
+    const q = searchParams.get("q")?.trim();
     const page = parseInt(searchParams.get("page") || "1");
     const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 50);
     const skip = (page - 1) * limit;
@@ -21,6 +22,15 @@ export async function GET(request: NextRequest) {
 
     if (genre) {
       where.tags = { some: { slug: genre } };
+    }
+
+    // キーワード検索（トップのフィードから画面遷移せずに絞り込むため）
+    if (q) {
+      where.OR = [
+        { title: { contains: q, mode: "insensitive" } },
+        { description: { contains: q, mode: "insensitive" } },
+        { author: { is: { name: { contains: q, mode: "insensitive" } } } },
+      ];
     }
 
     if (sort === "following" && session?.user?.id) {
