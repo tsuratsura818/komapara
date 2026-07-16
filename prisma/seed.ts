@@ -24,7 +24,7 @@ const COLORS = [
 ];
 
 function panelUrl(color: { bg: string; fg: string }, text: string) {
-  return `https://placehold.co/800x800/${color.bg}/${color.fg}?text=${encodeURIComponent(text)}`;
+  return `https://placehold.co/800x800/${color.bg}/${color.fg}/png?text=${encodeURIComponent(text)}`;
 }
 
 const SAMPLE_AUTHORS = [
