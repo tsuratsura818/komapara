@@ -80,11 +80,8 @@ export default async function WorkDetailPage({ params }: Props) {
 
   if (!work) notFound();
 
-  // 閲覧カウントをバックグラウンドで更新（エラーでも画面表示に影響しない）
-  prisma.work.update({
-    where: { id: params.id },
-    data: { viewCount: { increment: 1 } },
-  }).catch(() => {});
+  // 閲覧カウント・閲覧履歴は WorkViewer マウント時のビーコン(/api/works/[id]/view)で計上する
+  // （GET/描画中の副作用を避け、bot/プリフェッチでの過剰カウントを防ぐ）
 
   // いいね状態 + リアクション情報
   let userReaction: string | null = null;
@@ -111,15 +108,6 @@ export default async function WorkDetailPage({ params }: Props) {
     ]);
     userReaction = like?.reaction || null;
     isFollowingAuthor = !!follow;
-
-    // 閲覧履歴を記録
-    prisma.readHistory.upsert({
-      where: {
-        userId_workId: { userId: session.user.id, workId: work.id },
-      },
-      update: { readAt: new Date() },
-      create: { userId: session.user.id, workId: work.id },
-    }).catch(() => {});
   }
 
   // リアクション内訳

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 export async function GET(
   request: NextRequest,
@@ -10,9 +11,9 @@ export async function GET(
     const session = await auth();
     const { id } = params;
 
-    const work = await prisma.work.update({
+    // 閲覧計上は POST /api/works/[id]/view に集約（GETは副作用なし）
+    const work = await prisma.work.findUnique({
       where: { id },
-      data: { viewCount: { increment: 1 } },
       include: {
         author: {
           select: {
@@ -42,6 +43,10 @@ export async function GET(
           : {}),
       },
     });
+
+    if (!work) {
+      return NextResponse.json({ error: "作品が見つかりません" }, { status: 404 });
+    }
 
     // フォロー状態チェック
     let isFollowingAuthor = false;
@@ -76,8 +81,8 @@ export async function GET(
   } catch (error) {
     console.error("GET /api/works/[id] error:", error);
     return NextResponse.json(
-      { error: "作品が見つかりません" },
-      { status: 404 }
+      { error: "作品の取得に失敗しました" },
+      { status: 500 }
     );
   }
 }
@@ -131,6 +136,10 @@ export async function PATCH(
       },
     });
 
+    revalidatePath("/");
+    revalidatePath("/genre/[slug]", "page");
+    revalidatePath(`/work/${params.id}`);
+
     return NextResponse.json({
       id: updated.id,
       title: updated.title,
@@ -173,6 +182,10 @@ export async function DELETE(
     }
 
     await prisma.work.delete({ where: { id: params.id } });
+
+    revalidatePath("/");
+    revalidatePath("/genre/[slug]", "page");
+
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error("DELETE /api/works/[id] error:", error);

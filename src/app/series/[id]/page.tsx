@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+// シリーズ一覧（公開・ユーザー個別状態なし）。ISRで配信
+export const revalidate = 1800;
 
 type Props = { params: { id: string } };
 

@@ -5,7 +5,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+// 公開のジャンル一覧（ユーザー個別状態なし）。ISRで配信しDB負荷を抑える
+export const revalidate = 3600;
 
 type Props = { params: { slug: string } };
 

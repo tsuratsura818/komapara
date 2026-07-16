@@ -58,6 +58,16 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
   const [submitting, setSubmitting] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+  const viewedRef = useRef(false);
+
+  // 閲覧計上（マウント時に1回だけビーコン送信。GETの副作用ではなくここに集約）
+  useEffect(() => {
+    if (viewedRef.current) return;
+    viewedRef.current = true;
+    fetch(`/api/works/${work.id}/view`, { method: "POST", keepalive: true }).catch(
+      () => {}
+    );
+  }, [work.id]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {

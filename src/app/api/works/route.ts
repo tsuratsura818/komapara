@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { notifyFollowers } from "@/lib/notifications";
 import { requireUser } from "@/lib/admin";
+import { revalidatePath } from "next/cache";
 
 export async function GET(request: NextRequest) {
   try {
@@ -149,6 +150,10 @@ export async function POST(request: NextRequest) {
       work.title,
       work.panels[0]
     ).catch((err) => console.error("Follower notification error:", err));
+
+    // ISRキャッシュを無効化して新作を即時反映（ホーム・ジャンル一覧）
+    revalidatePath("/");
+    revalidatePath("/genre/[slug]", "page");
 
     return NextResponse.json(work, { status: 201 });
   } catch (error) {

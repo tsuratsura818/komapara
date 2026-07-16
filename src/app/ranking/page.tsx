@@ -3,7 +3,8 @@ import { getWeekStart } from "@/lib/ranking";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+// 週間ランキング（公開・ユーザー個別状態なし）。ISRで配信
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "週間ランキング",
