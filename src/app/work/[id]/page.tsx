@@ -204,11 +204,12 @@ export default async function WorkDetailPage(props: Props) {
           fixed で画面全体の背面に敷き、白い誌面をその上に乗せる */}
       <div className="fixed inset-0 -z-10 reading-bg" aria-hidden="true" />
 
-      {/* 通報ボタンは WorkViewer 内でクライアント判定して表示 */}
-      <WorkViewer work={workData} tipsEnabled={tipsEnabled} />
+      {/* 誌面。柄の地から1枚の紙として浮かせる。ブロックを分けると継ぎ目に
+          影の線が出るため、読む部分から広告・シリーズナビまでを1枚に収める */}
+      <div className="max-w-2xl mx-auto bg-white pb-2 sm:mt-5 sm:rounded-2xl sm:shadow-[0_2px_28px_rgba(15,23,42,0.13)] sm:ring-1 sm:ring-black/5">
+        {/* 通報ボタンは WorkViewer 内でクライアント判定して表示 */}
+        <WorkViewer work={workData} tipsEnabled={tipsEnabled} />
 
-      {/* 以降も誌面の続きとして白地に乗せる（柄の上に素で置くと浮くため） */}
-      <div className="max-w-2xl mx-auto bg-white sm:shadow-sm sm:ring-1 sm:ring-black/5 sm:mt-px">
         {/* 広告（シリーズナビの前）。プレミアム非表示はAdSlotがセッションで判定 */}
         <div className="px-4 pt-4">
           <AdSlot ad={workAd} slot="work-detail" />
