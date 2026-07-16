@@ -110,14 +110,14 @@ export function ImportFromX({ onImportComplete, onBack }: Props) {
             value={importUrl}
             onChange={(e) => setImportUrl(e.target.value)}
             placeholder="https://x.com/user/status/..."
-            className="flex-1 px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-primary-500"
+            className="flex-1 px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-accent"
             disabled={importing}
           />
           <button
             type="button"
             onClick={handleImport}
             disabled={importing || !importUrl.trim()}
-            className="px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+            className="px-5 py-2 text-sm font-bold text-white bg-accent rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
           >
             {importing ? "取得中..." : "取得"}
           </button>

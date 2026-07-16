@@ -127,15 +127,14 @@ export function ImportFromInstagram({ onImportComplete, onBack, onSwitchToDirect
             value={importUrl}
             onChange={(e) => setImportUrl(e.target.value)}
             placeholder="https://www.instagram.com/p/..."
-            className="flex-1 px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-primary-500"
+            className="flex-1 px-3 py-2 border border-komapara-border rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-accent"
             disabled={importing}
           />
           <button
             type="button"
             onClick={handleImport}
             disabled={importing || !importUrl.trim()}
-            className="px-4 py-2 text-sm font-medium text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-            style={{ background: "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" }}
+            className="px-5 py-2 text-sm font-bold text-white bg-accent rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
           >
             {importing ? "取得中..." : "取得"}
           </button>
