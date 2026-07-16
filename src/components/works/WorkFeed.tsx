@@ -185,7 +185,6 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
             {(index + 1) % 5 === 0 && (
               <div className="mt-4">
                 <AdSlot
-                  isPremium={session?.user?.isPremium ?? false}
                   ad={feedAds.length > 0 ? feedAds[Math.floor(index / 5) % feedAds.length] : null}
                   slot={`feed-${index}`}
                 />

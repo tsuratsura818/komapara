@@ -6,6 +6,29 @@ import { getSiteSetting } from "@/lib/admin";
 import { isStripeEnabled } from "@/lib/stripe";
 import { PLATFORM_SUB_FEE_RATE } from "@/lib/fees";
 
+// GET: 指定クリエイターへの現在ユーザーの購読状態（creatorページのISR化で個別状態を分離）
+export async function GET(request: NextRequest) {
+  const session = await auth();
+  const creatorId = new URL(request.url).searchParams.get("creatorId");
+  if (!session?.user?.id || !creatorId) {
+    return NextResponse.json({ subscription: null });
+  }
+  const sub = await prisma.subscription
+    .findUnique({
+      where: {
+        subscriberId_creatorId: { subscriberId: session.user.id, creatorId },
+      },
+      include: { plan: { select: { name: true, price: true } } },
+    })
+    .catch(() => null);
+  return NextResponse.json({
+    subscription:
+      sub && sub.status === "active"
+        ? { id: sub.id, status: sub.status, plan: sub.plan }
+        : null,
+  });
+}
+
 // POST: サブスクリプション開始
 export async function POST(request: NextRequest) {
   try {

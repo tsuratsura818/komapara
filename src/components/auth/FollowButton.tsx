@@ -1,16 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
-export function FollowButton({
-  userId,
-  initialFollowing,
-}: {
-  userId: string;
-  initialFollowing: boolean;
-}) {
-  const [following, setFollowing] = useState(initialFollowing);
+export function FollowButton({ userId }: { userId: string }) {
+  const { data: session } = useSession();
+  const [following, setFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  // フォロー状態はクライアントで取得（creatorページのISR共有キャッシュ化のため）
+  useEffect(() => {
+    if (!session?.user?.id) {
+      setVisible(false);
+      return;
+    }
+    fetch(`/api/follows/${userId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!d || d.isSelf) {
+          setVisible(false);
+          return;
+        }
+        setFollowing(d.following);
+        setVisible(true);
+      })
+      .catch(() => {});
+  }, [session?.user?.id, userId]);
+
+  if (!visible) return null;
 
   const handleToggle = async () => {
     setLoading(true);

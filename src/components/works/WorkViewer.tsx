@@ -7,6 +7,7 @@ import Image from "next/image";
 import { formatRelativeTime } from "@/lib/utils";
 import { AdsenseUnit } from "@/components/ui/AdsenseUnit";
 import { TipButton } from "./TipButton";
+import { ReportButton } from "./ReportButton";
 
 const REACTIONS = [
   { type: "like", emoji: "❤️", label: "いいね" },
@@ -47,12 +48,14 @@ type WorkDetail = {
   comments: Comment[];
 };
 
-export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { work: WorkDetail; tipsEnabled?: boolean; isPremium?: boolean }) {
+export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tipsEnabled?: boolean }) {
   const { data: session } = useSession();
+  const isPremium = !!session?.user?.isPremium;
   const [userReaction, setUserReaction] = useState(work.userReaction);
   const [reactionCounts, setReactionCounts] = useState(work.reactionCounts);
   const [likeCount, setLikeCount] = useState(work.likeCount);
   const [following, setFollowing] = useState(work.isFollowingAuthor);
+  const [isOwnWork, setIsOwnWork] = useState(false);
   const [comments, setComments] = useState(work.comments);
   const [commentText, setCommentText] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -68,6 +71,26 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
       () => {}
     );
   }, [work.id]);
+
+  // ユーザー個別状態（自分のリアクション/フォロー/自作品か）をクライアントで取得
+  // → ページ本体をISR(共有キャッシュ)化しても他人の状態が混ざらない
+  useEffect(() => {
+    if (!session?.user?.id) {
+      setUserReaction(null);
+      setFollowing(false);
+      setIsOwnWork(false);
+      return;
+    }
+    fetch(`/api/works/${work.id}/me`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!d) return;
+        setUserReaction(d.userReaction);
+        setFollowing(d.isFollowingAuthor);
+        setIsOwnWork(d.isOwnWork);
+      })
+      .catch(() => {});
+  }, [session?.user?.id, work.id]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -428,6 +451,13 @@ export function WorkViewer({ work, tipsEnabled = true, isPremium = false }: { wo
       <div className="px-4 py-3">
         <AdsenseUnit slot="work-detail-2" isPremium={isPremium} />
       </div>
+
+      {/* 通報（ログイン時・自作品以外） */}
+      {session?.user?.id && !isOwnWork && (
+        <div className="px-4 pb-2 flex justify-end">
+          <ReportButton workId={work.id} />
+        </div>
+      )}
     </div>
   );
 }

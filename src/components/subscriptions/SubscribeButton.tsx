@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { SubscribeModal } from "./SubscribeModal";
 
@@ -36,6 +36,20 @@ export function SubscribeButton({
   const [showModal, setShowModal] = useState(false);
   const [subscription, setSubscription] = useState(currentSubscription || null);
   const [cancelling, setCancelling] = useState(false);
+
+  // 購読状態はクライアントで取得（creatorページのISR共有キャッシュ化のため）
+  useEffect(() => {
+    if (!session?.user?.id) {
+      setSubscription(null);
+      return;
+    }
+    fetch(`/api/subscriptions?creatorId=${creatorId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d) setSubscription(d.subscription);
+      })
+      .catch(() => {});
+  }, [session?.user?.id, creatorId]);
 
   if (!subscriptionsEnabled || plans.length === 0) return null;
 

@@ -1,12 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
 import { WorkCard } from "@/components/works/WorkCard";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { FollowButton } from "@/components/auth/FollowButton";
 import { SubscribeButton } from "@/components/subscriptions/SubscribeButton";
 
-export const dynamic = "force-dynamic";
+// 公開の作家ページ（フォロー/購読状態はクライアントが自己フェッチ）。ISRで配信
+export const revalidate = 1800;
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -22,7 +22,6 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function CreatorPage(props: Props) {
   const params = await props.params;
-  const session = await auth();
 
   const user = await prisma.user.findUnique({
     where: { id: params.id },
@@ -73,34 +72,7 @@ export default async function CreatorPage(props: Props) {
     }).catch(() => []),
   ]);
   const subscriptionsEnabled = subSetting?.value !== "false";
-
-  let isFollowing = false;
-  let currentSubscription = null as { id: string; status: string; plan: { name: string; price: number } } | null;
-  if (session?.user?.id && session.user.id !== user.id) {
-    const [follow, sub] = await Promise.all([
-      prisma.follow.findUnique({
-        where: {
-          followerId_followingId: {
-            followerId: session.user.id,
-            followingId: user.id,
-          },
-        },
-      }),
-      prisma.subscription.findUnique({
-        where: {
-          subscriberId_creatorId: {
-            subscriberId: session.user.id,
-            creatorId: user.id,
-          },
-        },
-        include: { plan: { select: { name: true, price: true } } },
-      }).catch(() => null),
-    ]);
-    isFollowing = !!follow;
-    if (sub && sub.status === "active") {
-      currentSubscription = { id: sub.id, status: sub.status, plan: sub.plan };
-    }
-  }
+  // フォロー/購読の個別状態は FollowButton / SubscribeButton がクライアントで自己取得する
 
   return (
     <div>
@@ -122,11 +94,10 @@ export default async function CreatorPage(props: Props) {
             </div>
           )}
 
-          {session?.user?.id !== user.id && session && (
-            <div className="mb-1">
-              <FollowButton userId={user.id} initialFollowing={isFollowing} />
-            </div>
-          )}
+          {/* FollowButton は自身でセッション/自作品を判定し表示制御する */}
+          <div className="mb-1">
+            <FollowButton userId={user.id} />
+          </div>
         </div>
 
         <h1 className="text-lg font-bold text-komapara-text">{user.name}</h1>
@@ -183,7 +154,6 @@ export default async function CreatorPage(props: Props) {
               creatorId={user.id}
               creatorName={user.name}
               plans={subPlans}
-              currentSubscription={currentSubscription}
               subscriptionsEnabled={subscriptionsEnabled}
             />
           </div>

@@ -1,14 +1,13 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
 import { WorkViewer } from "@/components/works/WorkViewer";
 import { WorkCard } from "@/components/works/WorkCard";
 import { SeriesNav } from "@/components/series/SeriesNav";
 import { AdSlot } from "@/components/ui/AdSlot";
-import { ReportButton } from "@/components/works/ReportButton";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+// 公開の作品詳細（ユーザー個別状態はクライアントが自己フェッチ）。ISRで配信
+export const revalidate = 300;
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -54,7 +53,6 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function WorkDetailPage(props: Props) {
   const params = await props.params;
-  const session = await auth();
 
   const work = await prisma.work.findUnique({
     where: { id: params.id },
@@ -82,37 +80,11 @@ export default async function WorkDetailPage(props: Props) {
 
   if (!work) notFound();
 
-  // 閲覧カウント・閲覧履歴は WorkViewer マウント時のビーコン(/api/works/[id]/view)で計上する
-  // （GET/描画中の副作用を避け、bot/プリフェッチでの過剰カウントを防ぐ）
+  // 閲覧カウント・閲覧履歴は WorkViewer マウント時のビーコン(/api/works/[id]/view)で計上する。
+  // 自分のリアクション/フォロー状態は WorkViewer が /api/works/[id]/me から自己取得するため、
+  // ここ（共有キャッシュされるサーバー描画）では個別状態を一切持たない。
 
-  // いいね状態 + リアクション情報
-  let userReaction: string | null = null;
-  let isFollowingAuthor = false;
-
-  if (session?.user?.id) {
-    const [like, follow] = await Promise.all([
-      prisma.like.findUnique({
-        where: {
-          userId_workId: { userId: session.user.id, workId: work.id },
-        },
-        select: { reaction: true },
-      }),
-      session.user.id !== work.authorId
-        ? prisma.follow.findUnique({
-            where: {
-              followerId_followingId: {
-                followerId: session.user.id,
-                followingId: work.authorId,
-              },
-            },
-          })
-        : null,
-    ]);
-    userReaction = like?.reaction || null;
-    isFollowingAuthor = !!follow;
-  }
-
-  // リアクション内訳
+  // リアクション内訳（公開情報）
   const reactionGroups = await prisma.like.groupBy({
     by: ["reaction"],
     where: { workId: work.id },
@@ -126,16 +98,6 @@ export default async function WorkDetailPage(props: Props) {
   // 投げ銭機能の有効/無効
   const tipSetting = await prisma.siteSetting.findUnique({ where: { key: "tips_enabled" } }).catch(() => null);
   const tipsEnabled = tipSetting?.value !== "false";
-
-  // プレミアム状態
-  let isPremium = false;
-  if (session?.user?.id) {
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { isPremium: true, premiumExpiry: true },
-    });
-    isPremium = !!(user?.isPremium && user?.premiumExpiry && new Date(user.premiumExpiry) > new Date());
-  }
 
   // シリーズ前後ナビ
   let seriesNav = null as {
@@ -214,31 +176,24 @@ export default async function WorkDetailPage(props: Props) {
     commentCount: work._count.comments,
     xPostUrl: work.xPostUrl,
     createdAt: work.createdAt.toISOString(),
-    userReaction,
+    // 個別状態はクライアントが /api/works/[id]/me から取得（ISR共有キャッシュのため既定値）
+    userReaction: null,
     reactionCounts,
-    isFollowingAuthor,
+    isFollowingAuthor: false,
     comments: work.comments.map((c) => ({
       ...c,
       createdAt: c.createdAt.toISOString(),
     })),
   };
 
-  const isOwnWork = session?.user?.id === work.authorId;
-
   return (
     <div>
-      <WorkViewer work={workData} tipsEnabled={tipsEnabled} isPremium={isPremium} />
+      {/* 通報ボタンは WorkViewer 内でクライアント判定して表示 */}
+      <WorkViewer work={workData} tipsEnabled={tipsEnabled} />
 
-      {/* 通報ボタン（自分の作品以外・ログイン時） */}
-      {session?.user?.id && !isOwnWork && (
-        <div className="px-4 flex justify-end">
-          <ReportButton workId={work.id} />
-        </div>
-      )}
-
-      {/* 広告（シリーズナビの前） */}
+      {/* 広告（シリーズナビの前）。プレミアム非表示はAdSlotがセッションで判定 */}
       <div className="px-4 pt-4">
-        <AdSlot isPremium={isPremium} ad={workAd} slot="work-detail" />
+        <AdSlot ad={workAd} slot="work-detail" />
       </div>
 
       {/* シリーズナビ */}

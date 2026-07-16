@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { AdsenseUnit } from "./AdsenseUnit";
 
 type Ad = {
@@ -11,13 +12,14 @@ type Ad = {
 };
 
 type AdSlotProps = {
-  isPremium?: boolean;
   ad?: Ad | null;
   slot: string;
 };
 
-export function AdSlot({ isPremium = false, ad, slot }: AdSlotProps) {
-  if (isPremium) return null;
+export function AdSlot({ ad, slot }: AdSlotProps) {
+  const { data: session } = useSession();
+  // プレミアム判定はクライアントのセッションで行う（ページをISR共有キャッシュ化するため）
+  if (session?.user?.isPremium) return null;
 
   if (ad) {
     const handleClick = () => {

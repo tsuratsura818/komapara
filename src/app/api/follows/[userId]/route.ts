@@ -4,6 +4,27 @@ import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendNotification } from "@/lib/notifications";
 
+// 現在ユーザーのフォロー状態を返す（creatorページのISR化に伴い、個別状態を分離）
+export async function GET(_request: NextRequest, props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ following: false, isSelf: false });
+  }
+  if (session.user.id === params.userId) {
+    return NextResponse.json({ following: false, isSelf: true });
+  }
+  const follow = await prisma.follow.findUnique({
+    where: {
+      followerId_followingId: {
+        followerId: session.user.id,
+        followingId: params.userId,
+      },
+    },
+  });
+  return NextResponse.json({ following: !!follow, isSelf: false });
+}
+
 export async function POST(request: NextRequest, props: { params: Promise<{ userId: string }> }) {
   const params = await props.params;
   try {
