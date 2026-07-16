@@ -249,7 +249,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               alt={`${work.title} - ${index + 1}コマ目`}
               width={0}
               height={0}
-              sizes="(max-width: 576px) 84vw, 460px"
+              sizes="(max-width: 768px) 84vw, 614px"
               style={{ width: '100%', height: 'auto' }}
               priority={index === 0}
             />
