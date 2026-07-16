@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 import { processImageToWebP } from "@/lib/image";
+import { fetchImageSafely } from "@/lib/safe-image-fetch";
 
 function extractTweetId(url: string): string | null {
   const match = url.match(/(?:x\.com|twitter\.com)\/\w+\/status\/(\d+)/);
@@ -24,10 +25,8 @@ type FetchedPost = {
 // 複数URLを一括取得（プレビュー用）
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-    }
+    const { error, session } = await requireUser();
+    if (error) return error;
 
     const { success } = await rateLimit(`x-sync:${session.user.id}`, {
       limit: 10,
@@ -201,10 +200,7 @@ async function handleImport(
       // 画像をダウンロードしてWebP変換してVercel Blobに保存
       const savedUrls: string[] = [];
       for (const imageUrl of post.images) {
-        const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(15000) });
-        if (!imgRes.ok) throw new Error("画像ダウンロード失敗");
-
-        const buffer = Buffer.from(await imgRes.arrayBuffer());
+        const buffer = await fetchImageSafely(imageUrl);
         const uuid = randomUUID();
         const processed = await processImageToWebP(buffer, uuid);
 

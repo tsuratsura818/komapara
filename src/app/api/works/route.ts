@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { notifyFollowers } from "@/lib/notifications";
+import { requireUser } from "@/lib/admin";
 
 export async function GET(request: NextRequest) {
   try {
@@ -85,10 +86,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-    }
+    const { error, session } = await requireUser();
+    if (error) return error;
 
     const { success } = await rateLimit(`works:post:${session.user.id}`, {
       limit: 10,

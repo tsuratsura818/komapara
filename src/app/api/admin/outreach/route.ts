@@ -1,20 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-
-async function checkAdmin() {
-  const session = await auth();
-  if (session?.user?.email !== process.env.ADMIN_EMAIL) {
-    return null;
-  }
-  return session;
-}
+import { requireAdminApi } from "@/lib/admin";
 
 // 一覧取得
 export async function GET(request: NextRequest) {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "権限がありません" }, { status: 403 });
-  }
+  const { error } = await requireAdminApi();
+  if (error) return error;
 
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status");
@@ -34,9 +25,8 @@ export async function GET(request: NextRequest) {
 
 // 新規追加
 export async function POST(request: NextRequest) {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "権限がありません" }, { status: 403 });
-  }
+  const { error } = await requireAdminApi();
+  if (error) return error;
 
   const body = await request.json();
   const { xHandle, name, genre, followers, note } = body as {

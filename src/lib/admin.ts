@@ -42,6 +42,30 @@ export async function requireAdminApi() {
   return { error: null, session };
 }
 
+/**
+ * API Route用ガード。ログイン必須かつBANされていないことを保証する。
+ * 認証エラー(401)/BAN(403)時は error を返す。
+ */
+export async function requireUser() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return {
+      error: NextResponse.json({ error: "ログインが必要です" }, { status: 401 }),
+      session: null,
+    };
+  }
+  if (session.user.isBanned) {
+    return {
+      error: NextResponse.json(
+        { error: "アカウントが利用停止されています" },
+        { status: 403 }
+      ),
+      session: null,
+    };
+  }
+  return { error: null, session };
+}
+
 /** SiteSettingテーブルから値を取得。未設定ならデフォルト値を返す */
 export async function getSiteSetting(
   key: string,

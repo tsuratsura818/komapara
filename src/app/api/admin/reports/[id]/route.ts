@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requireAdminApi } from "@/lib/admin";
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const session = await auth();
-  if (session?.user?.email !== process.env.ADMIN_EMAIL) {
-    return NextResponse.json({ error: "権限がありません" }, { status: 403 });
-  }
+  const { error } = await requireAdminApi();
+  if (error) return error;
 
   const body = await request.formData().catch(() => null);
   const status = body?.get("status") as string | null;

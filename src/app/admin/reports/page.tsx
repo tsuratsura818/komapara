@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { requireAdmin } from "@/lib/admin";
 import Link from "next/link";
 
 const REASON_LABELS: Record<string, string> = {
@@ -11,11 +10,7 @@ const REASON_LABELS: Record<string, string> = {
 };
 
 export default async function AdminReportsPage() {
-  const session = await auth();
-  const adminEmail = process.env.ADMIN_EMAIL;
-  if (!session?.user?.email || session.user.email !== adminEmail) {
-    redirect("/");
-  }
+  await requireAdmin();
 
   const reports = await prisma.report.findMany({
     orderBy: { createdAt: "desc" },

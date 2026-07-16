@@ -1,23 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-
-async function checkAdmin() {
-  const session = await auth();
-  if (session?.user?.email !== process.env.ADMIN_EMAIL) {
-    return null;
-  }
-  return session;
-}
+import { requireAdminApi } from "@/lib/admin";
 
 // 更新
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "権限がありません" }, { status: 403 });
-  }
+  const { error } = await requireAdminApi();
+  if (error) return error;
 
   const body = await request.json();
   const { status, note, followers, dmSentAt, repliedAt } = body as {
@@ -48,9 +39,8 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "権限がありません" }, { status: 403 });
-  }
+  const { error } = await requireAdminApi();
+  if (error) return error;
 
   await prisma.creatorOutreach.delete({ where: { id: params.id } });
   return NextResponse.json({ success: true });

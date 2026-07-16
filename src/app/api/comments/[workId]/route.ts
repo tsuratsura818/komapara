@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/admin";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendNotification } from "@/lib/notifications";
 
@@ -42,10 +42,8 @@ export async function POST(
   { params }: { params: { workId: string } }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-    }
+    const { error, session } = await requireUser();
+    if (error) return error;
 
     const { success } = await rateLimit(`comments:post:${session.user.id}`, {
       limit: 30,

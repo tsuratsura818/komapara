@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/admin";
 import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 import { processImageToWebP } from "@/lib/image";
+import { fetchImageSafely } from "@/lib/safe-image-fetch";
 
 function extractShortcode(url: string): string | null {
   const match = url.match(
@@ -693,10 +694,8 @@ async function fetchOEmbedInfo(url: string): Promise<{
 // ============================================================
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-    }
+    const { error, session } = await requireUser();
+    if (error) return error;
 
     const { success } = await rateLimit(`import-ig:${session.user.id}`, {
       limit: 20,
@@ -789,20 +788,17 @@ export async function POST(request: NextRequest) {
 
         let downloaded = false;
         for (const tryUrl of urlsToTry) {
-          const imgRes = await fetch(tryUrl, {
-            headers: {
-              "User-Agent": BROWSER_UA,
-              Referer: "https://www.instagram.com/",
-            },
-            signal: AbortSignal.timeout(15000),
-          });
-          if (imgRes.ok) {
-            buffer = Buffer.from(await imgRes.arrayBuffer());
+          try {
+            buffer = await fetchImageSafely(tryUrl, {
+              headers: {
+                "User-Agent": BROWSER_UA,
+                Referer: "https://www.instagram.com/",
+              },
+            });
             downloaded = true;
-            console.log(`[IG] Downloaded: ${tryUrl.slice(0, 120)}... (${buffer.length} bytes)`);
             break;
-          } else {
-            console.warn(`[IG] Download failed (${imgRes.status}): ${tryUrl.slice(0, 120)}`);
+          } catch (e) {
+            console.warn(`[IG] Download failed: ${tryUrl.slice(0, 120)} — ${(e as Error).message}`);
           }
         }
         if (!downloaded) {

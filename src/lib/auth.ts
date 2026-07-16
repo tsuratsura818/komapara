@@ -29,13 +29,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async session({ session, user }) {
       session.user.id = user.id;
-      // プレミアム状態を取得（期限チェック付き）
+      // プレミアム状態・BAN状態を取得（プレミアムは期限チェック付き）
       const dbUser = await prisma.user.findUnique({
         where: { id: user.id },
-        select: { isPremium: true, premiumExpiry: true },
+        select: { isPremium: true, premiumExpiry: true, isBanned: true },
       });
       session.user.isPremium =
         (dbUser?.isPremium && dbUser?.premiumExpiry && new Date(dbUser.premiumExpiry) > new Date()) ?? false;
+      session.user.isBanned = dbUser?.isBanned ?? false;
       return session;
     },
   },

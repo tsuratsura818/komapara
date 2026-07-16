@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { requireUser } from "@/lib/admin";
 import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 import { processImageToWebP } from "@/lib/image";
+import { fetchImageSafely } from "@/lib/safe-image-fetch";
 
 function extractTweetId(url: string): string | null {
   const match = url.match(
@@ -14,10 +15,8 @@ function extractTweetId(url: string): string | null {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-    }
+    const { error, session } = await requireUser();
+    if (error) return error;
 
     const { success } = await rateLimit(`import-x:${session.user.id}`, {
       limit: 20,
@@ -93,15 +92,10 @@ export async function POST(request: NextRequest) {
       const imageUrl = photo.url;
       if (!imageUrl) continue;
 
-      // 画像ダウンロード
+      // 画像ダウンロード（SSRF対策済みの安全なfetch）
       let buffer: Buffer;
       try {
-        const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(15000) });
-        if (!imgRes.ok) {
-          console.error(`Image download failed: ${imgRes.status} for ${imageUrl}`);
-          continue;
-        }
-        buffer = Buffer.from(await imgRes.arrayBuffer());
+        buffer = await fetchImageSafely(imageUrl);
       } catch (e) {
         console.error("Image download error:", e);
         continue;

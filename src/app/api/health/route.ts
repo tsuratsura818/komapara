@@ -1,21 +1,35 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { isAdminUser } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  // DB疎通のboolだけは公開（アップタイム監視用）。詳細は管理者のみ。
   const checks: Record<string, unknown> = {};
 
-  // DB接続テスト
+  try {
+    await prisma.user.count();
+    checks.db = { ok: true };
+  } catch {
+    checks.db = { ok: false };
+  }
+
+  // 管理者以外にはenv構成・件数・セッション詳細を出さない（情報漏えい防止）
+  const session = await auth().catch(() => null);
+  const isAdmin = !!session?.user?.id && isAdminUser(session.user.id);
+  if (!isAdmin) {
+    return NextResponse.json(checks);
+  }
+
   try {
     const userCount = await prisma.user.count();
     checks.db = { ok: true, userCount };
   } catch (e: unknown) {
-    const err = e as Error;
-    checks.db = { ok: false, error: err.message };
+    checks.db = { ok: false, error: (e as Error).message };
   }
 
-  // 環境変数チェック
   checks.env = {
     AUTH_SECRET: !!process.env.AUTH_SECRET,
     AUTH_TRUST_HOST: process.env.AUTH_TRUST_HOST,
@@ -24,16 +38,7 @@ export async function GET() {
     AUTH_GOOGLE_SECRET: !!process.env.AUTH_GOOGLE_SECRET,
     ADMIN_USER_IDS: process.env.ADMIN_USER_IDS ? "set" : "missing",
   };
-
-  // auth テスト
-  try {
-    const { auth } = await import("@/lib/auth");
-    const session = await auth();
-    checks.auth = { ok: true, session: session ? { userId: session.user?.id } : null };
-  } catch (e: unknown) {
-    const err = e as Error;
-    checks.auth = { ok: false, error: err.message };
-  }
+  checks.auth = { ok: true, session: { userId: session!.user!.id } };
 
   return NextResponse.json(checks);
 }

@@ -1,20 +1,11 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-
-async function checkAdmin() {
-  const session = await auth();
-  if (session?.user?.email !== process.env.ADMIN_EMAIL) {
-    return null;
-  }
-  return session;
-}
+import { requireAdminApi } from "@/lib/admin";
 
 // CreatorOutreach と登録済みユーザーのxHandleを突合して自動更新
 export async function POST() {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "権限がありません" }, { status: 403 });
-  }
+  const { error } = await requireAdminApi();
+  if (error) return error;
 
   // まだ「登録済み」でないOutreachのxHandleを取得
   const pendingOutreach = await prisma.creatorOutreach.findMany({
