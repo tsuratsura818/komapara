@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { cleanCaptionForShare } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
@@ -219,7 +220,8 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
 
     // デフォルト: X/Facebook用 横長（1200x630）。作品そのもの＝1コマ目を主役に、クロップせず全体を見せる
     const panelUrl = work.panels[0] || null;
-    const ogDesc = (work.description || "").trim().replace(/\s+/g, " ").slice(0, 90);
+    const cleanedDesc = cleanCaptionForShare(work.description);
+    const ogDesc = cleanedDesc.length >= 10 ? cleanedDesc.slice(0, 90) : "";
 
     return new ImageResponse(
       (

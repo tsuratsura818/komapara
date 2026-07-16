@@ -4,6 +4,7 @@ import { WorkCard } from "@/components/works/WorkCard";
 import { SeriesNav } from "@/components/series/SeriesNav";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { notFound } from "next/navigation";
+import { cleanCaptionForShare } from "@/lib/utils";
 import type { Metadata } from "next";
 
 // 公開の作品詳細（ユーザー個別状態はクライアントが自己フェッチ）。ISRで配信
@@ -25,10 +26,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   if (!work) return { title: "作品が見つかりません" };
 
-  // 投稿時の説明文をシェア文面に使う（無ければ作家名で補完）。改行/連続空白は1つに詰める
+  // 投稿時の説明文をシェア文面に使う。ハッシュタグ・誘導文の定型は除去し、
+  // 実質的な説明が残らなければ作家名で補完する（カードがタグ羅列になるのを防ぐ）
+  const cleaned = cleanCaptionForShare(work.description);
   const shareDescription =
-    work.description?.trim().replace(/\s+/g, " ").slice(0, 110) ||
-    `${work.author.name}の4コマ漫画`;
+    cleaned.length >= 10 ? cleaned.slice(0, 110) : `${work.author.name}の4コマ漫画`;
 
   return {
     title: work.title,
