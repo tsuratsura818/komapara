@@ -20,7 +20,7 @@ XやInstagramに投稿されている作品を、そのままコマパラにも�
 既存のSNS活動はそのまま、もう1つの発信チャンネルとしてお使いいただけます。
 
 ▼ サイト
-https://komapara.vercel.app
+https://komapara.com
 
 もしご興味があれば、ぜひ一度ご覧ください！
 ご質問などもお気軽にどうぞ。
@@ -39,7 +39,7 @@ Xに投稿している4コマをワンタップでインポートできるので
 閲覧数やいいねの分析ダッシュボード、投げ銭機能もあります。
 
 ▼ サイト
-https://komapara.vercel.app
+https://komapara.com
 
 よろしければぜひご覧ください！
 ```
@@ -57,7 +57,7 @@ Xの投稿を1タップでインポートできるので手間なし。
 完全無料、投げ銭・サブスク収益化にも対応しています。
 
 ▼ サイト
-https://komapara.vercel.app
+https://komapara.com
 
 ぜひ一度ご覧いただけると嬉しいです！
 ```
@@ -71,7 +71,7 @@ https://komapara.vercel.app
 Xの4コマをワンタップでインポートでき、新しい読者に届けられます。
 完全無料＋投げ銭収益化あり。
 
-https://komapara.vercel.app
+https://komapara.com
 
 よろしければぜひ！
 ```
