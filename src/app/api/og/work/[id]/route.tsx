@@ -7,6 +7,15 @@ import sharp from "sharp";
 export const runtime = "nodejs";
 
 /**
+ * OG画像は生成に1.5〜2秒かかる（フォント取得＋パネルのJPEG変換＋描画）。
+ * 既定は max-age=0 で毎リクエスト再生成となり、SNSのクローラーが取得に失敗して
+ * 「画像なしカード」になる。CDNにキャッシュさせてクローラーへ即返す。
+ */
+const OG_CACHE_HEADERS = {
+  "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
+};
+
+/**
  * パネル画像をOG画像へ埋め込める形にする。
  * next/og(satori)はWebPをデコードできず、そのままURLを渡すと無言で空白になる。
  * コマパラはパネルを全てWebPで保存しているため、JPEGへ変換してdata URIで埋め込む。
@@ -171,7 +180,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
             </div>
           </div>
         ),
-        { width: 1080, height: 1920, fonts }
+        { width: 1080, height: 1920, fonts, headers: OG_CACHE_HEADERS }
       );
     }
 
@@ -245,7 +254,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
             </div>
           </div>
         ),
-        { width: 1080, height: 1080, fonts }
+        { width: 1080, height: 1080, fonts, headers: OG_CACHE_HEADERS }
       );
     }
 
@@ -352,7 +361,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
           </div>
         </div>
       ),
-      { width: 1200, height: 630, fonts }
+      { width: 1200, height: 630, fonts, headers: OG_CACHE_HEADERS }
     );
   } catch (error) {
     console.error("OGP generation error:", error);
