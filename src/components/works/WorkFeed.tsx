@@ -125,7 +125,7 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
       {/* タブ + キーワード検索
           下線タブは「選択中」しか主張せず、他も選べることが伝わらなかったため、
           枠で囲ったセグメンテッドコントロールにして切り替え可能なことを明示する。 */}
-      <div className="glass border-b border-white/20 sticky top-14 z-40 px-4 py-2 flex items-center gap-3">
+      <div className="glass border-b border-white/20 sticky top-16 sm:top-20 z-40 px-4 py-2 flex items-center gap-3">
         <div className="inline-flex gap-1 p-1 rounded-xl bg-gray-100/80 shrink-0">
           {tabs.map((t) => {
             if (t.requireAuth && !session) return null;

@@ -45,7 +45,7 @@ export function NotificationBell() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-komapara-muted hover:text-gradient-purple transition-colors"
+        className="relative p-2 text-white/75 hover:text-white transition-colors"
         aria-label={`通知${unreadCount > 0 ? `（${unreadCount}件未読）` : ""}`}
       >
         <svg

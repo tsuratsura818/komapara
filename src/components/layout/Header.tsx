@@ -11,23 +11,23 @@ export function Header() {
   if (pathname.startsWith("/admin") || pathname.startsWith("/lp")) return null;
 
   return (
-    <header className="sticky top-0 z-50 glass border-b border-komapara-border">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 h-14 flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-accent">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between">
         {/* Left: Desktop navigation */}
         <nav className="hidden md:flex items-center gap-6 flex-1" aria-label="メインナビゲーション">
-          <Link href="/ranking" className="text-sm text-komapara-muted hover:text-komapara-text transition-colors">
+          <Link href="/ranking" className="text-sm font-medium text-white/75 hover:text-white transition-colors">
             ランキング
           </Link>
-          <Link href="/genre/nichijou" className="text-sm text-komapara-muted hover:text-komapara-text transition-colors">
+          <Link href="/genre/nichijou" className="text-sm font-medium text-white/75 hover:text-white transition-colors">
             ジャンル
           </Link>
-          <Link href="/about" className="text-sm text-komapara-muted hover:text-komapara-text transition-colors">
+          <Link href="/about" className="text-sm font-medium text-white/75 hover:text-white transition-colors">
             About
           </Link>
         </nav>
 
         {/* Center: Logo */}
-        <Link href="/" className="text-xl font-bold gradient-text md:absolute md:left-1/2 md:-translate-x-1/2" aria-label="コマパラ ホーム">
+        <Link href="/" className="text-xl sm:text-2xl font-bold text-white md:absolute md:left-1/2 md:-translate-x-1/2" aria-label="コマパラ ホーム">
           コマパラ
         </Link>
 
@@ -36,7 +36,7 @@ export function Header() {
           <NotificationBell />
           <Link
             href="/search"
-            className="p-2 text-komapara-muted hover:text-gradient-purple transition-colors"
+            className="p-2 text-white/75 hover:text-white transition-colors"
             aria-label="検索"
           >
             <svg
@@ -56,7 +56,7 @@ export function Header() {
 
           <Link
             href="/upload"
-            className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-white bg-gradient-main rounded-xl shadow-xs shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/30 hover:-translate-y-px transition-all duration-150"
+            className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-accent bg-white rounded-xl shadow-sm hover:bg-blue-50 transition-colors"
           >
             + 投稿
           </Link>
