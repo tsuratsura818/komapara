@@ -182,7 +182,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
     <div>
       {/* 見出し。パネルより先に置き、開いた瞬間に「何の作品か」が分かるようにする */}
       <div className="px-4 pt-4 pb-1">
-        <h1 className="text-xl sm:text-2xl font-bold text-komapara-text leading-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-komapara-text leading-tight">
           {work.title}
         </h1>
         {work.genres.length > 0 && (
@@ -297,10 +297,9 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
           </div>
         )}
 
-        {/* アクションボタン: 上段（リアクション + 投げ銭） + 下段（シェア） */}
-        <div className="mt-3 space-y-2">
-          {/* 上段: リアクション + 投げ銭 */}
-          <div className="flex gap-3">
+        {/* アクションボタン（リアクション・投げ銭・シェアを1行に。狭い画面では折り返す） */}
+        <div className="mt-3">
+          <div className="flex gap-2 flex-wrap items-center">
             <div className="relative" ref={pickerRef}>
               <button
                 onClick={() => {
@@ -348,10 +347,6 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               authorName={work.author.name}
               tipsEnabled={tipsEnabled}
             />
-          </div>
-
-          {/* 下段: シェアボタン */}
-          <div className="flex gap-3">
             <button
               onClick={handleShareToX}
               className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium glass text-komapara-muted hover:text-black transition-colors"
