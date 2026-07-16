@@ -28,7 +28,7 @@ function buildRows(tokusho: Record<string, string>) {
     },
     { label: "メールアドレス", value: tokusho.tokusho_email || "未設定" },
     { label: "サービス名", value: "コマパラ" },
-    { label: "サービスURL", value: "https://komapara.vercel.app" },
+    { label: "サービスURL", value: "https://komapara.com" },
     {
       label: "販売価格",
       value:

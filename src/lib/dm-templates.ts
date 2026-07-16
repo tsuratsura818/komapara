@@ -83,7 +83,7 @@ ${appeal}
 既存のSNS活動はそのまま続けていただきつつ、もう1つの発信チャンネルとしてお使いいただけます。
 
 ▼ コマパラ
-https://komapara.vercel.app
+https://komapara.com
 
 ${tone.closing}`;
   }
@@ -121,7 +121,7 @@ ${appeal}
 ・基本利用は完全無料（手数料は収益発生時のみ）
 
 ▼ サイト
-https://komapara.vercel.app
+https://komapara.com
 
 ${tone.closing}`;
 }

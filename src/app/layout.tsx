@@ -16,6 +16,7 @@ const geistSans = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://komapara.com"),
   title: {
     default: "コマパラ - 4コマ漫画ポータル",
     template: "%s | コマパラ",
