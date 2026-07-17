@@ -4,6 +4,7 @@ import { WorkCard } from "@/components/works/WorkCard";
 import { SeriesNav } from "@/components/series/SeriesNav";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { SectionHeading } from "@/components/layout/SectionHeading";
+import { workJsonLd, breadcrumbJsonLd, jsonLdScript } from "@/lib/structured-data";
 import { notFound } from "next/navigation";
 import { cleanCaptionForShare } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -201,6 +202,20 @@ export default async function WorkDetailPage(props: Props) {
 
   return (
     <div>
+      {/* 「これは誰の・何という4コマか」をAIに直接渡す */}
+      <script {...jsonLdScript(workJsonLd(work))} />
+      <script
+        {...jsonLdScript(
+          breadcrumbJsonLd([
+            { name: "ホーム", path: "/" },
+            ...(work.tags[0]
+              ? [{ name: work.tags[0].name, path: `/genre/${work.tags[0].slug}` }]
+              : []),
+            { name: work.title, path: `/work/${work.id}` },
+          ])
+        )}
+      />
+
       {/* 読書面の外側に敷く柄。main が max-w-7xl で幅を持てないため、
           fixed で画面全体の背面に敷き、白い誌面をその上に乗せる */}
       <div className="fixed inset-0 -z-10 reading-bg" aria-hidden="true" />

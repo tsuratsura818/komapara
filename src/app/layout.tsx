@@ -8,6 +8,7 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { PushPermission } from "@/components/notifications/PushPermission";
 import { Analytics } from "@vercel/analytics/next";
+import { siteJsonLd, jsonLdScript, ENTITY_DESCRIPTION } from "@/lib/structured-data";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | コマパラ",
   },
   description:
-    "4コマ漫画に特化した読者向けポータルサイト。お気に入りの4コマを見つけよう！",
+    ENTITY_DESCRIPTION,
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -33,13 +34,13 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "コマパラ",
     title: "コマパラ - 4コマ漫画ポータル",
-    description: "4コマ漫画に特化した読者向けポータルサイト。お気に入りの4コマを見つけよう！",
+    description: ENTITY_DESCRIPTION,
     locale: "ja_JP",
   },
   twitter: {
     card: "summary_large_image",
     title: "コマパラ - 4コマ漫画ポータル",
-    description: "4コマ漫画に特化した読者向けポータルサイト。お気に入りの4コマを見つけよう！",
+    description: ENTITY_DESCRIPTION,
   },
 };
 
@@ -60,19 +61,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} font-sans antialiased bg-komapara-bg text-komapara-text`}
       >
-        {/* Aurora gradient background */}
+        {/* 地。単一アクセント青のみの静かな靄（紫・ピンクは方針外のため廃止） */}
         <div
           className="fixed inset-0 -z-10 pointer-events-none"
           style={{
             backgroundImage: [
-              'radial-gradient(ellipse at 15% 10%, rgba(139,92,246,0.08) 0%, transparent 50%)',
-              'radial-gradient(ellipse at 85% 20%, rgba(59,130,246,0.06) 0%, transparent 45%)',
-              'radial-gradient(ellipse at 50% 50%, rgba(236,72,153,0.05) 0%, transparent 50%)',
-              'radial-gradient(ellipse at 20% 80%, rgba(59,130,246,0.06) 0%, transparent 45%)',
-              'radial-gradient(ellipse at 80% 90%, rgba(139,92,246,0.07) 0%, transparent 50%)',
+              'radial-gradient(ellipse at 15% 10%, rgba(37,99,235,0.05) 0%, transparent 50%)',
+              'radial-gradient(ellipse at 85% 85%, rgba(37,99,235,0.04) 0%, transparent 50%)',
             ].join(', '),
           }}
         />
+
+        {/* コマパラという実体をAIに定義する（全ページ） */}
+        <script {...jsonLdScript(siteJsonLd())} />
+
         <Providers>
           <a
             href="#main-content"

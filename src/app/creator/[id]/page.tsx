@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { highResAvatar } from "@/lib/utils";
+import { creatorJsonLd, breadcrumbJsonLd, jsonLdScript } from "@/lib/structured-data";
 import { WorkCard } from "@/components/works/WorkCard";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -82,8 +83,32 @@ export default async function CreatorPage(props: Props) {
 
   return (
     <div>
-      {/* Profile gradient banner */}
-      <div className="h-24 bg-gradient-main rounded-b-2xl" />
+      {/* 「この作家は誰か」をAIに渡す。sameAsでSNSと同一人物だと示す */}
+      <script
+        {...jsonLdScript(
+          creatorJsonLd({
+            id: user.id,
+            name: user.name,
+            bio: user.bio,
+            image: user.image,
+            xHandle: user.xHandle,
+            instagramHandle: user.instagramHandle,
+            websiteUrl: user.websiteUrl,
+            workCount: user._count.works,
+          })
+        )}
+      />
+      <script
+        {...jsonLdScript(
+          breadcrumbJsonLd([
+            { name: "ホーム", path: "/" },
+            { name: `${user.name}の作品`, path: `/creator/${user.id}` },
+          ])
+        )}
+      />
+
+      {/* プロフィールバナー（単一アクセント青） */}
+      <div className="h-24 bg-accent rounded-b-2xl" />
 
       <div className="px-4 -mt-10">
         {/* プロフィール */}
@@ -158,15 +183,15 @@ export default async function CreatorPage(props: Props) {
 
         <div className="flex gap-4 mt-2 text-sm text-komapara-muted">
           <span>
-            <strong className="gradient-text">{user._count.works}</strong> 作品
+            <strong className="text-accent">{user._count.works}</strong> 作品
           </span>
           <span>
-            <strong className="gradient-text">{user._count.followers}</strong>{" "}
+            <strong className="text-accent">{user._count.followers}</strong>{" "}
             フォロワー
           </span>
           {(tipStats._sum.amount || 0) > 0 && (
             <span>
-              <strong className="bg-linear-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+              <strong className="text-accent">
                 {(tipStats._sum.amount || 0).toLocaleString()}円
               </strong>{" "}
               投げ銭
@@ -174,7 +199,7 @@ export default async function CreatorPage(props: Props) {
           )}
           {subscriberCount > 0 && (
             <span>
-              <strong className="bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
+              <strong className="text-accent">
                 {subscriberCount}
               </strong>{" "}
               購読者
