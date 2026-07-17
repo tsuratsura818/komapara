@@ -57,7 +57,9 @@ export async function POST(request: NextRequest) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   const { error } = await resend.emails.send({
-    from: "コマパラお問い合わせ <onboarding@resend.dev>",
+    // 送信元は認証済みドメインが必要。Resend無料枠は1ドメインまでで、その枠は
+    // tsuratsura.com が使用中のため komapara.com は登録できない（要有料プラン）。
+    from: "コマパラお問い合わせ <noreply@tsuratsura.com>",
     to: process.env.ADMIN_EMAIL,
     replyTo: email,
     subject: `【コマパラ】${categoryLabel}: ${name}様より`,
@@ -73,6 +75,8 @@ export async function POST(request: NextRequest) {
   });
 
   if (error) {
+    // 失敗の中身をログに残す。残さないと「問い合わせが来ない」原因を追えない
+    console.error("contact: Resend送信失敗:", error);
     return NextResponse.json(
       { error: "送信に失敗しました。時間をおいて再度お試しください" },
       { status: 500 }

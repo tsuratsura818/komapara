@@ -47,7 +47,7 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
     if (process.env.RESEND_API_KEY && process.env.ADMIN_EMAIL) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: "コマパラ通知 <onboarding@resend.dev>",
+        from: "コマパラ通知 <noreply@tsuratsura.com>",
         to: process.env.ADMIN_EMAIL,
         subject: `【コマパラ】通報が届きました: ${work.title}`,
         html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
@@ -59,7 +59,11 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
           </ul>
           <p><a href="${process.env.NEXTAUTH_URL}/admin/reports">管理画面で確認する →</a></p>
         </body></html>`.trim(),
-      }).catch(() => {}); // メール失敗してもAPIは成功扱い
+      }).catch((e) => {
+        // 通報自体はDBに保存済みなので、メール失敗でAPIを失敗にはしない。
+        // ただし握りつぶすと通知が来ない原因を追えないためログには残す
+        console.error("report: Resend送信失敗:", e);
+      });
     }
 
     return NextResponse.json({ success: true, reportId: report.id });
