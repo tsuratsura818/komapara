@@ -3,7 +3,9 @@ import Image from "next/image";
 import { LoginButtons } from "@/components/auth/LoginButtons";
 import { prisma } from "@/lib/prisma";
 
-export const revalidate = 300;
+// ビルド時に静的生成しようとするとDBに繋がらず失敗する（Vercelのビルド環境から
+// Neonへは到達できない）。ログインページは事前生成の必要が無いのでリクエスト時に描画する。
+export const dynamic = "force-dynamic";
 
 /**
  * ログインページ。
