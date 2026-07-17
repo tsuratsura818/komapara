@@ -16,7 +16,7 @@ function CreatorChip({ creator, hidden }: { creator: Creator; hidden?: boolean }
   return (
     <Link
       href={`/creator/${creator.id}`}
-      className="flex items-center gap-2.5 shrink-0 pl-2 pr-4 py-2 bg-white rounded-full border border-gray-200 shadow-sm hover:border-blue-200 hover:shadow-md transition-all"
+      className="flex items-center gap-3 shrink-0 pl-2.5 pr-5 py-2.5 bg-white rounded-full border border-gray-200 shadow-sm hover:border-blue-200 hover:shadow-md transition-all"
       tabIndex={hidden ? -1 : undefined}
       aria-hidden={hidden}
     >
@@ -25,16 +25,16 @@ function CreatorChip({ creator, hidden }: { creator: Creator; hidden?: boolean }
         <img
           src={highResAvatar(creator.image) as string}
           alt=""
-          className="w-9 h-9 rounded-full object-cover ring-2 ring-blue-100 shrink-0"
+          className="w-14 h-14 rounded-full object-cover ring-2 ring-blue-100 shrink-0"
         />
       ) : (
-        <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium shrink-0">
+        <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium shrink-0">
           {creator.name?.[0] || "?"}
         </div>
       )}
       <div className="min-w-0">
-        <p className="text-sm font-medium text-komapara-text whitespace-nowrap">{creator.name}</p>
-        <p className="text-[11px] text-komapara-muted whitespace-nowrap">{creator.workCount}作品</p>
+        <p className="text-base font-semibold text-komapara-text whitespace-nowrap">{creator.name}</p>
+        <p className="text-xs text-komapara-muted whitespace-nowrap">{creator.workCount}作品</p>
       </div>
     </Link>
   );
