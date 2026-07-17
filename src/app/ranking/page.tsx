@@ -167,7 +167,7 @@ export default async function RankingPage() {
                     {entry.work.author.name}
                   </p>
                   <div className="flex gap-3 mt-0.5 text-xs text-komapara-muted">
-                    <span className="text-pink-500">♥ {entry.work.likeCount}</span>
+                    <span className="text-komapara-like">♥ {entry.work.likeCount}</span>
                     <span>👁 {entry.work.viewCount}</span>
                     <span className="gradient-text font-medium">
                       スコア: {entry.score}

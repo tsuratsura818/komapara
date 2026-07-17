@@ -10,19 +10,16 @@ const FEATURES = [
     emoji: "📖",
     title: "読む",
     description: "多彩なクリエイターの4コマ漫画をいつでもどこでも楽しめます",
-    gradient: "from-blue-500 to-blue-500",
   },
   {
     emoji: "✏️",
     title: "描く",
     description: "4枚の画像をアップロードするだけで簡単に作品を公開できます",
-    gradient: "from-blue-500 to-cyan-500",
   },
   {
     emoji: "💬",
     title: "つながる",
     description: "いいね・コメント・フォローで作家と読者がつながります",
-    gradient: "from-pink-500 to-blue-500",
   },
 ];
 
@@ -70,11 +67,11 @@ export default function AboutPage() {
               className="glass rounded-xl p-5 text-center relative overflow-hidden"
             >
               <div
-                className={`absolute inset-0 bg-linear-to-br ${feature.gradient} opacity-5`}
+                className="absolute inset-0 bg-accent opacity-5"
               />
               <div className="text-3xl mb-3 relative">{feature.emoji}</div>
               <h3
-                className={`font-bold text-lg relative bg-linear-to-r ${feature.gradient} bg-clip-text text-transparent`}
+                className="font-bold text-lg relative text-accent"
               >
                 {feature.title}
               </h3>

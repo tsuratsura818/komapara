@@ -312,3 +312,20 @@
     linear-gradient(to bottom, rgba(37, 99, 235, 0.045) 1px, transparent 1px);
   background-size: 56px 72px;
 }
+
+/* 参加作家の帯。列を2本並べて1本ぶん流れたら折り返す＝継ぎ目のないループ。
+   transformのみでレイアウト再計算を起こさない。 */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 0.375rem)); } /* 0.375rem = gap-3 の半分 */
+}
+
+@utility animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}

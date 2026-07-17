@@ -128,7 +128,8 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
           下線タブは「選択中」しか主張せず、他も選べることが伝わらなかったため、
           枠で囲ったセグメンテッドコントロールにして切り替え可能なことを明示する。 */}
       <div className="glass border-b border-white/20 sticky top-16 sm:top-20 z-40 px-4 py-2 flex items-center gap-3">
-        <div className="inline-flex gap-1 p-1 rounded-xl bg-gray-100/80 shrink-0">
+        {/* -ml-1 は枠の内側余白(p-1)を打ち消し、タブの左端を下のジャンル行・カードと揃えるため */}
+        <div className="inline-flex gap-1 p-1 -ml-1 rounded-xl bg-gray-100/80 shrink-0">
           {tabs.map((t) => {
             if (t.requireAuth && !session) return null;
             const active = tab === t.value;
@@ -208,7 +209,7 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
       </div>
 
       {/* 作品グリッド */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4 p-3 sm:p-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4 px-4 py-3 sm:py-4">
         {works.map((work, index) => (
           <div
             key={work.id}
@@ -237,7 +238,7 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
 
       {/* スケルトンローディング */}
       {loading && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4 p-3 sm:p-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4 px-4 py-3 sm:py-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}

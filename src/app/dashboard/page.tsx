@@ -13,15 +13,6 @@ export const metadata: Metadata = {
   title: "ダッシュボード",
 };
 
-const STAT_STYLES = [
-  { gradient: "from-blue-500 to-blue-500" },
-  { gradient: "from-blue-500 to-cyan-500" },
-  { gradient: "from-pink-500 to-red-500" },
-  { gradient: "from-orange-500 to-yellow-500" },
-  { gradient: "from-yellow-400 to-orange-500" },
-  { gradient: "from-blue-400 to-blue-500" },
-  { gradient: "from-blue-400 to-blue-500" },
-];
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -101,11 +92,9 @@ export default async function DashboardPage() {
             className="glass rounded-xl p-4 text-center relative overflow-hidden"
           >
             <div
-              className={`absolute inset-0 bg-linear-to-br ${STAT_STYLES[i].gradient} opacity-5`}
+              className="absolute inset-0 bg-accent opacity-5"
             />
-            <p
-              className={`text-2xl font-bold relative bg-linear-to-r ${STAT_STYLES[i].gradient} bg-clip-text text-transparent`}
-            >
+            <p className="text-2xl font-bold relative text-accent">
               {stat.value.toLocaleString()}
             </p>
             <p className="text-xs text-komapara-muted mt-1 relative">
