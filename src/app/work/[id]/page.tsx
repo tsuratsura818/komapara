@@ -219,9 +219,9 @@ export default async function WorkDetailPage(props: Props) {
         {seriesNav && <SeriesNav nav={seriesNav} />}
       </div>
 
-      {/* 関連作品 */}
+      {/* 関連作品。柄の上に直に置かず、誌面と同じ白の面に乗せる */}
       {relatedWorks.length > 0 && (
-        <div className="px-4 py-6 border-t border-komapara-border">
+        <div className="mx-2 sm:mx-4 mt-5 mb-6 px-4 py-6 bg-white sm:rounded-2xl sm:shadow-[0_2px_28px_rgba(15,23,42,0.13)] sm:ring-1 sm:ring-black/5">
           <h2 className="text-sm font-semibold text-komapara-text mb-3">
             関連作品
           </h2>
