@@ -23,9 +23,12 @@ export function WorkCard({
 }: WorkCardProps) {
   return (
     <Link href={`/work/${id}`} className="block group">
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all duration-300 group-hover:shadow-lg group-hover:shadow-blue-500/10 group-hover:-translate-y-1 group-hover:border-blue-100">
-        {/* サムネイル（1コマ目。イラストを切らないよう原寸比で表示。Instagramの縦長4:5にフィット） */}
-        <div className="aspect-[4/5] relative bg-white overflow-hidden">
+      {/* 作品が白地の場合、白のカードが白い面に乗ると境目が消える。
+          常時の影と輪郭でカードを1枚として立たせる */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 group-hover:shadow-lg group-hover:shadow-blue-500/10 group-hover:-translate-y-1 group-hover:border-blue-200">
+        {/* サムネイル（1コマ目。イラストを切らないよう原寸比で表示。Instagramの縦長4:5にフィット）
+            白地の作品はカード情報部と溶けるため、下端に区切りを入れて作品の範囲を示す */}
+        <div className="aspect-[4/5] relative bg-white overflow-hidden border-b border-gray-100">
           {panels[0] ? (
             <>
               <WorkCardImage src={panels[0]} alt={`${title} - 1コマ目`} />
