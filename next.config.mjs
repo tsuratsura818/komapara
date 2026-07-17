@@ -3,6 +3,20 @@ import { withSentryConfig } from "@sentry/nextjs";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // www と apex の両方が中身を返していた。セッションCookieは __Host-/__Secure- で
+  // Domain属性を持たない＝ホスト限定のため、www へ渡るとCookieが送られず
+  // ログアウト扱いでログイン画面に飛ばされる。SEO上も重複コンテンツになる。
+  // apex に集約する。
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.komapara.com" }],
+        destination: "https://komapara.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
