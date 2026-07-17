@@ -70,27 +70,71 @@ App ID/Secret をもらい次第、以下を実装（OAuthは実クレデンシ�
 
 ---
 
-## 4. App Review 申請ドラフト（一般公開時に提出）
+## 4. App Review 申請（一般公開時に提出）
 
-**申請スコープ：** `instagram_business_basic`
+> 状態: **実装は完了。あとは西川さんがMetaのダッシュボードで設定＋提出するだけ。**
+> （Metaのダッシュボード操作と録画は、私からは実行できません）
 
-**ユースケース説明（提出用・英/日）：**
-> コマパラ（komapara.com）は4コマ漫画に特化した投稿ポータルです。クリエイターが自身のInstagram
-> プロアカウントを連携すると、**本人の投稿（画像・カルーセル）をコマパラ上に取り込んで公開**できます。
-> 二重投稿の手間を無くし、既存のInstagram作品を流用できるようにするための機能です。
-> `instagram_business_basic` は、連携した本人のプロフィールとメディア一覧（GET /me/media）の読み取りに
-> のみ使用します。第三者のデータは取得しません。
+### 4-1. 先にMetaダッシュボードへ登録する3つのURL
 
-**スクリーンキャスト台本（審査で必須）：**
-1. komaparaにログイン → 投稿 → 「Instagramを連携」
-2. Instagramの認可画面で許可
-3. 自分の投稿一覧が表示される
-4. 4コマ投稿を1つ選び「取り込む」
-5. コマパラ上に作品として公開される（カルーセル全コマ表示）
+アプリ設定 → Instagram → 「Webhookとコールバック」欄に貼る:
 
-**プライバシーポリシー / データ削除：** `https://komapara.com/privacy`（Deauthorize/Deletion コールバックも実装）
+| 項目 | 値 |
+|---|---|
+| Deauthorize callback URL | `https://komapara.com/api/instagram/deauthorize` |
+| Data deletion request URL | `https://komapara.com/api/instagram/data-deletion` |
+| プライバシーポリシーURL | `https://komapara.com/privacy` |
 
----
+いずれも実装済み・稼働中（`signed_request` の署名検証あり）。
+
+### 4-2. 申請スコープ
+
+`instagram_business_basic` のみ。（投稿・削除・インサイトは要求しない）
+
+### 4-3. ユースケース説明（そのまま貼れる）
+
+**English:**
+> Komapara (komapara.com) is a portal for 4-panel manga (yonkoma). Creators who already
+> publish their comics on Instagram connect their own Instagram professional account so
+> that they can import **their own posts** into Komapara instead of re-uploading the same
+> artwork by hand.
+>
+> We use `instagram_business_basic` solely to read the connected user's own profile and
+> their own media list (`GET /me/media`, including `children` for carousels). The images are
+> copied into the creator's own Komapara post, which the creator explicitly selects and
+> publishes. We never access data belonging to any third party, and we do not post,
+> modify, or delete anything on Instagram.
+
+**日本語:**
+> コマパラは4コマ漫画のポータルです。すでにInstagramで4コマを公開している作家が、自身の
+> プロアカウントを連携し、**自分自身の投稿**をコマパラに取り込めるようにするための機能です
+> （同じ作品を手作業で再アップロードする手間を無くすため）。
+> `instagram_business_basic` は、連携した本人のプロフィールと本人のメディア一覧
+> （`GET /me/media`／カルーセルは `children`）の読み取りにのみ使用します。取り込む投稿は
+> 作家自身が選択し、作家自身の作品として公開します。第三者のデータは一切取得せず、
+> Instagram側への投稿・変更・削除も行いません。
+
+### 4-4. スクリーンキャスト台本（審査で必須・西川さんが録画）
+
+アオンのアカウントで、以下を**1本撮り**で録画（音声不要・字幕推奨）:
+
+1. `komapara.com` にログイン済みの状態を映す
+2. 「+ 投稿」→「Instagramから取り込み」を押す
+3. **Instagramの認可画面**が出て、要求スコープが表示されるところを映す（審査で最重要）
+4. 「許可」を押す
+5. 自分の投稿一覧がグリッド表示される
+6. 4コマ投稿を1つ選び「取り込む」
+7. タイトルを入れて公開 → 作品ページに4コマ全部が表示される
+8. （あれば）`/settings` から連携解除できることも映す
+
+※ 3番の認可画面が映っていないと差し戻されます。
+
+### 4-5. テスト用アカウント
+
+審査担当者用に、Metaの申請フォームで以下を伝える:
+- コマパラはGoogle/Xログインのため、審査担当者用のテストアカウントを1つ用意して
+  ID/パスワードを記載するか、レビュー用のログイン手順を明記する
+- Instagram側はテスターに追加した検証用アカウントを案内
 
 ## まとめ：進め方
 
