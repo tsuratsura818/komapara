@@ -20,9 +20,16 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const form = await request.formData();
-    const signedRequest = form.get("signed_request");
-    if (typeof signedRequest !== "string") {
+    // Content-Typeが不正だと formData() が投げる。不正入力は500でなく400で返す
+    let signedRequest: string | null = null;
+    try {
+      const form = await request.formData();
+      const v = form.get("signed_request");
+      if (typeof v === "string") signedRequest = v;
+    } catch {
+      signedRequest = null;
+    }
+    if (!signedRequest) {
       return NextResponse.json({ error: "signed_request required" }, { status: 400 });
     }
 
