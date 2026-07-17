@@ -3,6 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import { highResAvatar } from "@/lib/utils";
 
 export function UserMenu() {
   const { data: session } = useSession();
@@ -27,12 +28,12 @@ export function UserMenu() {
       >
         {session.user.image ? (
           <img
-            src={session.user.image}
+            src={highResAvatar(session.user.image) as string}
             alt={session.user.name || ""}
-            className="w-8 h-8 rounded-full ring-2 ring-blue-200/50"
+            className="w-10 h-10 rounded-full object-cover ring-2 ring-white/60"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-100 to-blue-100 flex items-center justify-center text-blue-600 font-medium text-sm">
+          <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-blue-600 font-medium text-sm">
             {session.user.name?.[0] || "?"}
           </div>
         )}

@@ -64,7 +64,7 @@ export function Header() {
 
           <Link
             href="/upload"
-            className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-accent bg-white rounded-xl shadow-sm hover:bg-blue-50 transition-colors"
+            className="px-4 sm:px-5 py-2.5 text-sm sm:text-base font-bold text-accent bg-white rounded-xl shadow-sm hover:bg-blue-50 transition-colors"
           >
             + 投稿
           </Link>
