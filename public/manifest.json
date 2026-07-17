@@ -1,11 +1,11 @@
 {
   "name": "コマパラ - 4コマ漫画ポータル",
   "short_name": "コマパラ",
-  "description": "4コマ漫画に特化した読者向けポータルサイト",
+  "description": "コマパラは、4コマ漫画が集まるポータルです。InstagramやXで4コマを描いている作家が作品を持ち込み、読者は無料で読めます。",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#faf9f7",
-  "theme_color": "#7c5bf0",
+  "background_color": "#fafbff",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "/favicon.ico",

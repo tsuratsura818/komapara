@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#7c5bf0",
+  themeColor: "#2563eb",
 };
 
 export default function RootLayout({
@@ -56,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
       </head>
       <body
         className={`${geistSans.variable} font-sans antialiased bg-komapara-bg text-komapara-text`}
