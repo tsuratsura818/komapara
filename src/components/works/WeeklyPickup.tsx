@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { highResAvatar } from "@/lib/utils";
+import { SectionHeading } from "@/components/layout/SectionHeading";
 
 type Props = {
   work: {
@@ -22,17 +23,12 @@ export function WeeklyPickup({ work }: Props) {
   const preview = work.panels.slice(0, 4);
 
   return (
-    <section className="px-4 pt-4" aria-labelledby="pickup-heading">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-        <h2 id="pickup-heading" className="text-xs font-bold tracking-wide text-accent">
-          今週のピックアップ
-        </h2>
-      </div>
+    <section className="px-4 pt-4">
+      <SectionHeading>今週のピックアップ</SectionHeading>
 
       <Link
         href={`/work/${work.id}`}
-        className="group block p-4 sm:p-5 bg-white rounded-2xl border border-gray-100 hover:border-blue-100 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
+        className="group block p-4 sm:p-5 bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-blue-200 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
       >
         <div className="grid gap-5 md:grid-cols-[minmax(0,240px)_1fr] md:items-center">
           {/* 見出しブロック */}

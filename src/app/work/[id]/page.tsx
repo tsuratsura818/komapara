@@ -3,6 +3,7 @@ import { WorkViewer } from "@/components/works/WorkViewer";
 import { WorkCard } from "@/components/works/WorkCard";
 import { SeriesNav } from "@/components/series/SeriesNav";
 import { AdSlot } from "@/components/ui/AdSlot";
+import { SectionHeading } from "@/components/layout/SectionHeading";
 import { notFound } from "next/navigation";
 import { cleanCaptionForShare } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -222,9 +223,7 @@ export default async function WorkDetailPage(props: Props) {
       {/* 関連作品。柄の上に直に置かず、誌面と同じ白の面に乗せる */}
       {relatedWorks.length > 0 && (
         <div className="mx-2 sm:mx-4 mt-5 mb-6 px-4 py-6 bg-white sm:rounded-2xl sm:shadow-[0_2px_28px_rgba(15,23,42,0.13)] sm:ring-1 sm:ring-black/5">
-          <h2 className="text-sm font-semibold text-komapara-text mb-3">
-            関連作品
-          </h2>
+          <SectionHeading>関連作品</SectionHeading>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {relatedWorks.map((rw) => (
               <WorkCard
