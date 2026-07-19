@@ -88,43 +88,50 @@ const BETA_FACTS = [
   },
 ];
 
+/**
+ * 有料機能は実装済みだが、いずれも現時点では有効にしていない。
+ * 使えないものを「おすすめ」として売らないため、準備中を明示する。
+ */
 const PRICING_PLANS = [
   {
     name: "フリー",
     price: "¥0",
     period: "",
-    description: "読者もクリエイターも、基本機能はすべて無料",
+    description: "いま使えるのはこちらです。読者もクリエイターも無料",
     features: [
       "フィード・ランキング・ジャンル閲覧",
       "作品投稿・シリーズ管理",
       "いいね・コメント・フォロー",
       "5種リアクションスタンプ",
       "クリエイターダッシュボード",
-      "投げ銭・サブスク受取",
+      "Xからのインポート・画像アップロード",
     ],
     cta: "無料ではじめる",
-    featured: false,
+    featured: true,
+    upcoming: false,
   },
   {
     name: "プレミアム",
     price: "¥300",
     period: "/ 月",
-    description: "広告なしの快適な読書体験を",
+    description: "広告を出し始めたタイミングで開放します",
     features: [
       "フリープランの全機能",
-      "広告完全非表示",
+      "広告非表示",
       "プレミアムバッジ表示",
       "優先サポート",
     ],
-    cta: "プレミアムへ",
-    featured: true,
+    cta: "いまは登録できません",
+    featured: false,
+    upcoming: true,
   },
 ];
 
 const FAQS = [
-  { q: "利用料金はかかりますか？", a: "基本無料です。読者もクリエイターも無料でご利用いただけます。広告非表示のプレミアムプラン（月額300円）もご用意しています。" },
-  { q: "どうやって投稿しますか？", a: "4枚の画像をアップロードするだけ。X（旧Twitter）やInstagramの投稿を1タップでインポートすることもできます。" },
-  { q: "収益化できますか？", a: "はい。読者からの投げ銭（手数料10%）やサブスクリプション（手数料15%）で収益を得ることができます。" },
+  { q: "利用料金はかかりますか？", a: "無料です。いま提供している機能はすべて無料でお使いいただけます。広告非表示のプレミアムプラン（月額300円）も用意していますが、まだ開放していません。" },
+  { q: "どうやって投稿しますか？", a: "4枚の画像をアップロードするだけ。X（旧Twitter）の投稿を1タップでインポートすることもできます。Instagramからの取り込みはMetaの審査を申請中で、通り次第ご案内します。" },
+  { q: "収益化できますか？", a: "投げ銭（手数料10%）とサブスクリプション（手数料15%）を実装済みですが、まだ有効にしていません。作家と読者が揃ったタイミングで開放します。開放前にご案内します。" },
+  { q: "広告は表示されますか？", a: "いまは表示していません。将来的に広告を掲載する場合は、事前にお知らせしたうえで、非表示にできるプレミアムプランを同時に開放します。" },
   { q: "スマホで使えますか？", a: "はい。モバイルファーストで設計しており、PWA対応でアプリのように利用できます。プッシュ通知にも対応しています。" },
 ];
 
@@ -515,11 +522,16 @@ export default function LpPage() {
                   plan.featured
                     ? "ring-2 ring-blue-400/60 shadow-xl shadow-blue-500/10"
                     : "feature-card"
-                }`}
+                } ${plan.upcoming ? "opacity-70" : ""}`}
               >
                 {plan.featured && (
                   <div className="bg-gradient-main text-white text-xs font-bold text-center py-2 tracking-wider">
-                    ✦ おすすめ
+                    ✦ いま使えるプラン
+                  </div>
+                )}
+                {plan.upcoming && (
+                  <div className="bg-gray-100 text-gray-500 text-xs font-bold text-center py-2 tracking-wider">
+                    準備中
                   </div>
                 )}
                 <div className="bg-white p-7">
@@ -543,16 +555,25 @@ export default function LpPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link
-                    href="/login"
-                    className={`block text-center py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
-                      plan.featured
-                        ? "bg-gradient-main text-white hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-px"
-                        : "border-2 border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700"
-                    }`}
-                  >
-                    {plan.cta}
-                  </Link>
+                  {plan.upcoming ? (
+                    <span
+                      aria-disabled="true"
+                      className="block text-center py-3 rounded-xl text-sm font-bold border-2 border-gray-200 text-gray-400 cursor-not-allowed select-none"
+                    >
+                      {plan.cta}
+                    </span>
+                  ) : (
+                    <Link
+                      href="/login"
+                      className={`block text-center py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+                        plan.featured
+                          ? "bg-gradient-main text-white hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-px"
+                          : "border-2 border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700"
+                      }`}
+                    >
+                      {plan.cta}
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}
