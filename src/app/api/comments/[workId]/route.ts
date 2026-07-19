@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { parsePositiveInt } from "@/lib/utils";
 import { requireUser } from "@/lib/admin";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendNotification } from "@/lib/notifications";
@@ -8,8 +9,8 @@ export async function GET(request: NextRequest, props: { params: Promise<{ workI
   const params = await props.params;
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = Math.min(parseInt(searchParams.get("limit") || "30"), 50);
+    const page = parsePositiveInt(searchParams.get("page"), 1);
+    const limit = parsePositiveInt(searchParams.get("limit"), 30, 50);
     const skip = (page - 1) * limit;
 
     const [comments, totalCount] = await Promise.all([

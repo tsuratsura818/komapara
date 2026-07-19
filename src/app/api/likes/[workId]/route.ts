@@ -4,6 +4,9 @@ import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendNotification, reactionLabel } from "@/lib/notifications";
 
+/** notifications.ts の REACTION_LABELS と対応。増やすときは両方直す */
+const VALID_REACTIONS = ["like", "laugh", "cry", "empathy", "amazing"];
+
 async function getReactionCounts(workId: string) {
   const groups = await prisma.like.groupBy({
     by: ["reaction"],
@@ -31,7 +34,9 @@ export async function POST(request: NextRequest, props: { params: Promise<{ work
     }
 
     const body = await request.json().catch(() => ({}));
-    const reaction = body.reaction || "like";
+    // 未知の値をそのまま保存すると集計(groupBy)に未定義キーが混ざり、
+    // スタンプの表示が壊れる。数値等が来るとPrismaが例外を投げる
+    const reaction = VALID_REACTIONS.includes(body.reaction) ? body.reaction : "like";
 
     const existing = await prisma.like.findUnique({
       where: {

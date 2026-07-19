@@ -53,8 +53,18 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
   const observerRef = useRef<HTMLDivElement>(null);
   const initialLoadSkipped = useRef(!!initialWorks);
 
+  // 取得中フラグと最新リクエストID。loading(state)だけでは
+  // 同一フレーム内の二重発火を防げず、また検索リセットと
+  // ページ追加が競合すると古い応答が後着して混ざる
+  const fetchingRef = useRef(false);
+  const reqIdRef = useRef(0);
+  const pageRef = useRef(1);
+
   const fetchWorks = useCallback(
     async (pageNum: number, reset = false) => {
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
+      const reqId = ++reqIdRef.current;
       setLoading(true);
       try {
         const params = new URLSearchParams({ sort: tab, page: String(pageNum), limit: "20" });
@@ -64,16 +74,25 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
         const data = await res.json();
         const newWorks = data.works ?? [];
 
+        // 後から投げた検索が先に返っている場合、この応答は捨てる
+        if (reqId !== reqIdRef.current) return;
+
         if (reset) {
           setWorks(newWorks);
         } else {
-          setWorks((prev) => [...prev, ...newWorks]);
+          // 取得の合間に新着が入るとオフセットがずれて同じ作品が届く
+          setWorks((prev) => {
+            const seen = new Set(prev.map((w) => w.id));
+            return [...prev, ...newWorks.filter((w: Work) => !seen.has(w.id))];
+          });
         }
+        pageRef.current = pageNum;
         setHasMore(pageNum < (data.totalPages ?? 1));
       } catch (error) {
         console.error("Failed to fetch works:", error);
       } finally {
-        setLoading(false);
+        fetchingRef.current = false;
+        if (reqId === reqIdRef.current) setLoading(false);
       }
     },
     [tab, genre, debouncedQuery]
@@ -92,6 +111,10 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
       return;
     }
     setPage(1);
+    pageRef.current = 1;
+    // 直前のページ取得が飛んでいると in-flight ガードでリセットが
+    // 捨てられるため、リセットは常に通す
+    fetchingRef.current = false;
     fetchWorks(1, true);
   }, [tab, genre, debouncedQuery, fetchWorks]);
 
@@ -102,11 +125,11 @@ export function WorkFeed({ initialWorks, initialTotalPages, feedAds = [] }: Work
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          setPage((prev) => {
-            const next = prev + 1;
-            fetchWorks(next);
-            return next;
-          });
+          // setStateの更新関数は純粋でなければならない。ここで副作用を
+          // 起こすとStrictModeの二重実行で同じページを2回取得してしまう
+          const next = pageRef.current + 1;
+          setPage(next);
+          fetchWorks(next);
         }
       },
       { threshold: 0.1 }

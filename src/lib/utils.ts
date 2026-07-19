@@ -98,3 +98,31 @@ export function highResAvatar(url: string | null | undefined): string | null {
   }
   return url;
 }
+
+/**
+ * 管理者宛メールなどHTMLに文字列を埋め込む際のエスケープ。
+ * ユーザー入力をそのまま埋めると、受信箱で任意のリンクやレイアウトを
+ * 描画されてフィッシングの踏み台になる。
+ */
+export function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/**
+ * クエリ文字列を正の整数として読む。
+ * parseInt は "abc" で NaN を返し、そのまま skip/take に渡すと
+ * Prisma が例外を投げて 500 になる（?page=abc で再現済み）。
+ */
+export function parsePositiveInt(
+  value: string | null,
+  fallback: number,
+  max = Number.MAX_SAFE_INTEGER
+): number {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(Math.max(Math.floor(n), 1), max);
+}

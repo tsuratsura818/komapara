@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
+import { escapeHtml } from "@/lib/utils";
 
 const REASONS: Record<string, string> = {
   spam: "スパム・宣伝",
@@ -21,6 +22,8 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
   if (!reason || !REASONS[reason]) {
     return NextResponse.json({ error: "理由を選択してください" }, { status: 400 });
   }
+  // detail が文字列以外だと .trim() で落ち、catch が「通報済み」と誤答する
+  const detailText = typeof detail === "string" ? detail.trim().slice(0, 2000) : "";
 
   const work = await prisma.work.findUnique({
     where: { id: params.id },
@@ -39,7 +42,7 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
         workId: params.id,
         reporterId: session.user.id,
         reason,
-        detail: detail?.trim() || null,
+        detail: detailText || null,
       },
     });
 
@@ -53,9 +56,9 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
         html: `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
           <h2>新しい通報が届きました</h2>
           <ul>
-            <li><strong>作品:</strong> ${work.title}</li>
+            <li><strong>作品:</strong> ${escapeHtml(work.title)}</li>
             <li><strong>理由:</strong> ${REASONS[reason]}</li>
-            ${detail ? `<li><strong>詳細:</strong> ${detail}</li>` : ""}
+            ${detailText ? `<li><strong>詳細:</strong> ${escapeHtml(detailText)}</li>` : ""}
           </ul>
           <p><a href="${process.env.NEXTAUTH_URL}/admin/reports">管理画面で確認する →</a></p>
         </body></html>`.trim(),
@@ -67,8 +70,13 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
     }
 
     return NextResponse.json({ success: true, reportId: report.id });
-  } catch {
-    // unique制約違反（重複通報）
-    return NextResponse.json({ error: "すでにこの作品を通報済みです" }, { status: 409 });
+  } catch (e) {
+    // P2002（unique制約違反）だけが重複通報。それ以外まで409にすると、
+    // DB障害を「通報済み」と誤って伝えて原因を追えなくなる
+    if (e && typeof e === "object" && "code" in e && e.code === "P2002") {
+      return NextResponse.json({ error: "すでにこの作品を通報済みです" }, { status: 409 });
+    }
+    console.error("report: 通報の保存に失敗:", e);
+    return NextResponse.json({ error: "通報の送信に失敗しました" }, { status: 500 });
   }
 }

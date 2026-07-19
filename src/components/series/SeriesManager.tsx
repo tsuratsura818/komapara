@@ -255,11 +255,15 @@ export function SeriesManager({
                           <span className="text-[10px] text-komapara-muted w-5 text-center">
                             {idx + 1}
                           </span>
-                          <img
-                            src={work.panels[0]}
-                            alt={work.title}
-                            className="w-8 h-8 rounded-sm object-cover shrink-0"
-                          />
+                          {work.panels[0] ? (
+                            <img
+                              src={work.panels[0]}
+                              alt={work.title}
+                              className="w-8 h-8 rounded-sm object-cover shrink-0"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-sm bg-gray-100 shrink-0" />
+                          )}
                           <Link href={`/work/${work.id}`} className="text-xs text-komapara-text hover:text-primary-500 truncate flex-1">
                             {work.title}
                           </Link>

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime, parsePositiveInt } from "@/lib/utils";
 import { WorkActions } from "./WorkActions";
 import type { Metadata } from "next";
 
@@ -13,7 +13,7 @@ export default async function AdminWorksPage(
 ) {
   const searchParams = await props.searchParams;
   const q = searchParams.q?.trim();
-  const page = parseInt(searchParams.page || "1");
+  const page = parsePositiveInt(searchParams.page ?? null, 1);
   const limit = 20;
   const skip = (page - 1) * limit;
 

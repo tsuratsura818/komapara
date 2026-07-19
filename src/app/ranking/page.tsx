@@ -34,7 +34,9 @@ export default async function RankingPage() {
   });
 
   const top3 = rankings.slice(0, 3);
-  const rest = rankings.slice(3);
+  // 表彰台は3件揃ったときだけ出す。揃わない週に slice(3) すると
+  // 表彰台も一覧も空になり、ページが見出しだけになってしまう
+  const rest = top3.length >= 3 ? rankings.slice(3) : rankings;
 
   return (
     <div>

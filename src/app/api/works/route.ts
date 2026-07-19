@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { parsePositiveInt } from "@/lib/utils";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { notifyFollowers } from "@/lib/notifications";
@@ -12,8 +13,8 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get("sort") || "new";
     const genre = searchParams.get("genre");
     const q = searchParams.get("q")?.trim();
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 50);
+    const page = parsePositiveInt(searchParams.get("page"), 1);
+    const limit = parsePositiveInt(searchParams.get("limit"), 20, 50);
     const skip = (page - 1) * limit;
 
     const session = await auth();

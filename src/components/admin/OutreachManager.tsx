@@ -102,7 +102,9 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
     });
     if (res.ok) {
       const updated = await res.json();
-      setItems(items.map((i) => (i.id === id ? {
+      // 一括更新は Promise.all で同時に走るため、items をそのまま参照すると
+      // 各呼び出しが同じ古い配列を基準にして最後の1件しか残らない
+      setItems((prev) => prev.map((i) => (i.id === id ? {
         ...updated,
         dmSentAt: updated.dmSentAt ?? null,
         repliedAt: updated.repliedAt ?? null,
@@ -121,7 +123,9 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
     });
     if (res.ok) {
       const updated = await res.json();
-      setItems(items.map((i) => (i.id === id ? {
+      // 一括更新は Promise.all で同時に走るため、items をそのまま参照すると
+      // 各呼び出しが同じ古い配列を基準にして最後の1件しか残らない
+      setItems((prev) => prev.map((i) => (i.id === id ? {
         ...updated,
         dmSentAt: updated.dmSentAt ?? null,
         repliedAt: updated.repliedAt ?? null,
@@ -135,7 +139,7 @@ export function OutreachManager({ initialItems }: { initialItems: OutreachItem[]
     if (!confirm("削除しますか？")) return;
     const res = await fetch(`/api/admin/outreach/${id}`, { method: "DELETE" });
     if (res.ok) {
-      setItems(items.filter((i) => i.id !== id));
+      setItems((prev) => prev.filter((i) => i.id !== id));
     }
   };
 

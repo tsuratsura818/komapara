@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime, parsePositiveInt } from "@/lib/utils";
 import { CommentActions } from "./CommentActions";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -13,7 +13,7 @@ export default async function AdminCommentsPage(
   }
 ) {
   const searchParams = await props.searchParams;
-  const page = parseInt(searchParams.page || "1");
+  const page = parsePositiveInt(searchParams.page ?? null, 1);
   const limit = 20;
   const skip = (page - 1) * limit;
 

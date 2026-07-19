@@ -138,11 +138,15 @@ export default async function SeriesDetailPage(props: Props) {
               <div className="shrink-0 w-8 h-8 rounded-full bg-gradient-main flex items-center justify-center text-white text-xs font-bold">
                 {index + 1}
               </div>
-              <img
-                src={work.panels[0]}
-                alt={work.title}
-                className="w-14 h-14 rounded-lg object-cover shrink-0"
-              />
+              {work.panels[0] ? (
+                <img
+                  src={work.panels[0]}
+                  alt={work.title}
+                  className="w-14 h-14 rounded-lg object-cover shrink-0"
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-lg bg-gray-100 shrink-0" />
+              )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-komapara-text truncate">
                   {work.title}

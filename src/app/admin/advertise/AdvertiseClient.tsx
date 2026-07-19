@@ -53,7 +53,12 @@ const PLACEMENT_LABELS: Record<string, string> = {
 
 function toDateInput(d: Date | null): string {
   if (!d) return "";
-  return new Date(d).toISOString().slice(0, 10);
+  // toISOString() はUTCなので、JSTの 03-01T00:00+09:00 が 02-28 になる。
+  // 表示だけでなく編集フォームの初期値にも入るため、他の項目を直して
+  // 保存するたびに日付が1日ずつ巻き戻る
+  const dt = new Date(d);
+  if (Number.isNaN(dt.getTime())) return "";
+  return new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Tokyo" }).format(dt);
 }
 
 export function AdvertiseClient({ initialAds }: { initialAds: Ad[] }) {

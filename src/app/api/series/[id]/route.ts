@@ -77,10 +77,29 @@ export async function PATCH(request: NextRequest, props: Props) {
     if (body.description !== undefined) data.description = body.description?.trim() || null;
     if (body.isCompleted !== undefined) data.isCompleted = !!body.isCompleted;
 
+    // シリーズの所有者チェックだけでは不十分。操作対象の作品が自分のものかを
+    // 必ず確認する。抜けていると、他人の作品を自分のシリーズに取り込んだり、
+    // 他人の連載から作品を外して破壊したりできてしまう。
+    const ownsWork = async (workId: string) => {
+      const w = await prisma.work.findUnique({
+        where: { id: workId },
+        select: { authorId: true },
+      });
+      return w?.authorId === session.user!.id;
+    };
+
     // 作品の並び替え
     if (body.workOrder && Array.isArray(body.workOrder)) {
+      const workIds: string[] = body.workOrder.filter((v: unknown) => typeof v === "string");
+      const owned = await prisma.work.findMany({
+        where: { id: { in: workIds }, authorId: session.user.id },
+        select: { id: true },
+      });
+      if (owned.length !== workIds.length) {
+        return NextResponse.json({ error: "権限がありません" }, { status: 403 });
+      }
       await Promise.all(
-        body.workOrder.map((workId: string, index: number) =>
+        workIds.map((workId, index) =>
           prisma.work.update({
             where: { id: workId },
             data: { seriesOrder: index + 1 },
@@ -91,6 +110,9 @@ export async function PATCH(request: NextRequest, props: Props) {
 
     // 作品をシリーズに追加
     if (body.addWorkId) {
+      if (typeof body.addWorkId !== "string" || !(await ownsWork(body.addWorkId))) {
+        return NextResponse.json({ error: "権限がありません" }, { status: 403 });
+      }
       const maxOrder = await prisma.work.aggregate({
         where: { seriesId: params.id },
         _max: { seriesOrder: true },
@@ -106,6 +128,9 @@ export async function PATCH(request: NextRequest, props: Props) {
 
     // 作品をシリーズから除外
     if (body.removeWorkId) {
+      if (typeof body.removeWorkId !== "string" || !(await ownsWork(body.removeWorkId))) {
+        return NextResponse.json({ error: "権限がありません" }, { status: 403 });
+      }
       await prisma.work.update({
         where: { id: body.removeWorkId },
         data: { seriesId: null, seriesOrder: null },
