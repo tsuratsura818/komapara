@@ -48,3 +48,7 @@ next-env.d.ts
 .vercel
 
 .env*.local
+
+# 動画（App Review用スクリーンキャスト等）はリポジトリに入れない
+*.mp4
+*.mov

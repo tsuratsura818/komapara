@@ -68,34 +68,23 @@ const COMPARISONS = [
   { feature: "プッシュ通知", komapara: true, pixiv: true, x: true },
 ];
 
-const TESTIMONIALS = [
+/** ベータの実態。読者数や利用者の声を演出しない */
+const BETA_FACTS = [
   {
-    name: "まるまる🐾",
-    role: "クリエイター・ねこ日和 作者",
-    avatar: "🐱",
-    text: "XとInstagramにバラバラに上げていた4コマを、コマパラに集約したら新しい読者さんが増えました。1タップインポートが本当に楽！",
-    gradient: "from-blue-200 to-blue-200",
+    title: "作家はまだ1名です",
+    text: "「おくり狼のアオン」の作品を公開しています。お声がけした方から順にご参加いただいている段階です。",
   },
   {
-    name: "OL漫画家 りえ",
-    role: "クリエイター・OLあるある 作者",
-    avatar: "💼",
-    text: "投げ銭で初めて応援をもらった時は感動しました。創作を続けるモチベーションが全然違います。ダッシュボードで数字が見えるのも嬉しい。",
-    gradient: "from-blue-200 to-blue-200",
+    title: "不具合が出ることがあります",
+    text: "見つけ次第すぐに直します。お問い合わせからご連絡いただければ対応します。",
   },
   {
-    name: "たけし@通勤読書派",
-    role: "読者",
-    avatar: "🚃",
-    text: "通勤時間に毎日5作品は読んでいます。ジャンルで絞れるから好みの4コマがすぐ見つかる。プッシュ通知で新作も見逃さない！",
-    gradient: "from-blue-200 to-blue-200",
+    title: "収益機能はまだ有効にしていません",
+    text: "投げ銭・サブスクは実装済みですが、作家が揃うまでは公開していません。準備ができ次第ご案内します。",
   },
   {
-    name: "ねこ好きママ",
-    role: "読者",
-    avatar: "🐈",
-    text: "育児系の4コマを探していたら、ジャンルを選ぶだけで大量に出てきて感動。シリーズ機能で最初から全部追えるのが最高です！",
-    gradient: "from-blue-200 to-blue-200",
+    title: "Instagram連携は審査中です",
+    text: "Metaの審査を申請中です。いまはXからの取り込みと、画像の直接アップロードがお使いいただけます。",
   },
 ];
 
@@ -256,8 +245,8 @@ export default function LpPage() {
                   <TrophyIcon className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <div className="font-bold text-gray-900 text-xs">週間1位獲得</div>
-                  <div className="text-gray-400 text-[10px]">今日のひとコマ</div>
+                  <div className="font-bold text-gray-900 text-xs">週間ランキング</div>
+                  <div className="text-gray-400 text-[10px]">毎週月曜に更新</div>
                 </div>
               </div>
             </div>
@@ -270,18 +259,17 @@ export default function LpPage() {
                   <FaceSmileIcon className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <div className="font-bold text-gray-900 text-xs">+128 リアクション</div>
-                  <div className="text-gray-400 text-[10px]">ねこ日和 #12</div>
+                  <div className="font-bold text-gray-900 text-xs">5種のリアクション</div>
+                  <div className="text-gray-400 text-[10px]">読者からの反応が届く</div>
                 </div>
               </div>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/phone-mockup.png"
-              alt="コマパラ アプリ画面"
+              src="/images/phone-mockup-aon.webp"
+              alt="コマパラで「おくり狼のアオン」の4コマを読んでいる画面"
               className="w-full sm:w-[130%] sm:max-w-none sm:translate-x-[5%]"
               style={{
-                mixBlendMode: "multiply",
                 display: "block",
                 pointerEvents: "none",
                 userSelect: "none",
@@ -423,29 +411,22 @@ export default function LpPage() {
         </div>
       </section>
 
-      {/* ===== Testimonials ===== */}
+      {/* ===== ベータ版であることの明示 ===== */}
       <section className="py-24 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14 lp-animate">
-            <span className="badge-glass inline-flex mb-5">VOICES</span>
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900">ユーザーの声</h2>
+            <span className="badge-glass inline-flex mb-5">BETA</span>
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900">正直にお伝えしておきます</h2>
+            <p className="text-gray-500 mt-5 leading-relaxed">
+              コマパラは立ち上げたばかりです。「いま読者が増えます」とは申し上げられません。<br className="hidden md:block" />
+              そのうえで、4コマが埋もれない場所を本気で作っています。
+            </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={t.name} className={`feature-card p-7 lp-animate lp-animate-delay-${Math.min(i + 1, 3)}`}>
-                <svg className="w-7 h-7 text-blue-200 mb-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                </svg>
-                <p className="text-gray-700 text-sm leading-relaxed mb-6">{t.text}</p>
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full bg-linear-to-br ${t.gradient} flex items-center justify-center text-base shrink-0`}>
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm text-gray-900">{t.name}</p>
-                    <p className="text-xs text-gray-400">{t.role}</p>
-                  </div>
-                </div>
+            {BETA_FACTS.map((f, i) => (
+              <div key={f.title} className={`feature-card p-7 lp-animate lp-animate-delay-${Math.min(i + 1, 3)}`}>
+                <p className="font-bold text-gray-900 mb-2">{f.title}</p>
+                <p className="text-gray-600 text-sm leading-relaxed">{f.text}</p>
               </div>
             ))}
           </div>
