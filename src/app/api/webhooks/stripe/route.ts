@@ -38,6 +38,24 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `署名検証エラー: ${message}` }, { status: 400 });
   }
 
+  // 冪等性ガード。Stripeはネットワーク不達時に同じイベントを再送するため、
+  // event.id を先に記録して重複を弾く。記録の作成が一意制約で落ちれば
+  // 「既に処理済み」＝二重の投げ銭・サブスク計上を防ぐ。
+  try {
+    await prisma.processedWebhookEvent.create({
+      data: { id: event.id, type: event.type },
+    });
+  } catch (e) {
+    if (e && typeof e === "object" && "code" in e && e.code === "P2002") {
+      console.log(`Webhook重複スキップ: ${event.id} (${event.type})`);
+      return NextResponse.json({ received: true, duplicate: true });
+    }
+    // 記録自体に失敗（DB障害等）した場合は、二重計上を避けるため処理を進めず
+    // 500を返してStripeに再送させる
+    console.error("Webhookイベント記録に失敗:", e);
+    return NextResponse.json({ error: "一時的なエラー" }, { status: 500 });
+  }
+
   try {
     switch (event.type) {
       case "checkout.session.completed":
@@ -62,7 +80,13 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error(`Webhookイベント処理エラー (${event.type}):`, error);
-    // エラーでも200を返す（Stripe再試行防止）
+    // 処理に失敗したのに記録が残ると、Stripeの再送を冪等ガードが弾いて
+    // 永久に未処理のままになる。記録を取り消して再送で復旧できるようにし、
+    // 500でStripeに再送を促す
+    await prisma.processedWebhookEvent
+      .delete({ where: { id: event.id } })
+      .catch((e) => console.error("Webhook記録の取り消しに失敗:", e));
+    return NextResponse.json({ error: "処理中にエラーが発生しました" }, { status: 500 });
   }
 
   return NextResponse.json({ received: true });

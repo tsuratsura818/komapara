@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/auth/Providers";
@@ -74,6 +75,18 @@ export default function RootLayout({
 
         {/* コマパラという実体をAIに定義する（全ページ） */}
         <script {...jsonLdScript(siteJsonLd())} />
+
+        {/* AdSense 配信スクリプト。IDが設定されている本番のみ読み込む。
+            これが無いと <ins class="adsbygoogle"> は空のまま描画されない */}
+        {process.env.NEXT_PUBLIC_ADSENSE_ID && (
+          <Script
+            id="adsbygoogle-init"
+            async
+            strategy="afterInteractive"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
+            crossOrigin="anonymous"
+          />
+        )}
 
         <Providers>
           <a

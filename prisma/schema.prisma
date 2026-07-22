@@ -419,3 +419,11 @@ model CreatorOutreach {
   @@index([status])
   @@index([genre])
 }
+
+/// 処理済みStripe Webhookイベント。再送時に投げ銭やプレミアムが
+/// 二重計上されるのを防ぐため、event.id を一意キーとして記録する。
+model ProcessedWebhookEvent {
+  id          String   @id // Stripeの event.id をそのまま主キーにする
+  type        String
+  processedAt DateTime @default(now())
+}

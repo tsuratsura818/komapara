@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { escapeHtml } from "@/lib/utils";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 const CATEGORIES: Record<string, string> = {
   general: "一般的なお問い合わせ",
@@ -11,6 +12,19 @@ const CATEGORIES: Record<string, string> = {
 };
 
 export async function POST(request: NextRequest) {
+  // 無認証で実メール送信に届くため、連投で管理者受信箱とResendの送信枠が
+  // 枯渇する。IP単位で1時間5件までに絞る
+  const { success } = await rateLimit(`contact:${getClientIp(request)}`, {
+    limit: 5,
+    windowMs: 60 * 60 * 1000,
+  });
+  if (!success) {
+    return NextResponse.json(
+      { error: "送信が続いています。時間をおいて再度お試しください" },
+      { status: 429 }
+    );
+  }
+
   const body = await request.json().catch(() => null);
   if (!body) {
     return NextResponse.json({ error: "不正なリクエスト" }, { status: 400 });
