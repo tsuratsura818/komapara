@@ -145,3 +145,129 @@ App ID/Secret をもらい次第、以下を実装（OAuthは実クレデンシ�
 | DB＋OAuth＋メディア取得＋UI 実装 | 私 | クレデンシャル受領後 |
 | クローズドβで実運用（テスター経由） | — | 審査不要 |
 | App Review 申請（一般公開向け） | 西川さん＋私（ドラフト提供） | 並行・2〜4週 |
+
+---
+
+## 5. App Review instructions（レビュアー向け手順・そのまま貼る）
+
+> 2026-08-06 ビジネス認証が通過。App Review提出時に「App Review instructions」欄へ貼る。
+> レビュアーはGoogleログインでkomaparaに入れるため、専用テストアカウントは不要。
+
+**English (paste into "App Review instructions"):**
+> Komapara (https://komapara.com) is a portal for 4-panel manga. This app uses
+> `instagram_business_basic` so that a creator can import **their own** Instagram posts
+> into their own Komapara account, instead of re-uploading the same artwork by hand.
+>
+> How to test:
+> 1. Open https://komapara.com and click "ログイン" (Login). You can sign in with your
+>    own Google account — no dedicated test account is required to access the site.
+> 2. Click "+ 投稿" (Post) → "Instagramから取り込み" (Import from Instagram).
+> 3. You will be sent to the Instagram authorization screen, which shows the requested
+>    `instagram_business_basic` scope. Approve it.
+> 4. Your own Instagram media grid appears. Select one post and import it.
+> 5. Add a title and publish — the post appears as the creator's own Komapara work.
+>
+> The full flow, including the Instagram authorization screen, is shown in the attached
+> screencast. Because the app is still in development mode, live connection requires the
+> reviewer's Instagram account to be added as a Tester — if you need to run the flow on
+> your own account, please let us know the Instagram handle and we will add it immediately.
+>
+> We only read the connected user's own profile and own media list. We never access any
+> third party's data, and we never post, modify, or delete anything on Instagram.
+
+**補足（西川さん向けメモ）:**
+- テストアカウントの ID/パスワード欄は空でよい（Googleログインのため手順で代替）
+- もしフォームがテストアカウント必須なら、レビュー用のGoogleアカウントを1つ作って
+  komaparaにログイン→そのメール/手順を記載する（本番ユーザーには影響しない）
+
+---
+
+## 6. 提出記録（2026-08-06）
+
+**App Review を提出。ステータス = 審査中（20日以内）。**
+
+提出内容:
+- 権限: `instagram_business_basic` の **1件のみ**（manage_comments / manage_messages /
+  content_publish は全て外した。content_publish はプライバシーポリシーと矛盾）
+- 用途説明（英）＋ レビュアー向けテスト手順（§4-3 / §5）
+- スクリーンキャスト: `docs/app-review-screencast.mp4`（82MB・git除外）
+- データの取り扱い: 処理事業者 = TSURATSURA,K.K.(日本) / Vercel Inc.(米) / Neon,Inc.(米)、
+  責任主体 = TSURATSURA,K.K.、国家安全保障の当局提出 = **いいえ**（初期値が誤って「はい」だった）
+- Facebookログイン統合 = **いいえ**（komaparaはGoogle/Xログインのみ）
+- プラットフォーム = Website(komapara.com)、アイコン・プライバシーポリシー設定済み
+
+前提（済）:
+- ビジネス認証 TSURATSURA,K.K. = 2026/08/06 認証済み
+- Tech Provider認証（Access verification）は **押さない**＝他社アセット用で不要
+
+審査中の注意:
+1. 審査完了までアプリ設定を触らない（変更は審査に影響）
+2. レビュアーが実機テストできず差し戻された場合 → Metaが「Instagramハンドルを教えて」と
+   言ってくる → アプリの「役割 → テスター(Instagram)」にそのIGアカウントを追加
+3. 差し戻し(revision)は普通に起きる。理由を読んで直して再提出
+4. 通過まで一般公開でIG連携は使えない。それまではXインポート・画像アップロードで運用
+
+App ID: Instagram=1601669075007295 / Meta App=1004626322572734
+
+---
+
+## 7. 却下→再提出（2026-08-19 却下）
+
+**却下理由:** 「スクリーンキャストがユースケースの詳細に整合しない」(開発者ポリシー1条6項)。
+**ユースケース(用途)自体は承認可と判断された。動画だけが理由。**
+
+Metaが再提出動画に求める要素:
+1. 完全なInstagramログイン〜認可フロー（ログイン入力から映す）
+2. ユーザーが権限を付与する瞬間（認可画面で「許可」）
+3. 取り込み〜公開までのエンドツーエンド
+4. **英語で説明**（UIが日本語なので字幕で各ボタン・各ステップの意味を英語で）
+5. サーバー間アプリではない（フロントのログインフローあり）＝該当せず
+
+### 再撮影の台本（各シーンに英語字幕を焼き込む）
+
+★前回の最大の穴 = Instagramにログイン済みで撮ったため「ログイン入力画面」が映らなかった。
+　今回は【Instagramから一度ログアウトしてから】撮る。ログイン入力→認可→許可を必ず映す。
+
+| # | 操作 | 焼き込む英語字幕 |
+|---|---|---|
+| 0 | タイトルカード | Komapara (komapara.com) — importing my own Instagram posts. Requested permission: instagram_business_basic |
+| 1 | komapara.comにログイン済みを映す | This is Komapara, a portal for 4-panel manga. I am a creator, logged into my own account. |
+| 2 | 「+ 投稿」を押す | Clicking the "Post" button (+ 投稿) to create a new work. |
+| 3 | 「Instagramから取り込み」を押す | Choosing "Import from Instagram" (Instagramから取り込み). |
+| 4 | Instagramのログイン画面でID/PW入力 | This is Instagram's own login screen. I sign in with my own Instagram professional account. |
+| 5 | 認可画面（スコープ表示）を3秒以上映す | This is the Instagram authorization screen. It shows the requested permission: instagram_business_basic — read access to my own profile and my own media. |
+| 6 | 「許可」を押す | I tap "Allow" to grant access. |
+| 7 | 本人のメディアがグリッド表示 | My own Instagram posts are now displayed inside Komapara. |
+| 8 | 4コマ投稿を1つ選ぶ | I select one of my own 4-panel comics to import. |
+| 9 | 取り込み＋タイトル入力 | The images are imported into a new Komapara post. I add a title. |
+| 10 | 公開→作品ページに4コマ表示 | I publish it. It now appears as my own work on Komapara, showing all four panels. |
+| 11 | (任意)設定→連携解除を映す | I can disconnect the Instagram connection anytime from the settings page. |
+
+撮影の必須ルール:
+- 【最重要】先にInstagramからログアウト → #4のログイン入力を必ず映す（前回の穴）
+- 認可画面(#5)は3秒以上静止して映す（審査で最重要）
+- パスワード入力はマスト表示(●●●)でよい。実際の文字は映さなくてよい
+- 全編に上表の英語字幕を焼き込む。Windows標準の Clipchamp で字幕追加可
+- UIのボタンは日本語のままでよいが、字幕で意味を英語で添える
+- 音声は不要
+
+再提出手順: App Review → 却下された申請 → 新しいスクリーンキャストで再申請。
+用途説明・データ取扱い等は前回のまま流用できる(承認済みのため)。動画を差し替えるのが主。
+
+### 再提出（2026-08-19）— 却下理由をピンポイント修正
+
+**動画を英語字幕入り・完全フローに差し替えて再提出。ステータス=審査中(20日以内)。**
+
+前回の却下理由「スクリーンキャストがユースケースに整合しない」に対応:
+- 新スクリーンキャスト docs/app-review-screencast.mp4（9MB・字幕焼き込み済み）
+  ・元動画: Videos/Captures の録画（Instagramログアウト状態から撮影）
+  ・ffmpeg で英語字幕(subs.srt)を焼き込み。各シーンにタイミング合わせ済み
+  ・映っている全フロー: Instagramログイン→認可画面(instagram_business_basic明示・3秒以上)
+    →許可→本人メディア一覧→4コマ選択→取込→タイトル→公開→作品ページに4コマ表示
+- Metaの4要件を充足: (1)完全なログインフロー (2)権限付与の瞬間 (3)エンドツーエンド (4)英語説明
+- 用途説明・データ取扱い(国家安全保障=いいえ)・審査手順・FBログイン=いいえ は前回のまま維持
+
+★動画の字幕付けは ffmpeg で自動化できる:
+  ffmpeg -i 録画.mp4 -vf "subtitles='C\:/.../subs.srt':force_style='FontName=Arial,Fontsize=11,
+  Alignment=2,MarginV=25,MarginL=50,MarginR=50,Outline=2'" -c:v libx264 -crf 22 -c:a copy out.mp4
+  （Windowsのパスはコロンを \: にエスケープ。字幕内容はシーンのタイムスタンプに合わせる）

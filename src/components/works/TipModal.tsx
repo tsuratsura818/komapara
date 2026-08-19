@@ -48,8 +48,8 @@ export function TipModal({
       const data = await res.json();
 
       if (res.ok) {
-        if (data.checkoutUrl) {
-          window.location.href = data.checkoutUrl;
+        if (data.url) {
+          window.location.href = data.url;
         } else {
           setStep("success");
           onSuccess?.();
