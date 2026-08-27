@@ -36,6 +36,21 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
         where: { id },
         data: { viewCount: { increment: 1 } },
       });
+      // 月次配分（Spotify型）の集計用ログ。Asia/Tokyo基準のyearMonthで積む（UTCズレ回避）。
+      // 配分対象はプレミアム会員の閲覧のみなので isPremium を残す。
+      const yearMonth = new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Tokyo" })
+        .format(new Date())
+        .slice(0, 7);
+      await prisma.viewLog
+        .create({
+          data: {
+            workId: id,
+            userId: session?.user?.id ?? null,
+            isPremium: session?.user?.isPremium ?? false,
+            yearMonth,
+          },
+        })
+        .catch((e) => console.error("ViewLog記録失敗:", e));
     }
 
     // 閲覧履歴は計上の有無に関わらず最新化する（ライブラリの並び用）

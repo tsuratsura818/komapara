@@ -116,6 +116,7 @@ model Work {
   rankings    WeeklyRanking[]
   tips        Tip[]
   readHistory ReadHistory[]
+  viewLogs    ViewLog[]
   reports     Report[]
 
   seriesId    String?
@@ -426,4 +427,20 @@ model ProcessedWebhookEvent {
   id          String   @id // Stripeの event.id をそのまま主キーにする
   type        String
   processedAt DateTime @default(now())
+}
+
+/// 月次配分（Spotify型）の集計用の閲覧ログ。ReadHistoryは @@unique([userId,workId]) で
+/// 「1人×1作品=1行」しか持てず月次集計に使えないため、append型のログを別に持つ。
+/// 配分対象はプレミアム会員の閲覧のみ（会員費が原資なので公平）＝isPremiumで抽出する。
+model ViewLog {
+  id        String   @id @default(cuid())
+  workId    String
+  work      Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
+  userId    String?  // プレミアム会員のみ記録。ゲスト/無料会員はnull
+  isPremium Boolean  @default(false)
+  yearMonth String   // "2026-08"（Asia/Tokyo基準）。集計キー
+  viewedAt  DateTime @default(now())
+
+  @@index([yearMonth, workId])
+  @@index([workId])
 }
