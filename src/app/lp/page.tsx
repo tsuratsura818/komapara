@@ -11,7 +11,7 @@ import {
 
 export const metadata: Metadata = {
   title: "コマパラ — 4コマ作家のための発表・収益化プラットフォーム",
-  description: "XやInstagramに埋もれる4コマを、集約して新しい読者に届ける。1タップ投稿・ダッシュボード・投げ銭まで、ぜんぶ無料。",
+  description: "XやInstagramに埋もれる4コマを、集約して新しい読者に届ける。1タップ投稿・ダッシュボードまで、ぜんぶ無料。",
 };
 
 const PILLARS = [
@@ -33,7 +33,7 @@ const PILLARS = [
     Icon: UsersIcon,
     title: "つながる",
     description: "5種リアクション・コメント・フォローで作家と読者がつながる",
-    features: ["5種リアクション", "投げ銭・サブスク", "プッシュ通知"],
+    features: ["5種リアクション", "クリエイター還元", "プッシュ通知"],
     gradient: "from-blue-500 to-blue-500",
   },
 ];
@@ -47,22 +47,22 @@ const READER_PROBLEMS = [
 
 const CREATOR_FEATURES = [
   { title: "かんたん投稿", description: "画像ドラッグ&ドロップで最短30秒。X/Instagramからの1タップインポートも。", Icon: BoltIcon },
-  { title: "ダッシュボード", description: "閲覧数・いいね・フォロワー・収益をリアルタイムで把握。", Icon: ChartBarIcon },
-  { title: "投げ銭", description: "読者からの応援金をメッセージ付きで受け取れる。", Icon: BanknotesIcon },
-  { title: "サブスクリプション", description: "月額課金プランを自由に設定。安定した収益基盤を構築。", Icon: TicketIcon },
+  { title: "ダッシュボード", description: "閲覧数・いいね・フォロワーをリアルタイムで把握。", Icon: ChartBarIcon },
+  { title: "クリエイター還元", description: "読まれた分だけ収益に。プレミアム会員費を閲覧数に応じて還元する仕組みを準備中。", Icon: BanknotesIcon },
+  { title: "シリーズ管理", description: "連載を前後ナビ付きで管理。読者が最初から追える。", Icon: TicketIcon },
 ];
 
 const STEPS = [
   { step: "01", title: "アカウント作成", description: "Google・X・メールで無料登録。30秒で完了。" },
   { step: "02", title: "作品を楽しむ / 投稿する", description: "読者はフィードで4コマを発見。クリエイターはすぐに投稿開始。" },
-  { step: "03", title: "つながる・応援する", description: "リアクション・コメント・投げ銭で、お気に入りの作家を応援。" },
+  { step: "03", title: "つながる・応援する", description: "リアクション・コメント・フォローで、お気に入りの作家を応援。" },
 ];
 
 const COMPARISONS = [
   { feature: "4コマ特化", komapara: true, pixiv: false, x: false },
   { feature: "SNS連携投稿", komapara: true, pixiv: false, x: false },
   { feature: "5種リアクション", komapara: true, pixiv: false, x: false },
-  { feature: "投げ銭・サブスク", komapara: true, pixiv: true, x: false },
+  { feature: "クリエイター還元", komapara: true, pixiv: true, x: false },
   { feature: "週間ランキング", komapara: true, pixiv: true, x: false },
   { feature: "シリーズ管理", komapara: true, pixiv: true, x: false },
   { feature: "プッシュ通知", komapara: true, pixiv: true, x: true },
@@ -80,7 +80,7 @@ const BETA_FACTS = [
   },
   {
     title: "収益機能はまだ有効にしていません",
-    text: "投げ銭・サブスクは実装済みですが、作家が揃うまでは公開していません。準備ができ次第ご案内します。",
+    text: "クリエイターへの収益還元（プレミアム会員費を、読まれた分に応じて配分する仕組み）を準備中です。決済まわりを整えたうえで公開し、事前にご案内します。",
   },
   {
     title: "Instagram連携は審査中です",
@@ -130,7 +130,7 @@ const PRICING_PLANS = [
 const FAQS = [
   { q: "利用料金はかかりますか？", a: "無料です。いま提供している機能はすべて無料でお使いいただけます。広告非表示のプレミアムプラン（月額300円）も用意していますが、まだ開放していません。" },
   { q: "どうやって投稿しますか？", a: "4枚の画像をアップロードするだけ。X（旧Twitter）の投稿を1タップでインポートすることもできます。Instagramからの取り込みはMetaの審査を申請中で、通り次第ご案内します。" },
-  { q: "収益化できますか？", a: "投げ銭（手数料10%）とサブスクリプション（手数料15%）を実装済みですが、まだ有効にしていません。作家と読者が揃ったタイミングで開放します。開放前にご案内します。" },
+  { q: "収益化できますか？", a: "クリエイターへの収益還元の仕組みを準備中です。読者が支払うプレミアム会員費を、作品の閲覧数に応じてクリエイターへ配分する形を予定しています。決済の整備が済み次第、公開してご案内します。" },
   { q: "広告は表示されますか？", a: "いまは表示していません。将来的に広告を掲載する場合は、事前にお知らせしたうえで、非表示にできるプレミアムプランを同時に開放します。" },
   { q: "スマホで使えますか？", a: "はい。モバイルファーストで設計しており、PWA対応でアプリのように利用できます。プッシュ通知にも対応しています。" },
 ];
@@ -206,7 +206,7 @@ export default function LpPage() {
               {[
                 { label: "SNS 1タップ連携", Icon: BoltIcon },
                 { label: "ダッシュボード分析", Icon: ChartBarIcon },
-                { label: "投げ銭・収益化", Icon: BanknotesIcon },
+                { label: "クリエイター還元", Icon: BanknotesIcon },
                 { label: "完全無料", Icon: SparklesIcon },
               ].map((chip) => (
                 <span
