@@ -51,12 +51,7 @@ export default async function CreatorPage(props: Props) {
 
   if (!user) notFound();
 
-  const [tipStats, subPlans, subscriberCount, subSetting, creatorSeries] = await Promise.all([
-    prisma.tip.aggregate({
-      where: { receiverId: params.id, paymentStatus: "completed" },
-      _sum: { amount: true },
-      _count: true,
-    }).catch(() => ({ _sum: { amount: 0 }, _count: 0 })),
+  const [subPlans, subscriberCount, subSetting, creatorSeries] = await Promise.all([
     prisma.subscriptionPlan.findMany({
       where: { creatorId: params.id, isActive: true },
       orderBy: { price: "asc" },
@@ -189,14 +184,6 @@ export default async function CreatorPage(props: Props) {
             <strong className="text-accent">{user._count.followers}</strong>{" "}
             フォロワー
           </span>
-          {(tipStats._sum.amount || 0) > 0 && (
-            <span>
-              <strong className="text-accent">
-                {(tipStats._sum.amount || 0).toLocaleString()}円
-              </strong>{" "}
-              投げ銭
-            </span>
-          )}
           {subscriberCount > 0 && (
             <span>
               <strong className="text-accent">

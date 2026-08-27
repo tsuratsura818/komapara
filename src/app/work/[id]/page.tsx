@@ -109,9 +109,6 @@ export default async function WorkDetailPage(props: Props) {
     reactionCounts[g.reaction] = g._count;
   }
 
-  // 投げ銭機能の有効/無効
-  const tipSetting = await prisma.siteSetting.findUnique({ where: { key: "tips_enabled" } }).catch(() => null);
-  const tipsEnabled = tipSetting?.value !== "false";
 
   // シリーズ前後ナビ
   let seriesNav = null as {
@@ -224,7 +221,7 @@ export default async function WorkDetailPage(props: Props) {
           影の線が出るため、読む部分から広告・シリーズナビまでを1枚に収める */}
       <div className="max-w-3xl mx-auto bg-white pb-2 sm:mt-5 sm:rounded-2xl sm:shadow-[0_2px_28px_rgba(15,23,42,0.13)] sm:ring-1 sm:ring-black/5">
         {/* 通報ボタンは WorkViewer 内でクライアント判定して表示 */}
-        <WorkViewer work={workData} tipsEnabled={tipsEnabled} />
+        <WorkViewer work={workData} />
 
         {/* 広告（シリーズナビの前）。プレミアム非表示はAdSlotがセッションで判定 */}
         <div className="px-4 pt-4">

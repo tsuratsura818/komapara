@@ -35,12 +35,7 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  const [tipStats, subStats, subPlans, subSetting, userSeries] = await Promise.all([
-    prisma.tip.aggregate({
-      where: { receiverId: session.user.id, paymentStatus: "completed" },
-      _sum: { netAmount: true },
-      _count: true,
-    }).catch(() => ({ _sum: { netAmount: 0 }, _count: 0 })),
+  const [subStats, subPlans, subSetting, userSeries] = await Promise.all([
     prisma.subscription.aggregate({
       where: { creatorId: session.user.id, paymentStatus: "completed" },
       _sum: { netAmount: true },
@@ -73,7 +68,6 @@ export default async function DashboardPage() {
     { label: "総閲覧数", value: totalViews },
     { label: "総いいね", value: totalLikes },
     { label: "フォロワー", value: user._count.followers },
-    { label: "投げ銭収益", value: `${(tipStats._sum.netAmount || 0).toLocaleString()}円` },
     ...(subscriptionsEnabled ? [
       { label: "サブスク収益", value: `${(subStats._sum.netAmount || 0).toLocaleString()}円` },
       { label: "購読者数", value: subStats._count },

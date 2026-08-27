@@ -56,7 +56,7 @@ export function StripeConnectCard({
 
           {chargesEnabled ? (
             <p className="text-sm text-komapara-muted">
-              収益の受取が有効です。投げ銭やサブスクリプションの収益を受け取ることができます。
+              収益の受取が有効です。クリエイター還元を受け取ることができます。
             </p>
           ) : (
             <div className="space-y-2">
@@ -76,7 +76,7 @@ export function StripeConnectCard({
       ) : (
         <div className="space-y-3">
           <p className="text-sm text-komapara-muted">
-            投げ銭やサブスクリプションの収益を受け取るには、Stripeアカウントを連携してください。
+            クリエイター還元を受け取るには、決済アカウントを連携してください。
           </p>
           <button
             onClick={handleConnect}

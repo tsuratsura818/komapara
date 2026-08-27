@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatRelativeTime, buildWorkShareText, highResAvatar } from "@/lib/utils";
 import { AdsenseUnit } from "@/components/ui/AdsenseUnit";
-import { TipButton } from "./TipButton";
 import { ReportButton } from "./ReportButton";
 
 const REACTIONS = [
@@ -48,7 +47,7 @@ type WorkDetail = {
   comments: Comment[];
 };
 
-export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tipsEnabled?: boolean }) {
+export function WorkViewer({ work }: { work: WorkDetail }) {
   const { data: session } = useSession();
   const isPremium = !!session?.user?.isPremium;
   const [userReaction, setUserReaction] = useState(work.userReaction);
@@ -297,7 +296,7 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
           </div>
         )}
 
-        {/* アクションボタン（リアクション・投げ銭・シェアを1行に。狭い画面では折り返す） */}
+        {/* アクションボタン（リアクション・シェアを1行に。狭い画面では折り返す） */}
         <div className="mt-3">
           <div className="flex gap-2 flex-wrap items-center">
             <div className="relative" ref={pickerRef}>
@@ -341,12 +340,6 @@ export function WorkViewer({ work, tipsEnabled = true }: { work: WorkDetail; tip
               )}
             </div>
 
-            <TipButton
-              workId={work.id}
-              authorId={work.author.id}
-              authorName={work.author.name}
-              tipsEnabled={tipsEnabled}
-            />
             <button
               onClick={handleShareToX}
               className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium glass text-komapara-muted hover:text-black transition-colors"

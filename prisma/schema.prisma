@@ -72,8 +72,6 @@ model User {
   comments     Comment[]
   followers    Follow[]  @relation("following")
   following    Follow[]  @relation("follower")
-  tipsSent     Tip[]     @relation("tipsSent")
-  tipsReceived Tip[]     @relation("tipsReceived")
   subscriptionPlans SubscriptionPlan[] @relation("creatorPlans")
   subscriptions     Subscription[]     @relation("subscriptions")
   subscribers       Subscription[]     @relation("subscribers")
@@ -114,7 +112,6 @@ model Work {
   likes       Like[]
   comments    Comment[]
   rankings    WeeklyRanking[]
-  tips        Tip[]
   readHistory ReadHistory[]
   viewLogs    ViewLog[]
   reports     Report[]
@@ -125,7 +122,6 @@ model Work {
 
   viewCount   Int     @default(0)
   likeCount   Int     @default(0)
-  tipTotal    Int     @default(0)
   isPublished Boolean @default(true)
   xPostUrl    String?
 
@@ -206,31 +202,6 @@ model WeeklyRanking {
   @@index([weekStart, rank])
 }
 
-model Tip {
-  id          String   @id @default(cuid())
-  amount      Int      // 金額（円）
-  platformFee Int      // プラットフォーム手数料（円）
-  netAmount   Int      // クリエイター受取額（円）
-  message     String?  // 応援メッセージ（任意）
-
-  senderId    String
-  receiverId  String
-  workId      String
-  // 財務レコードはユーザー/作品削除で消さない（会計・税務・係争対応のため保持）
-  sender      User     @relation("tipsSent", fields: [senderId], references: [id], onDelete: Restrict)
-  receiver    User     @relation("tipsReceived", fields: [receiverId], references: [id], onDelete: Restrict)
-  work        Work     @relation(fields: [workId], references: [id], onDelete: Restrict)
-
-  paymentStatus         String  @default("completed")
-  stripePaymentIntentId String?
-
-  createdAt DateTime @default(now())
-
-  @@index([senderId])
-  @@index([receiverId])
-  @@index([workId])
-  @@index([createdAt])
-}
 
 model SubscriptionPlan {
   id          String   @id @default(cuid())

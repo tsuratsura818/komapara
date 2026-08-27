@@ -15,7 +15,6 @@ const FEATURE_FLAGS = [
   { key: "registration_enabled", label: "新規登録", description: "ユーザーの新規登録を許可" },
   { key: "comments_enabled", label: "コメント機能", description: "作品へのコメント投稿を許可" },
   { key: "x_auto_post_enabled", label: "X自動投稿", description: "作品投稿時のX自動シェア" },
-  { key: "tips_enabled", label: "投げ銭機能", description: "ユーザーによる投げ銭を許可（手数料10%）" },
   { key: "subscriptions_enabled", label: "サブスク機能", description: "クリエイターへの月額サブスクリプションを許可（手数料15%）" },
   { key: "premium_enabled", label: "プレミアム", description: "月額300円の広告非表示プランを有効化" },
   { key: "push_notifications_enabled", label: "プッシュ通知", description: "フォロー中作家の新作投稿をプッシュ通知で配信" },

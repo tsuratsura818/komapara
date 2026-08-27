@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
 import {
-  PLATFORM_TIP_FEE_RATE,
   PLATFORM_SUB_FEE_RATE,
   PREMIUM_PRICE,
 } from "@/lib/fees";
@@ -40,7 +39,7 @@ export async function POST(request: NextRequest) {
 
   // 冪等性ガード。Stripeはネットワーク不達時に同じイベントを再送するため、
   // event.id を先に記録して重複を弾く。記録の作成が一意制約で落ちれば
-  // 「既に処理済み」＝二重の投げ銭・サブスク計上を防ぐ。
+  // 「既に処理済み」＝二重のサブスク・プレミアム計上を防ぐ。
   try {
     await prisma.processedWebhookEvent.create({
       data: { id: event.id, type: event.type },
@@ -101,9 +100,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 
   switch (metadata.type) {
-    case "tip":
-      await handleTipCompleted(metadata, session);
-      break;
     case "subscription":
       await handleSubscriptionCompleted(metadata, session);
       break;
@@ -113,45 +109,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     default:
       console.warn(`未知のチェックアウトタイプ: ${metadata.type}`);
   }
-}
-
-// 投げ銭完了
-async function handleTipCompleted(
-  metadata: Stripe.Metadata,
-  session: Stripe.Checkout.Session
-) {
-  const { workId, senderId, receiverId, message } = metadata;
-  if (!workId || !senderId || !receiverId) {
-    console.error("投げ銭メタデータ不足:", metadata);
-    return;
-  }
-
-  const amount = session.amount_total ?? 0;
-  const platformFee = Math.floor(amount * PLATFORM_TIP_FEE_RATE);
-  const netAmount = amount - platformFee;
-
-  await prisma.$transaction([
-    prisma.tip.create({
-      data: {
-        amount,
-        platformFee,
-        netAmount,
-        message: message || null,
-        senderId,
-        receiverId,
-        workId,
-        paymentStatus: "completed",
-        stripePaymentIntentId:
-          typeof session.payment_intent === "string"
-            ? session.payment_intent
-            : session.payment_intent?.id ?? null,
-      },
-    }),
-    prisma.work.update({
-      where: { id: workId },
-      data: { tipTotal: { increment: amount } },
-    }),
-  ]);
 }
 
 // サブスクリプション完了

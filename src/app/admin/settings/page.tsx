@@ -9,7 +9,6 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   registration_enabled: "true",
   comments_enabled: "true",
   x_auto_post_enabled: "true",
-  tips_enabled: "true",
   subscriptions_enabled: "true",
   premium_enabled: "false",
   push_notifications_enabled: "true",

@@ -46,7 +46,6 @@ async function main() {
     await prisma.like.deleteMany({ where: { workId: { in: workIds } } });
     await prisma.comment.deleteMany({ where: { workId: { in: workIds } } });
     await prisma.report.deleteMany({ where: { workId: { in: workIds } } });
-    await prisma.tip.deleteMany({ where: { workId: { in: workIds } } });
     await prisma.readHistory.deleteMany({ where: { workId: { in: workIds } } });
     await prisma.weeklyRanking.deleteMany({ where: { workId: { in: workIds } } });
   }
@@ -62,11 +61,6 @@ async function main() {
   // フォロー
   await prisma.follow.deleteMany({
     where: { OR: [{ followerId: { in: nonAdminIds } }, { followingId: { in: nonAdminIds } }] },
-  });
-
-  // 投げ銭
-  await prisma.tip.deleteMany({
-    where: { OR: [{ senderId: { in: nonAdminIds } }, { receiverId: { in: nonAdminIds } }] },
   });
 
   // サブスク

@@ -3,20 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { getStripe, isStripeEnabled } from "@/lib/stripe";
 import {
-  PLATFORM_TIP_FEE_RATE,
   PLATFORM_SUB_FEE_RATE,
   PREMIUM_PRICE,
 } from "@/lib/fees";
 import type Stripe from "stripe";
 
 export const dynamic = "force-dynamic";
-
-interface TipParams {
-  type: "tip";
-  workId: string;
-  amount: number;
-  message?: string;
-}
 
 interface SubscriptionParams {
   type: "subscription";
@@ -27,7 +19,7 @@ interface PremiumParams {
   type: "premium";
 }
 
-type CheckoutParams = TipParams | SubscriptionParams | PremiumParams;
+type CheckoutParams = SubscriptionParams | PremiumParams;
 
 // POST: Checkout Session作成
 export async function POST(request: NextRequest) {
@@ -54,8 +46,6 @@ export async function POST(request: NextRequest) {
     const customerId = await getOrCreateCustomerId(stripe, session.user.id);
 
     switch (body.type) {
-      case "tip":
-        return handleTipCheckout(stripe, body, session.user.id, customerId, baseUrl);
       case "subscription":
         return handleSubscriptionCheckout(stripe, body, session.user.id, customerId, baseUrl);
       case "premium":
@@ -95,86 +85,6 @@ async function getOrCreateCustomerId(stripe: Stripe, userId: string): Promise<st
   });
 
   return customer.id;
-}
-
-// 投げ銭 Checkout
-async function handleTipCheckout(
-  stripe: Stripe,
-  params: TipParams,
-  senderId: string,
-  customerId: string,
-  baseUrl: string
-): Promise<NextResponse> {
-  const { workId, amount, message } = params;
-
-  if (!workId || typeof amount !== "number" || amount < 100 || amount > 10000) {
-    return NextResponse.json(
-      { error: "作品IDと金額（100〜10000円）が必要です" },
-      { status: 400 }
-    );
-  }
-
-  const work = await prisma.work.findUnique({
-    where: { id: workId },
-    select: {
-      id: true,
-      authorId: true,
-      title: true,
-      author: { select: { stripeConnectAccountId: true } },
-    },
-  });
-
-  if (!work) {
-    return NextResponse.json({ error: "作品が見つかりません" }, { status: 404 });
-  }
-
-  if (senderId === work.authorId) {
-    return NextResponse.json({ error: "自分の作品には投げ銭できません" }, { status: 400 });
-  }
-
-  const applicationFeeAmount = Math.floor(amount * PLATFORM_TIP_FEE_RATE);
-
-  const sessionParams: Stripe.Checkout.SessionCreateParams = {
-    mode: "payment",
-    customer: customerId,
-    currency: "jpy",
-    line_items: [
-      {
-        price_data: {
-          currency: "jpy",
-          product_data: {
-            name: `「${work.title}」への投げ銭`,
-            description: message ? `メッセージ: ${message}` : undefined,
-          },
-          unit_amount: amount,
-        },
-        quantity: 1,
-      },
-    ],
-    metadata: {
-      type: "tip",
-      workId,
-      senderId,
-      receiverId: work.authorId,
-      message: message ?? "",
-    },
-    success_url: `${baseUrl}/work/${workId}?tip=success`,
-    cancel_url: `${baseUrl}/work/${workId}`,
-  };
-
-  // クリエイターがConnect設定済みなら分配
-  if (work.author.stripeConnectAccountId) {
-    sessionParams.payment_intent_data = {
-      application_fee_amount: applicationFeeAmount,
-      transfer_data: {
-        destination: work.author.stripeConnectAccountId,
-      },
-    };
-  }
-
-  const checkoutSession = await stripe.checkout.sessions.create(sessionParams);
-
-  return NextResponse.json({ url: checkoutSession.url });
 }
 
 // サブスクリプション Checkout
@@ -336,57 +246,6 @@ async function handleMockCheckout(
   baseUrl: string
 ): Promise<NextResponse> {
   switch (params.type) {
-    case "tip": {
-      const { workId, amount, message } = params;
-
-      if (!workId || typeof amount !== "number" || amount < 100 || amount > 10000) {
-        return NextResponse.json(
-          { error: "作品IDと金額（100〜10000円）が必要です" },
-          { status: 400 }
-        );
-      }
-
-      const work = await prisma.work.findUnique({
-        where: { id: workId },
-        select: { id: true, authorId: true },
-      });
-
-      if (!work) {
-        return NextResponse.json({ error: "作品が見つかりません" }, { status: 404 });
-      }
-
-      if (userId === work.authorId) {
-        return NextResponse.json({ error: "自分の作品には投げ銭できません" }, { status: 400 });
-      }
-
-      const platformFee = Math.floor(amount * PLATFORM_TIP_FEE_RATE);
-      const netAmount = amount - platformFee;
-
-      await prisma.$transaction([
-        prisma.tip.create({
-          data: {
-            amount,
-            platformFee,
-            netAmount,
-            message: message?.trim() || null,
-            senderId: userId,
-            receiverId: work.authorId,
-            workId: work.id,
-            paymentStatus: "completed",
-          },
-        }),
-        prisma.work.update({
-          where: { id: workId },
-          data: { tipTotal: { increment: amount } },
-        }),
-      ]);
-
-      return NextResponse.json({
-        url: `${baseUrl}/work/${workId}?tip=success`,
-        mock: true,
-      });
-    }
-
     case "subscription": {
       const { planId } = params;
 
