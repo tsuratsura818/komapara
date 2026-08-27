@@ -2,7 +2,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { DashboardWorkCard } from "@/components/works/DashboardWorkCard";
-import { PlanManager } from "@/components/subscriptions/PlanManager";
 import { XSyncPanel } from "@/components/works/XSyncPanel";
 import { SeriesManager } from "@/components/series/SeriesManager";
 import Link from "next/link";
@@ -35,18 +34,7 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  const [subStats, subPlans, subSetting, userSeries] = await Promise.all([
-    prisma.subscription.aggregate({
-      where: { creatorId: session.user.id, paymentStatus: "completed" },
-      _sum: { netAmount: true },
-      _count: true,
-    }).catch(() => ({ _sum: { netAmount: 0 }, _count: 0 })),
-    prisma.subscriptionPlan.findMany({
-      where: { creatorId: session.user.id },
-      orderBy: { price: "asc" },
-      include: { _count: { select: { subscriptions: { where: { status: "active" } } } } },
-    }).catch(() => []),
-    prisma.siteSetting.findUnique({ where: { key: "subscriptions_enabled" } }).catch(() => null),
+  const [userSeries] = await Promise.all([
     prisma.series.findMany({
       where: { authorId: session.user.id },
       orderBy: { updatedAt: "desc" },
@@ -58,7 +46,6 @@ export default async function DashboardPage() {
       },
     }).catch(() => []),
   ]);
-  const subscriptionsEnabled = subSetting?.value !== "false";
 
   const totalViews = user.works.reduce((sum, w) => sum + w.viewCount, 0);
   const totalLikes = user.works.reduce((sum, w) => sum + w.likeCount, 0);
@@ -68,10 +55,6 @@ export default async function DashboardPage() {
     { label: "総閲覧数", value: totalViews },
     { label: "総いいね", value: totalLikes },
     { label: "フォロワー", value: user._count.followers },
-    ...(subscriptionsEnabled ? [
-      { label: "サブスク収益", value: `${(subStats._sum.netAmount || 0).toLocaleString()}円` },
-      { label: "購読者数", value: subStats._count },
-    ] : []),
   ];
 
   return (
@@ -97,13 +80,6 @@ export default async function DashboardPage() {
           </div>
         ))}
       </div>
-
-      {/* サブスクリプションプラン管理 */}
-      {subscriptionsEnabled && (
-        <div className="mb-6">
-          <PlanManager initialPlans={subPlans} />
-        </div>
-      )}
 
       {/* シリーズ管理 */}
       <div className="mb-6">

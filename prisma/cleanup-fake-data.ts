@@ -63,11 +63,6 @@ async function main() {
     where: { OR: [{ followerId: { in: nonAdminIds } }, { followingId: { in: nonAdminIds } }] },
   });
 
-  // サブスク
-  await prisma.subscription.deleteMany({
-    where: { OR: [{ subscriberId: { in: nonAdminIds } }, { creatorId: { in: nonAdminIds } }] },
-  });
-  await prisma.subscriptionPlan.deleteMany({ where: { creatorId: { in: nonAdminIds } } });
   await prisma.premiumSubscription.deleteMany({ where: { userId: { in: nonAdminIds } } });
 
   // 作品

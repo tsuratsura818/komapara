@@ -5,7 +5,6 @@ import { WorkCard } from "@/components/works/WorkCard";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { FollowButton } from "@/components/auth/FollowButton";
-import { SubscribeButton } from "@/components/subscriptions/SubscribeButton";
 
 // 公開の作家ページ（フォロー/購読状態はクライアントが自己フェッチ）。ISRで配信
 export const revalidate = 1800;
@@ -51,15 +50,7 @@ export default async function CreatorPage(props: Props) {
 
   if (!user) notFound();
 
-  const [subPlans, subscriberCount, subSetting, creatorSeries] = await Promise.all([
-    prisma.subscriptionPlan.findMany({
-      where: { creatorId: params.id, isActive: true },
-      orderBy: { price: "asc" },
-    }).catch(() => []),
-    prisma.subscription.count({
-      where: { creatorId: params.id, status: "active" },
-    }).catch(() => 0),
-    prisma.siteSetting.findUnique({ where: { key: "subscriptions_enabled" } }).catch(() => null),
+  const [creatorSeries] = await Promise.all([
     prisma.series.findMany({
       where: { authorId: params.id },
       orderBy: { updatedAt: "desc" },
@@ -73,8 +64,7 @@ export default async function CreatorPage(props: Props) {
       },
     }).catch(() => []),
   ]);
-  const subscriptionsEnabled = subSetting?.value !== "false";
-  // フォロー/購読の個別状態は FollowButton / SubscribeButton がクライアントで自己取得する
+  // フォローの個別状態は FollowButton がクライアントで自己取得する
 
   return (
     <div>
@@ -184,40 +174,8 @@ export default async function CreatorPage(props: Props) {
             <strong className="text-accent">{user._count.followers}</strong>{" "}
             フォロワー
           </span>
-          {subscriberCount > 0 && (
-            <span>
-              <strong className="text-accent">
-                {subscriberCount}
-              </strong>{" "}
-              購読者
-            </span>
-          )}
         </div>
 
-        {/* サブスクリプションプラン */}
-        {subscriptionsEnabled && subPlans.length > 0 && (
-          <div className="mt-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mb-3">
-              {subPlans.map((plan) => (
-                <div key={plan.id} className="glass rounded-xl p-3">
-                  <p className="text-sm font-medium text-komapara-text">{plan.name}</p>
-                  <p className="text-lg font-bold bg-linear-to-r from-blue-500 to-blue-500 bg-clip-text text-transparent">
-                    {plan.price.toLocaleString()}円/月
-                  </p>
-                  {plan.description && (
-                    <p className="text-xs text-komapara-muted mt-1">{plan.description}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-            <SubscribeButton
-              creatorId={user.id}
-              creatorName={user.name}
-              plans={subPlans}
-              subscriptionsEnabled={subscriptionsEnabled}
-            />
-          </div>
-        )}
       </div>
 
       {/* シリーズ一覧 */}

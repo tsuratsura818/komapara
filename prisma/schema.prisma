@@ -72,9 +72,6 @@ model User {
   comments     Comment[]
   followers    Follow[]  @relation("following")
   following    Follow[]  @relation("follower")
-  subscriptionPlans SubscriptionPlan[] @relation("creatorPlans")
-  subscriptions     Subscription[]     @relation("subscriptions")
-  subscribers       Subscription[]     @relation("subscribers")
   premiumSubscriptions PremiumSubscription[]
   pushSubscriptions    PushSubscription[]
   instagramAccount     InstagramAccount?
@@ -202,54 +199,6 @@ model WeeklyRanking {
   @@index([weekStart, rank])
 }
 
-
-model SubscriptionPlan {
-  id          String   @id @default(cuid())
-  creatorId   String
-  creator     User     @relation("creatorPlans", fields: [creatorId], references: [id], onDelete: Cascade)
-  name        String
-  price       Int      // 月額（円）100〜10000
-  description String?
-  isActive    Boolean  @default(true)
-
-  stripePriceId   String?  // Stripe Price ID
-  stripeProductId String?  // Stripe Product ID
-
-  subscriptions Subscription[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([creatorId])
-}
-
-model Subscription {
-  id               String   @id @default(cuid())
-  subscriberId     String
-  subscriber       User     @relation("subscriptions", fields: [subscriberId], references: [id], onDelete: Restrict)
-  creatorId        String
-  creator          User     @relation("subscribers", fields: [creatorId], references: [id], onDelete: Restrict)
-  planId           String
-  plan             SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
-
-  status           String   @default("active") // active | cancelled | expired
-  currentPeriodEnd DateTime
-
-  amount           Int      // 課金額（円）
-  platformFee      Int      // 手数料15%
-  netAmount        Int      // クリエイター受取額
-  paymentStatus    String   @default("completed")
-  stripeSubscriptionId String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([subscriberId, creatorId])
-  @@index([creatorId])
-  @@index([subscriberId])
-  @@index([status])
-  @@index([currentPeriodEnd])
-}
 
 model PremiumSubscription {
   id               String   @id @default(cuid())

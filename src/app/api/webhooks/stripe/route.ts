@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
 import {
-  PLATFORM_SUB_FEE_RATE,
   PREMIUM_PRICE,
 } from "@/lib/fees";
 import type Stripe from "stripe";
@@ -100,75 +99,12 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 
   switch (metadata.type) {
-    case "subscription":
-      await handleSubscriptionCompleted(metadata, session);
-      break;
     case "premium":
       await handlePremiumCompleted(metadata, session);
       break;
     default:
       console.warn(`未知のチェックアウトタイプ: ${metadata.type}`);
   }
-}
-
-// サブスクリプション完了
-async function handleSubscriptionCompleted(
-  metadata: Stripe.Metadata,
-  session: Stripe.Checkout.Session
-) {
-  const { subscriberId, creatorId, planId } = metadata;
-  if (!subscriberId || !creatorId || !planId) {
-    console.error("サブスクメタデータ不足:", metadata);
-    return;
-  }
-
-  const plan = await prisma.subscriptionPlan.findUnique({
-    where: { id: planId },
-    select: { price: true },
-  });
-
-  if (!plan) {
-    console.error("プランが見つかりません:", planId);
-    return;
-  }
-
-  const platformFee = Math.floor(plan.price * PLATFORM_SUB_FEE_RATE);
-  const netAmount = plan.price - platformFee;
-  const stripeSubscriptionId =
-    typeof session.subscription === "string"
-      ? session.subscription
-      : session.subscription?.id ?? null;
-
-  // 30日後を期間終了日とする（Webhook内で正確な値はsubscription.updatedで同期）
-  const currentPeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-  await prisma.subscription.upsert({
-    where: {
-      subscriberId_creatorId: { subscriberId, creatorId },
-    },
-    update: {
-      planId,
-      status: "active",
-      currentPeriodEnd,
-      amount: plan.price,
-      platformFee,
-      netAmount,
-      paymentStatus: "completed",
-      stripeSubscriptionId,
-    },
-    create: {
-      subscriberId,
-      creatorId,
-      planId,
-      status: "active",
-      currentPeriodEnd,
-      amount: plan.price,
-      platformFee,
-      netAmount,
-      paymentStatus: "completed",
-      stripeSubscriptionId,
-    },
-  });
 }
 
 // プレミアム完了
@@ -215,18 +151,6 @@ async function handlePremiumCompleted(
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const stripeSubId = subscription.id;
 
-  // クリエイターサブスクリプション
-  const creatorSub = await prisma.subscription.findFirst({
-    where: { stripeSubscriptionId: stripeSubId },
-  });
-  if (creatorSub) {
-    await prisma.subscription.update({
-      where: { id: creatorSub.id },
-      data: { status: "cancelled" },
-    });
-    return;
-  }
-
   // プレミアムサブスクリプション
   const premiumSub = await prisma.premiumSubscription.findFirst({
     where: { stripeSubscriptionId: stripeSubId },
@@ -253,21 +177,6 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   const firstItem = subscription.items?.data?.[0];
   const periodEndTimestamp = firstItem?.current_period_end ?? Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
   const currentPeriodEnd = new Date(periodEndTimestamp * 1000);
-
-  // クリエイターサブスクリプション
-  const creatorSub = await prisma.subscription.findFirst({
-    where: { stripeSubscriptionId: stripeSubId },
-  });
-  if (creatorSub) {
-    await prisma.subscription.update({
-      where: { id: creatorSub.id },
-      data: {
-        currentPeriodEnd,
-        status: subscription.status === "active" ? "active" : "cancelled",
-      },
-    });
-    return;
-  }
 
   // プレミアムサブスクリプション
   const premiumSub = await prisma.premiumSubscription.findFirst({
